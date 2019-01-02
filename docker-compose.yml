@@ -1,0 +1,55 @@
+version: '3.7'
+
+services:
+  db:
+    image: mongo:3.2
+    volumes:
+      - ./db/data:/data/db
+    environment:
+      - proxy_bind_port=27017
+      - proxy_port=13099
+      - proxy_mode=tcp
+      - proxy_host=db.float.lvh.me
+    labels:
+      backend: "True"
+
+  api:
+    tty: true
+    stdin_open: true
+    build:
+      context: ./api
+    volumes:
+      - ./api/src:/app
+      - ./api/wait-for-mongo.sh:/wait-for-mongo.sh
+    command: ["npm", "run", "start-watch"]
+    depends_on:
+      - db
+    restart: on-failure
+    environment:
+      - APP_ENV=development
+      - SECRET_KEY=~-_-~
+      - MONGODB_URI=mongodb://db:27017/float
+      - proxy_bind_port=8000
+      - proxy_port=443
+      - proxy_mode=http
+      - proxy_host=api.float.lvh.me
+      - WAIT_HOSTS=db:27017
+    labels:
+      backend: "True"
+
+  ui:
+    tty: true
+    stdin_open: true
+    build:
+      context: ./ui
+      target: dev
+    volumes:
+      - ./ui:/app
+    command: ["npm", "run", "dev"]
+    environment:
+      - proxy_bind_port=3000
+      - proxy_port=443
+      - proxy_mode=http
+      - proxy_host=ui.float.lvh.me
+    labels:
+      backend: "True"

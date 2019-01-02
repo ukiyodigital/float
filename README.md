@@ -1,4 +1,4 @@
-# Node JS + Mongo Starter Pack
+# Float: The Content Management System No One Asked For
 
 ## Setup
 1. `git clone` and `cd` into the repository

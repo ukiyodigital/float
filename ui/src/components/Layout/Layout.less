@@ -1,25 +1,8 @@
 .float-layout {
-  min-height: 100%;
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  grid-template-rows: 90px 1fr 100px;
-  grid-template-areas:
-  "sidebar navbar navbar"
-  "sidebar main main"
-  "sidebar footer footer";
-  overflow-x: hidden;
+  height: 100%;
 }
 
-.sidebar.float-sidebar {
-  grid-area: sidebar;
-}
-
-.float-top-nav-app {
-  grid-area: navbar;
-}
-
-.float-footer {
-  grid-area: footer;
+.ant-layout-footer.float-footer {
   background-image: url("../../assets/images/waves.png");
   background-repeat: repeat-x;
   background-position: bottom;

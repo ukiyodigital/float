@@ -8,8 +8,8 @@ import appStore from "../stores";
 import Layout from "./Layout/Layout";
 import createRouter from "../routing/create-router";
 import dataLoaderMiddleware from "../routing/data-loader-middleware";
-import "../assets/styles/main.less";
 
+import "../assets/styles/main.less";
 
 // router
 const router = createRouter(appStore, process.env.APP_ENV === "development");

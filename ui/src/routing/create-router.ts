@@ -1,4 +1,3 @@
-// @flow
 import createRouter from "router5";
 import loggerPlugin from "router5/plugins/logger";
 import listenersPlugin from "router5/plugins/listeners";
@@ -8,11 +7,11 @@ import routes from "./routes";
 import scrollTopPlugin from "./scroll-top-plugin";
 
 
-export default (appStore: AppStore, useLogger: boolean) => {
+export default (appStore, useLogger) => {
     const options = {
         defaultRoute: "home",
         queryParamsMode: "loose"
-    };
+    } as Partial<any>;
 
     const router = createRouter(routes, options)
         .usePlugin(browserPlugin({useHash: false, preserveHash: false}))
@@ -23,16 +22,6 @@ export default (appStore: AppStore, useLogger: boolean) => {
     if (useLogger) {
         router.usePlugin(loggerPlugin);
     }
-
-    /*
-    TODO will update piwik with new service
-    router.addListener((toState, fromState) => {
-        if (!fromState || (fromState && toState.path !== fromState.path)) {
-            _paq.push(['setCustomUrl', window.location.href]);
-            _paq.push(['trackPageView']);
-        }
-    });
-    */
 
     return router;
 };

@@ -1,11 +1,9 @@
-// @flow
 import {RouterStore as MRRouterStore} from "mobx-router5";
 
-
 class RouterStore extends MRRouterStore {
-    appStore: AppStore;
+    appStore: any;
 
-    constructor(appStore: AppStore) {
+    constructor(appStore) {
         super();
         this.appStore = appStore;
     }

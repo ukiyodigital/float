@@ -1,4 +1,3 @@
-// @flow
 import * as React from "react";
 import { routeNode, RouteView } from "react-mobx-router5";
 import routes from "../../routing/routes";

@@ -1,8 +1,7 @@
-// @flow
 export default {
     dashboard: {
         loginRequired: false,
-        loader({done, loadData}: DataLoaderArgs) {
+        loader({done, loadData}) {
             loadData().then(() => {
                 done();
             }).catch(() => {

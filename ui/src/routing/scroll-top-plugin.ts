@@ -1,4 +1,3 @@
-// @flow
 const scrollTopPlugin = () => ({
     onTransitionSuccess: () => {
         window.scrollTo(0, 0);

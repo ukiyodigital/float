@@ -23,15 +23,16 @@ export default {
     mode,
     target: "web",
     resolve: {
-        extensions: ["*", ".js", ".jsx", ".json"]
+        extensions: ["*", ".js", ".json", ".ts", ".tsx"]
     },
     entry: [
-        "./src/index.js"
+        "./src/index.ts"
     ],
     output: {
         filename: "[name].[hash].js",
         path: path.resolve(__dirname, "dist")
     },
+    devtool: "source-map",
     optimization: {
         noEmitOnErrors: true,
         runtimeChunk: "single",
@@ -53,9 +54,9 @@ export default {
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.(ts|tsx)$/,
                 include: path.resolve(__dirname, "src"),
-                use: ["babel-loader"].concat(mode === "development" ? ["eslint-loader"] : [])
+                loader: "ts-loader"
             },
             {
                 test: /\.eot(\?v=\d+.\d+.\d+)?$/,
@@ -118,7 +119,8 @@ export default {
                         }
                     }
                 ]
-            }
+            },
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     }
 };

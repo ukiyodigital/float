@@ -1,11 +1,10 @@
-// @flow
-class BaseAPI implements IBaseAPI {
-    csrftoken = null;
+class BaseAPI {
+    csrftoken: string = null;
 
     apiUrl = process.env.API_URL;
 
-    requestInit(requestType?: string = "GET", body?: any, cors?: boolean = true): Object {
-        const init: Object = {
+    requestInit(requestType: string = "GET", body?: any, cors: boolean = true): object {
+        const init: any = {
             method: requestType,
             headers: {"Content-Type": "application/json"}
         };
@@ -26,7 +25,7 @@ class BaseAPI implements IBaseAPI {
         return init;
     }
 
-    fetchData(input: string, init?: Object = this.requestInit()) {
+    fetchData(input: string, init: any = this.requestInit()) {
         return fetch(input, init)
             .then((response) => {
                 this.csrftoken = response.headers.get("X-CSRFTOKEN");
@@ -46,7 +45,7 @@ class BaseAPI implements IBaseAPI {
             });
     }
 
-    downloadFile(location: string, requestType?: string = "GET", body?: Object) {
+    downloadFile(location: string, requestType: string = "GET", body?: Object) {
         const form = window.document.createElement("form");
 
         form.target = "_blank";
@@ -67,7 +66,7 @@ class BaseAPI implements IBaseAPI {
         form.parentNode.removeChild(form);
     }
 
-    getUri(location: string, version?: string = "v1.0") {
+    getUri(location: string, version: string = "v1.0") {
         if (!this.apiUrl) {
             throw new Error("API_URL is not defined.");
         }

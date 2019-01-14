@@ -1,4 +1,3 @@
-// @flow
 import AppStore from "./AppStore";
 
 

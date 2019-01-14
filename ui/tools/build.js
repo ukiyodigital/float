@@ -1,6 +1,5 @@
-/* eslint-disable no-console */
-import webpack from "webpack";
-import config from "../webpack.config";
+const webpack = require("webpack");
+const config = require("../webpack.config");
 
 
 webpack(config).run((error) => {

@@ -1,7 +1,6 @@
-/* eslint-disable no-console */
-import webpack from "webpack";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import path from "path";
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
 
 
 const ENVS = {
@@ -19,7 +18,7 @@ const mode = process.env.APP_ENV === "development" ? "development" : "production
 
 console.log(`webpack is compiling in ${mode} mode.`);
 
-export default {
+module.exports = {
     mode,
     target: "web",
     resolve: {

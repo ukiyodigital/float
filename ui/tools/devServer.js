@@ -1,8 +1,7 @@
-import path from "path";
-import webpack from "webpack";
-import WebpackDevServer from "webpack-dev-server";
-import config from "../webpack.config";
-
+const path =  require("path");
+const webpack =  require("webpack");
+const WebpackDevServer =  require("webpack-dev-server");
+const config =  require("../webpack.config");
 
 const host = "0.0.0.0";
 

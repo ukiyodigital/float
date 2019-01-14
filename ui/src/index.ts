@@ -1,4 +1,3 @@
-import "@babel/polyfill";
 import { renderApp, router } from "./components/App";
 
 

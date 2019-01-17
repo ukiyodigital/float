@@ -1,31 +1,9 @@
 class BaseAPI {
-    csrftoken: string = null;
+    private csrftoken: string = "";
 
-    apiUrl = process.env.API_URL;
+    private apiUrl = process.env.API_URL;
 
-    requestInit(requestType: string = "GET", body?: any, cors: boolean = true): object {
-        const init: any = {
-            method: requestType,
-            headers: {"Content-Type": "application/json"}
-        };
-
-        if (cors) {
-            init.mode = "cors";
-            init.credentials = "include";
-        }
-
-        if (body) {
-            init.body = JSON.stringify(body);
-        }
-
-        if (["POST", "PUT", "PATCH", "DELETE"].includes(requestType)) {
-            init.headers["X-CSRFTOKEN"] = this.csrftoken;
-        }
-
-        return init;
-    }
-
-    fetchData(input: string, init: any = this.requestInit()) {
+    public fetchData(input: string, init: any = this.requestInit()) {
         return fetch(input, init)
             .then((response) => {
                 this.csrftoken = response.headers.get("X-CSRFTOKEN");
@@ -45,7 +23,7 @@ class BaseAPI {
             });
     }
 
-    downloadFile(location: string, requestType: string = "GET", body?: Object) {
+    public downloadFile(location: string, requestType: string = "GET", body?: object) {
         const form = window.document.createElement("form");
 
         form.target = "_blank";
@@ -66,11 +44,33 @@ class BaseAPI {
         form.parentNode.removeChild(form);
     }
 
-    getUri(location: string, version: string = "v1.0") {
+    public getUri(location: string, version: string = "v1.0") {
         if (!this.apiUrl) {
             throw new Error("API_URL is not defined.");
         }
         return `${this.apiUrl}/api/${version}/${location}`;
+    }
+
+    private requestInit(requestType: string = "GET", body?: any, cors: boolean = true): object {
+        const init: any = {
+            headers: { "Content-Type": "application/json" },
+            method: requestType,
+        };
+
+        if (cors) {
+            init.mode = "cors";
+            init.credentials = "include";
+        }
+
+        if (body) {
+            init.body = JSON.stringify(body);
+        }
+
+        if (["POST", "PUT", "PATCH", "DELETE"].includes(requestType)) {
+            init.headers["X-CSRFTOKEN"] = this.csrftoken;
+        }
+
+        return init;
     }
 }
 

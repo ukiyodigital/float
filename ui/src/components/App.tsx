@@ -1,12 +1,15 @@
-import { hot } from "react-hot-loader";
 import * as React from "react";
 import { render } from "react-dom";
+import { hot } from "react-hot-loader";
+
 import { Provider } from "mobx-react";
 import DevTools from "mobx-react-devtools";
-import appStore from "../stores";
-import Layout from "./Layout/Layout";
+
 import createRouter from "../routing/create-router";
 import dataLoaderMiddleware from "../routing/data-loader-middleware";
+import appStore from "../stores";
+
+import Layout from "./Layout/Layout";
 
 import "../assets/styles/main.less";
 
@@ -25,7 +28,9 @@ const App = () => (
     <Provider appStore={appStore} routerStore={appStore.routerStore}>
         <React.Fragment>
             <Layout />
-            {process.env.APP_ENV === "development" ? <DevTools position={{bottom: 0, left: 0}} /> : null}
+            {process.env.APP_ENV === "development" ? (
+                <DevTools position={{ bottom: 0, left: 0 }} />
+            ) : null}
         </React.Fragment>
     </Provider>
 );
@@ -39,5 +44,5 @@ const renderApp = () => {
 
 export {
     renderApp,
-    router
+    router,
 };

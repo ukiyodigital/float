@@ -4,9 +4,7 @@ export default {
         loader({done, loadData}) {
             loadData().then(() => {
                 done();
-            }).catch(() => {
-
-            });
-        }
-    }
+            }).catch();
+        },
+    },
 };

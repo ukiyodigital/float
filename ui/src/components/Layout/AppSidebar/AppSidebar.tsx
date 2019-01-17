@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Menu, Icon } from "antd";
+
+import {Icon, Menu} from "antd";
 
 import "./AppSidebar.less";
 

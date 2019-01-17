@@ -1,9 +1,11 @@
 import {RouterStore as MRRouterStore} from "mobx-router5";
 
-class RouterStore extends MRRouterStore {
-    appStore: any;
+import IAppStore from "../types/stores";
 
-    constructor(appStore) {
+class RouterStore extends MRRouterStore {
+    public appStore: IAppStore;
+
+    constructor(appStore: IAppStore) {
         super();
         this.appStore = appStore;
     }

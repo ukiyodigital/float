@@ -1,6 +1,5 @@
-import dataLoaders from "../data-loaders";
 import api from "../api";
-
+import dataLoaders from "../data-loaders";
 
 const loadData = (promises) => {
     const preloadPromises = [];
@@ -16,8 +15,7 @@ const loadData = (promises) => {
 
 export default () => (toState, fromState, done) => {
     const dls = Object.values(dataLoaders);
-    for (let i = 0; i < dls.length; i += 1) {
-        const dl = dls[i];
+    for (const dl of dls) {
         if (Object.prototype.hasOwnProperty.call(dl, toState.name)) {
             const dlState = dl[toState.name];
 
@@ -27,10 +25,13 @@ export default () => (toState, fromState, done) => {
                         dlState.loader({toState, fromState, done, loadData});
                     })
                     .catch(() => {
-                        done({redirect: {name: "login", params: {returnurl: window.location.href}}});
+                        done({
+                            redirect: {
+                                name: "login", params: {returnurl: window.location.href},
+                            },
+                        });
                     });
-            }
-            else {
+            } else {
                 dlState.loader({toState, fromState, done, loadData});
             }
             break;

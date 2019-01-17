@@ -53,8 +53,14 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.ts$/,
+                enforce:"pre",
+                loader:'tslint-loader'
+            },
+            {
                 test: /\.(ts|tsx)$/,
                 include: path.resolve(__dirname, "src"),
+                exclude: path.resolve(__dirname, "node_modules"),
                 loader: "ts-loader"
             },
             {
@@ -118,8 +124,7 @@ module.exports = {
                         }
                     }
                 ]
-            },
-            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+            }
         ]
     }
 };

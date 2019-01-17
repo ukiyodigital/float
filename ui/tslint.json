@@ -1,3 +1,14 @@
 {
-  "extends": "tslint-config-airbnb"
+  "extends": ["tslint:recommended", "tslint-config-airbnb", "tslint-react"],
+  "rules": {
+    "quotemark": [true, "double"],
+    "ter-indent": [true, 4],
+    "import-name": false,
+    "jsx-self-close": true,
+    "jsx-wrap-multiline": true,
+    "jsx-no-multiline-js": false,
+    "jsx-curly-spacing": [true, "never"],
+    "object-curly-spacing": [true, "never"],
+    "variable-name": [true, "allow-pascal-case"]
+  }
 }

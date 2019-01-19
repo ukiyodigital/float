@@ -1,47 +1,56 @@
 import * as React from "react";
 
-import { inject } from "mobx-react";
+import {inject} from "mobx-react";
 
-import { Layout } from "antd";
+import {Layout, Menu} from "antd";
 
 import AppNav from "./AppNav/AppNav";
 import AppSidebar from "./AppSidebar/AppSidebar";
 
-import RouteNode from "../RouteNode/MainNode";
+import RouteNode from "../RouteNode/RouteNode";
+
+import IAppStore from "../../types/stores";
 
 import "./Layout.less";
 
-// type Props = {
-//     appStore: AppStore
-// };
+type appStoreProps = {
+    appStore?: IAppStore
+}
 
-const AppLayout = () => {
+const AppLayout = ({appStore}: appStoreProps) => {
+    console.log(appStore.routerStore.location);
     const { Content, Sider, Header, Footer } = Layout;
-    // const Navigation = () => {
-    //     if (appStore.routerStore.route.name === "login") {
-    //         // website branding
-    //         return (
-    //             <div>
-    //                 {/* <TopNav /> */}
-    //             </div>
-    //         );
-    //     }
-    //     // webapp branding
-    //     return (
-    //         // <AppNav />
-    //         <div />
-    //     );
-    // };
-
-    return (
-        <Layout className="float-layout">
-            <Sider>
-                <AppSidebar />
-            </Sider>
-            <Layout>
+    const isExternal: boolean = appStore.routerStore.location.pathname === "/login"
+    const Navigation = () => {
+        if (isExternal) {
+            // website branding
+            return (
+                <Menu mode="horizontal" theme="dark">
+                    <Menu.Item key="home">Home</Menu.Item>
+                    <Menu.Item key="about">About</Menu.Item>
+                    <Menu.Item key="login">Login</Menu.Item>
+                </Menu>
+            );
+        }
+        // webapp branding
+        return (
+            <React.Fragment>
                 <Header>
                     <AppNav />
                 </Header>
+            </React.Fragment>
+        );
+    };
+
+    return (
+        <Layout className="float-layout">
+            {!isExternal ? (
+                <Sider>
+                    <AppSidebar />
+                </Sider>
+            ) : null}
+            <Layout>
+                <Navigation />
                 <Content>
                     <RouteNode />
                 </Content>

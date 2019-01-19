@@ -11,7 +11,7 @@ type route = {
 
 const RouteNode = () => (
     <React.Fragment>
-        {routes.map((route: route) => <Route path={route.path} exact={route.exact} component={route.component} name={route.name} />)}
+        {routes.map((route: route) => <Route key={route.name} path={route.path} exact={route.exact} component={route.component} name={route.name} />)}
     </React.Fragment>
 );
 

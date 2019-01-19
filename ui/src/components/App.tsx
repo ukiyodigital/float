@@ -1,11 +1,14 @@
 import * as React from "react";
-import { render } from "react-dom";
-import { hot } from "react-hot-loader";
+import {render} from "react-dom";
+import {hot} from "react-hot-loader";
 
-import { Provider } from "mobx-react";
+import {Provider} from "mobx-react";
 import DevTools from "mobx-react-devtools";
 
-import createRouter from "../routing/create-router";
+import createBrowserHistory from "history/createBrowserHistory";
+import {syncHistoryWithStore} from "mobx-react-router";
+import {Router} from "react-router";
+
 import dataLoaderMiddleware from "../routing/data-loader-middleware";
 import appStore from "../stores";
 
@@ -14,8 +17,8 @@ import Layout from "./Layout/Layout";
 import "../assets/styles/main.less";
 
 // router
-const router = createRouter(appStore, process.env.APP_ENV === "development");
-router.useMiddleware(dataLoaderMiddleware);
+const browserHistory = createBrowserHistory();
+const history = syncHistoryWithStore(browserHistory, appStore.routerStore)
 
 // app container
 const appContainer = document.getElementById("app");
@@ -26,12 +29,14 @@ if (appContainer === null) {
 // app component
 const App = () => (
     <Provider appStore={appStore} routerStore={appStore.routerStore}>
-        <React.Fragment>
-            <Layout />
-            {process.env.APP_ENV === "development" ? (
-                <DevTools position={{ bottom: 0, left: 0 }} />
-            ) : null}
-        </React.Fragment>
+        <Router history={history}>
+            <React.Fragment>
+                <Layout />
+                {process.env.APP_ENV === "development" ? (
+                    <DevTools position={{ bottom: 0, left: 0 }} />
+                ) : null}
+            </React.Fragment>
+        </Router>
     </Provider>
 );
 
@@ -43,6 +48,5 @@ const renderApp = () => {
 };
 
 export {
-    renderApp,
-    router,
+    renderApp
 };

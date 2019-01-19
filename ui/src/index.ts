@@ -1,4 +1,4 @@
-import {renderApp, router} from "./components/App";
+import {renderApp} from "./components/App";
 
 // start router
-router.start(renderApp);
+renderApp();

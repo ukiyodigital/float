@@ -2,9 +2,6 @@ import * as React from "react";
 import {Route} from "react-router-dom";
 import routes from "../../routing/routes";
 
-
-const routeNodeName = ""; // root node
-
 type route = {
     path: string,
     exact?: boolean,

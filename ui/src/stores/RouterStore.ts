@@ -1,4 +1,4 @@
-import {RouterStore as MRRouterStore} from "mobx-router5";
+import {RouterStore as MRRouterStore} from "mobx-react-router";
 
 import IAppStore from "../types/stores";
 

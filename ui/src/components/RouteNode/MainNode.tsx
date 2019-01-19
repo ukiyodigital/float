@@ -1,16 +1,21 @@
 import * as React from "react";
-import { routeNode, RouteView } from "react-mobx-router5";
+import {Route} from "react-router-dom";
 import routes from "../../routing/routes";
 
 
 const routeNodeName = ""; // root node
 
-type Props = {
-    route: Object
-};
+type route = {
+    path: string,
+    exact?: boolean,
+    component: any,
+    name: string
+}
 
-const RouteNode = ({ route }: Props) => (
-    <RouteView route={route} routes={routes} routeNodeName={routeNodeName} />
+const RouteNode = () => (
+    <React.Fragment>
+        {routes.map((route: route) => <Route path={route.path} exact={route.exact} component={route.component} name={route.name} />)}
+    </React.Fragment>
 );
 
-export default routeNode(routeNodeName)(RouteNode);
+export default RouteNode;

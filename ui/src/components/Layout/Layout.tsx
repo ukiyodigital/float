@@ -7,7 +7,7 @@ import { Layout } from "antd";
 import AppNav from "./AppNav/AppNav";
 import AppSidebar from "./AppSidebar/AppSidebar";
 
-import MainNode from "../RouteNode/MainNode";
+import RouteNode from "../RouteNode/MainNode";
 
 import "./Layout.less";
 
@@ -43,7 +43,7 @@ const AppLayout = () => {
                     <AppNav />
                 </Header>
                 <Content>
-                    <MainNode />
+                    <RouteNode />
                 </Content>
                 <Footer className="float-footer" />
             </Layout>

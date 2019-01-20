@@ -12,8 +12,10 @@ const AppSidebar = () => (
             theme="dark"
         >
             <Menu.Item>
-                <Icon type="pie-chart" />
-                <Link to="/login"><span>Option 1</span></Link>
+                <Link to="/login">
+                    <Icon type="pie-chart" />
+                    Login
+                </Link>
             </Menu.Item>
         </Menu>
     </div>

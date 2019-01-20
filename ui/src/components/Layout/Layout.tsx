@@ -6,6 +6,7 @@ import {Layout, Menu} from "antd";
 
 import AppNav from "./AppNav/AppNav";
 import AppSidebar from "./AppSidebar/AppSidebar";
+import ExternalNav from "./ExternalNav/ExternalNav";
 
 import RouteNode from "../RouteNode/RouteNode";
 
@@ -24,11 +25,7 @@ const AppLayout = ({appStore}: IAppStoreProps) => {
         if (isExternal) {
             // website branding
             return (
-                <Menu mode="horizontal" theme="dark">
-                    <Menu.Item key="home">Home</Menu.Item>
-                    <Menu.Item key="about">About</Menu.Item>
-                    <Menu.Item key="login">Login</Menu.Item>
-                </Menu>
+                <ExternalNav />
             );
         }
         // webapp branding

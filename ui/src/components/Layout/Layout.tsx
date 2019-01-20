@@ -13,14 +13,13 @@ import IAppStore from "../../types/stores";
 
 import "./Layout.less";
 
-type appStoreProps = {
-    appStore?: IAppStore
+interface IAppStoreProps {
+    appStore?: IAppStore;
 }
 
-const AppLayout = ({appStore}: appStoreProps) => {
-    console.log(appStore.routerStore.location);
-    const { Content, Sider, Header, Footer } = Layout;
-    const isExternal: boolean = appStore.routerStore.location.pathname === "/login"
+const AppLayout = ({appStore}: IAppStoreProps) => {
+    const {Content, Sider, Header, Footer} = Layout;
+    const isExternal: boolean = appStore.routerStore.location.pathname === "/login";
     const Navigation = () => {
         if (isExternal) {
             // website branding

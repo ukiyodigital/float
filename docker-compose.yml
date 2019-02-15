@@ -35,7 +35,9 @@ services:
       - APP_ENV=development
       - DJANGO_SETTINGS_MODULE=settings.settings
       - DJANGO_DEBUG=True
-      - DJANGO_ALLOWED_HOSTS=localhost:8000
+      - DJANGO_ALLOWED_HOSTS=localhost
+    ports:
+      - "8000:8000"
 
   ui:
     tty: true
@@ -43,6 +45,8 @@ services:
     build:
       context: ./ui
       target: dev
+    ports:
+      - "3000:3000"
     volumes:
       - ./ui:/app
     command: ["npm", "run", "dev"]

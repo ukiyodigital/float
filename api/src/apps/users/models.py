@@ -9,8 +9,6 @@ class User(AbstractUser):
     class Meta:
         app_label = "users"
 
-    name = models.CharField(max_length=50, blank=False)
     profile_img = models.CharField(max_length=6, blank=False)
-    # sites
     # custom_fields
     data = JSONField(null=True, encoder=DjangoJSONEncoder)

@@ -27,6 +27,7 @@ VENDOR_APPS = [
 
 FLOAT_APPS = [
     'apps.float',
+    'apps.column_headers',
     'apps.users',
 ]
 

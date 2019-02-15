@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
-from django.db.models import QuerySet, Q
-from django.utils.functional import cached_property
+from django.contrib.postgres.fields import JSONField
+from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.models import AbstractUser
 
 
@@ -13,4 +13,4 @@ class User(AbstractUser):
     profile_img = models.CharField(max_length=6, blank=False)
     # sites
     # custom_fields
-    # data
+    data = JSONField(null=True, encoder=DjangoJSONEncoder)

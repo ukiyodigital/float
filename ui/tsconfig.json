@@ -9,7 +9,8 @@
       "jsx": "react",
       "plugins": [
         {
-          "name": "typescript-tslint-plugin"
+          "name": "typescript-tslint-plugin",
+          "configFile": "./tslint.json"
         }
       ]
   },

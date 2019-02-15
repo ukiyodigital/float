@@ -1,47 +1,52 @@
 import * as React from "react";
 
-import { inject } from "mobx-react";
+import {inject} from "mobx-react";
 
-import { Layout } from "antd";
+import {Layout, Menu} from "antd";
 
 import AppNav from "./AppNav/AppNav";
 import AppSidebar from "./AppSidebar/AppSidebar";
+import ExternalNav from "./ExternalNav/ExternalNav";
 
-import RouteNode from "../RouteNode/MainNode";
+import RouteNode from "../RouteNode/RouteNode";
+
+import IAppStore from "../../types/stores";
 
 import "./Layout.less";
 
-// type Props = {
-//     appStore: AppStore
-// };
+interface IAppStoreProps {
+    appStore?: IAppStore;
+}
 
-const AppLayout = () => {
-    const { Content, Sider, Header, Footer } = Layout;
-    // const Navigation = () => {
-    //     if (appStore.routerStore.route.name === "login") {
-    //         // website branding
-    //         return (
-    //             <div>
-    //                 {/* <TopNav /> */}
-    //             </div>
-    //         );
-    //     }
-    //     // webapp branding
-    //     return (
-    //         // <AppNav />
-    //         <div />
-    //     );
-    // };
-
-    return (
-        <Layout className="float-layout">
-            <Sider>
-                <AppSidebar />
-            </Sider>
-            <Layout>
+const AppLayout = ({appStore}: IAppStoreProps) => {
+    const {Content, Sider, Header, Footer} = Layout;
+    const isExternal: boolean = appStore.routerStore.location.pathname === "/login";
+    const Navigation = () => {
+        if (isExternal) {
+            // website branding
+            return (
+                <ExternalNav />
+            );
+        }
+        // webapp branding
+        return (
+            <React.Fragment>
                 <Header>
                     <AppNav />
                 </Header>
+            </React.Fragment>
+        );
+    };
+
+    return (
+        <Layout className="float-layout">
+            {!isExternal ? (
+                <Sider>
+                    <AppSidebar />
+                </Sider>
+            ) : null}
+            <Layout>
+                <Navigation />
                 <Content>
                     <RouteNode />
                 </Content>

@@ -1,3 +1,11 @@
+# python
+*.py[cod]
+__pycache__/
+.env
+
+# unit test coverage reports
+.coverage
+
 # node packages
 node_modules/
 
@@ -16,3 +24,4 @@ db/data
 
 # OS
 .DS_Store
+

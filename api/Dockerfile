@@ -1,9 +1,24 @@
-FROM node:10-alpine
+FROM python:3.7 AS dev
 
-# create app directory and set the workdir
-RUN mkdir -p /app
+RUN apt-get update && apt-get install -y \
+    postgresql
+
+# set environment variables
+ENV PYTHONUNBUFFERED 1
+
+# create app dir and set as workdir
+RUN mkdir -p /app /pip-requirements
 WORKDIR /app
 
-# install npm packages
-COPY ./src/ /app/
-RUN npm install
+# install requirements
+RUN pip install --upgrade pip
+COPY ./pip-requirements /pip-requirements/
+ARG PIP_REQ
+RUN pip install -r /pip-requirements/dev.txt
+
+
+FROM dev
+
+COPY ./src ./entry.sh /app/
+RUN chmod 744 ./entry.sh
+ENTRYPOINT ["./entry.sh"]

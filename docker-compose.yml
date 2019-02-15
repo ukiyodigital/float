@@ -2,40 +2,42 @@ version: '3.7'
 
 services:
   db:
-    image: mongo:3.2
+    image: postgres:10-alpine
     volumes:
-      - ./db/data:/data/db
+      - ./db/data:/var/lib/postgresql/data
+      - ./db/init.db:/docker-entrypoint-initdb.d
     environment:
-      - proxy_bind_port=27017
-      - proxy_port=13099
-      - proxy_mode=tcp
-      - proxy_host=db.float.lvh.me
-    labels:
-      backend: "True"
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testuser_pwd
+      - POSTGRES_MULTIPLE_DATABASES=float
 
   api:
     tty: true
     stdin_open: true
     build:
       context: ./api
+      target: dev
     volumes:
       - ./api/src:/app
-      - ./api/wait-for-mongo.sh:/wait-for-mongo.sh
-    command: ["npm", "run", "start-watch"]
+      - ./db/wait-for-postgres.sh:/wait-for-postgres.sh
+    entrypoint: /wait-for-postgres.sh
+    command: ["./manage.py", "runserver_plus", "0.0.0.0:8000"]
     depends_on:
       - db
     restart: on-failure
     environment:
+      - DJANGO_SECRET_KEY=(｡◕‿‿◕｡)
+      - DJANGO_DB_NAME=float
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_USER=testuser
+      - DJANGO_DB_PASSWORD=testuser_pwd
+
       - APP_ENV=development
-      - SECRET_KEY=~-_-~
-      - MONGODB_URI=mongodb://db:27017/float
-      - proxy_bind_port=8000
-      - proxy_port=443
-      - proxy_mode=http
-      - proxy_host=api.float.lvh.me
-      - WAIT_HOSTS=db:27017
-    labels:
-      backend: "True"
+      - DJANGO_SETTINGS_MODULE=settings.settings
+      - DJANGO_DEBUG=True
+      - DJANGO_ALLOWED_HOSTS=localhost
+    ports:
+      - "8000:8000"
 
   ui:
     tty: true
@@ -43,13 +45,8 @@ services:
     build:
       context: ./ui
       target: dev
+    ports:
+      - "3000:3000"
     volumes:
       - ./ui:/app
     command: ["npm", "run", "dev"]
-    environment:
-      - proxy_bind_port=3000
-      - proxy_port=443
-      - proxy_mode=http
-      - proxy_host=ui.float.lvh.me
-    labels:
-      backend: "True"

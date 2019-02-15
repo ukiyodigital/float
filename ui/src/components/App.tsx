@@ -18,7 +18,7 @@ import "../assets/styles/main.less";
 
 // router
 const browserHistory = createBrowserHistory();
-const history = syncHistoryWithStore(browserHistory, appStore.routerStore)
+const history = syncHistoryWithStore(browserHistory, appStore.routerStore);
 
 // app container
 const appContainer = document.getElementById("app");
@@ -33,7 +33,7 @@ const App = () => (
             <React.Fragment>
                 <Layout />
                 {process.env.APP_ENV === "development" ? (
-                    <DevTools position={{ bottom: 0, left: 0 }} />
+                    <DevTools position={{bottom: 0, left: 0}} />
                 ) : null}
             </React.Fragment>
         </Router>
@@ -48,5 +48,5 @@ const renderApp = () => {
 };
 
 export {
-    renderApp
+    renderApp,
 };

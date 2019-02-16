@@ -53,7 +53,7 @@ class BaseAPI {
 
     private requestInit(requestType: string = "GET", body?: any, cors: boolean = true): object {
         const init: any = {
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             method: requestType,
         };
 

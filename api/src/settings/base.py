@@ -23,9 +23,11 @@ VENDOR_APPS = [
     'rest_framework',
     'django_extensions',
     'corsheaders',
+    'rest_framework.authtoken'
 ]
 
 FLOAT_APPS = [
+    'apps.float',
     'apps.column_headers',
     'apps.users',
 ]
@@ -45,8 +47,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    # 'apps.float.middleware.CsrfHeaderMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -93,23 +93,6 @@ STATIC_URL = '/api/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 
-# session time out rules
-SESSION_COOKIE_AGE = 7200  # 2 Hours
-SESSION_SAVE_EVERY_REQUEST = True  # updates the cookie age on every request
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # must be set to false for the cookie age to take effect
-
-# secure our app and sessions
-SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SECURE = True
-
-# SECURE_BROWSER_XSS_FILTER = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = False
-# SECURE_HSTS_SECONDS = 604800
-# SECURE_SSL_REDIRECT = True
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # cache

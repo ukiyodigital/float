@@ -20,6 +20,14 @@ class UserSignup(CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = CreateUserSerializer
 
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key})
+
+
 
 class UserLogin(CreateAPIView):
     """

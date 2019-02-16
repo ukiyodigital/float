@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.urls import include, path
-from .views import UserAuth, UserSignUp
+from .views import UserSignup, UserLogin
 
 urlpatterns = [
-    path('auth/', UserAuth.as_view(), name="auth"),
-    path('signup/', UserSignUp.as_view(), name="signup")
+    path('login/', UserLogin.as_view(), name='login'),
+    path('signup/', UserSignup.as_view(), name="signup")
 ]

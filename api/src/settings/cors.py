@@ -7,7 +7,7 @@ CORS_ALLOW_HEADERS = (
     'content-type',
     'accept',
     'origin',
-    # 'authorization',
+    'authorization',
     'x-csrftoken',
     'enctype'
 )

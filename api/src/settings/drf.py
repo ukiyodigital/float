@@ -3,8 +3,8 @@ REST_FRAMEWORK = {
         'apps.float.renderers.CustomJSONRenderer',
         'rest_framework.renderers.JSONRenderer',
     ),
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
     'EXCEPTION_HANDLER': 'apps.float.exception_handler.exception_handler'
 }

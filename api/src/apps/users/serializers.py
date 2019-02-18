@@ -8,6 +8,8 @@ class CreateUserSerializer(ModelSerializer):
         model = User
 
         fields = (
+            "first_name",
+            "last_name",
             "username",
             "email",
             "password"
@@ -20,9 +22,25 @@ class CreateUserSerializer(ModelSerializer):
         user.save()
         return user
 
+
+class UserListSerializer(ModelSerializer):
+    name = SerializerMethodField()
+    class Meta:
+        model = User
+
+        fields = (
+            "email",
+            "profile_img",
+            "name",
+        )
+
+    def get_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+
+
 class UserSerializer(ModelSerializer):
     """
-    Same as UserSerializer without badge and org
+    Likely to provide data for currently logged in user
     """
     name = SerializerMethodField()
 

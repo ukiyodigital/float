@@ -1,6 +1,6 @@
 from django.db import models
 from apps.users.models import User
-# from secrets import token_urlsafe
+
 
 class SiteAPIKey(models.Model):
     key = models.CharField(max_length=32, unique=True)
@@ -14,3 +14,6 @@ class Site(models.Model):
     owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="sites")
     users = models.ManyToManyField(User)
     api_key = models.ForeignKey(SiteAPIKey, on_delete=models.PROTECT, related_name="sites")
+
+    class Meta:
+        unique_together = ('slug', 'owner',)

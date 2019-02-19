@@ -10,8 +10,9 @@ class ListCreateSites(ListCreateAPIView):
     Endpoint for creating new sites, and also listing out current ones accessible by the user
     """
     permission_classes = (IsAuthenticated,)
-    # TODO list out sites you only have access to
-    queryset = Site.objects.all()
+
+    def get_queryset(self):
+        return Site.objects.filter(owner=self.request.user)
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -24,5 +25,12 @@ class ListCreateSites(ListCreateAPIView):
         return Response(SiteDetailSerializer(site).data)
 
 
+class RetrieveUpdateDestroySite(RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "slug"
+    serializer_class = SiteDetailSerializer
 
-# TODO Add Update / Retrieve singular site
+    def get_queryset(self):
+        return Site.objects.filter(owner=self.request.user)
+
+    # TODO ensure update and destroy work

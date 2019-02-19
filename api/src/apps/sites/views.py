@@ -1,6 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from apps.sites.serializers import SiteCreateSerializer, SiteListSerializer, SiteDetailSerializer
+from apps.sites.serializers import SiteWriteSerializer, SiteListSerializer, SiteDetailSerializer
 from apps.sites.models import Site
 from rest_framework.response import Response
 
@@ -16,7 +16,7 @@ class ListCreateSites(ListCreateAPIView):
 
     def get_serializer_class(self):
         if self.request.method == "POST":
-            return SiteCreateSerializer
+            return SiteWriteSerializer
         return SiteListSerializer
 
     def post(self, request, *args, **kwargs):
@@ -33,4 +33,20 @@ class RetrieveUpdateDestroySite(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Site.objects.filter(owner=self.request.user)
 
-    # TODO ensure update and destroy work
+    def get_serializer_class(self):
+        if self.request.method == "PUT":
+            return SiteWriteSerializer
+        return SiteDetailSerializer
+
+    def put(self, request, *args, **kwargs):
+        super().put(request, *args, **kwargs)
+        site = Site.objects.filter(slug=request.data["slug"]).first()
+        return Response(SiteDetailSerializer(site).data)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Deletes site by slug and returns deleted site
+        """
+        site = Site.objects.filter(slug=request.data["slug"]).first()
+        super().delete(request, *args, **kwargs)
+        return Response(SiteDetailSerializer(site).data)

@@ -9,7 +9,7 @@ from apps.sites.models import SiteAPIKey, Site
 from apps.users.serializers import UserListSerializer
 
 
-class SiteCreateSerializer(serializers.ModelSerializer):
+class SiteWriteSerializer(serializers.ModelSerializer):
     """
     On successful validation of site, create an API Key for that site as well
     """
@@ -38,7 +38,7 @@ class SiteCreateSerializer(serializers.ModelSerializer):
             site.save()
         except IntegrityError:
             raise serializers.ValidationError("This slug is already being used with this user.")
-        return Site
+        return site
 
 
 class SiteAPIKeySerializer(serializers.ModelSerializer):

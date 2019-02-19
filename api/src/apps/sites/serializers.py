@@ -1,4 +1,7 @@
+from django.db import IntegrityError
+
 from rest_framework import serializers
+
 from secrets import token_urlsafe
 
 from apps.users.models import User
@@ -31,7 +34,10 @@ class SiteCreateSerializer(serializers.ModelSerializer):
                 api_key.save()
                 site.api_key = api_key
                 created_unique_key = True
-        site.save()
+        try:
+            site.save()
+        except IntegrityError:
+            raise serializers.ValidationError("This slug is already being used with this user.")
         return Site
 
 
@@ -51,8 +57,10 @@ class SiteDetailSerializer(serializers.ModelSerializer):
     """
     TODO add pages and flocks to this serializer
     """
-    api_key = SiteAPIKeySerializer()
+    api_key = serializers.SerializerMethodField()
     owner = UserListSerializer()
+    users = UserListSerializer(many=True)
+
 
     class Meta:
         model = Site
@@ -65,6 +73,9 @@ class SiteDetailSerializer(serializers.ModelSerializer):
             "owner",
             "users",
         )
+
+    def get_api_key(self, obj):
+        return obj.api_key.key if obj.api_key else None
 
 
 class SiteListSerializer(serializers.ModelSerializer):

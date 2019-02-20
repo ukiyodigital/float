@@ -30,6 +30,7 @@ FLOAT_APPS = [
     'apps.float',
     'apps.column_headers',
     'apps.users',
+    'apps.sites',
 ]
 
 INSTALLED_APPS = VENDOR_APPS + FLOAT_APPS

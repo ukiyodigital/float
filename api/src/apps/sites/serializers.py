@@ -23,21 +23,13 @@ class SiteWriteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # TODO raise validation error if owner / slug already exists
-        site = Site(**validated_data)
+        site = Site.create(**validated_data)
         site.owner = self.context.get("request").user
 
-        created_unique_key = False
-        while not created_unique_key:
-            key = token_urlsafe(20)
-            if not SiteAPIKey.objects.filter(key=key).exists() and len(key) <= 32:
-                api_key = SiteAPIKey(key=key)
-                api_key.save()
-                site.api_key = api_key
-                created_unique_key = True
         try:
             site.save()
         except IntegrityError:
-            raise serializers.ValidationError("This slug is already being used with this user.")
+            raise serializers.ValidationError("This slug is already being used for this user.")
         return site
 
 

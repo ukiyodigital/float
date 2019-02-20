@@ -22,6 +22,9 @@ class SiteTestCase(APITestCase):
         self.user = User.objects.create_user("testuser", "password")
         token, _ = Token.objects.get_or_create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        self.site = Site.create(name="I Love Cats", slug="i-love-cats")
+        self.site.owner = self.user
+        self.site.save()
 
     """
     TODO
@@ -42,5 +45,21 @@ class SiteTestCase(APITestCase):
         site = Site.objects.filter(slug="test-site", owner=self.user).first()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, SiteDetailSerializer(site).data)
+
+    def test_can_update_site(self):
+        data = {
+            "name": "New Test Site",
+            "slug": "new-test-site"
+        }
+        kwargs = {
+            "slug": "i-love-cats"
+        }
+
+        self.site.name = data["name"]
+        self.site.slug = data["slug"]
+
+        response = self.client.put(reverse("site_detail", kwargs=kwargs), json.dumps(data), content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, SiteDetailSerializer(self.site).data)
 
 

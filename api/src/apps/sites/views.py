@@ -47,6 +47,6 @@ class RetrieveUpdateDestroySite(RetrieveUpdateDestroyAPIView):
         """
         Deletes site by slug and returns deleted site
         """
-        site = Site.objects.filter(slug=request.data["slug"]).first()
+        site = Site.objects.filter(slug=self.kwargs["slug"]).first()
         super().delete(request, *args, **kwargs)
         return Response(SiteDetailSerializer(site).data)

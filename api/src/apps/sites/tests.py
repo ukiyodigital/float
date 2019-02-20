@@ -11,7 +11,7 @@ from rest_framework.authtoken.models import Token
 
 from apps.users.models import User
 from apps.sites.models import Site
-from apps.sites.serializers import SiteDetailSerializer
+from apps.sites.serializers import SiteDetailSerializer, SiteListSerializer
 
 
 class SiteTestCase(APITestCase):
@@ -62,4 +62,19 @@ class SiteTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, SiteDetailSerializer(self.site).data)
 
+    def test_can_list_sites(self):
+        sites = Site.objects.filter(owner=self.user)
+        response = self.client.get(reverse("sites_list"))
 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, SiteListSerializer(sites, many=True).data)
+
+    def test_can_delete_site(self):
+        kwargs = {
+            "slug": "i-love-cats"
+        }
+
+        response = self.client.delete(reverse("site_detail", kwargs=kwargs), content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, SiteDetailSerializer(self.site).data)
+        self.assertEqual(Site.objects.filter(slug="i-love-cats").first(), None)

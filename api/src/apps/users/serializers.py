@@ -8,15 +8,15 @@ class CreateUserSerializer(ModelSerializer):
         model = User
 
         fields = (
-            "first_name",
-            "last_name",
-            "username",
-            "email",
-            "password"
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'password'
         )
 
     def create(self, validated_data):
-        password = validated_data.pop("password")
+        password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
         user.save()
@@ -29,13 +29,13 @@ class UserListSerializer(ModelSerializer):
         model = User
 
         fields = (
-            "email",
-            "profile_img",
-            "name",
+            'email',
+            'profile_img',
+            'name',
         )
 
     def get_name(self, obj):
-        return f"{obj.first_name} {obj.last_name}"
+        return f'{obj.first_name} {obj.last_name}'
 
 
 class UserSerializer(ModelSerializer):
@@ -48,13 +48,13 @@ class UserSerializer(ModelSerializer):
         model = User
 
         fields = (
-            "username",
-            "name",
-            "email",
-            "profile_img",
-            "is_superuser",
+            'username',
+            'name',
+            'email',
+            'profile_img',
+            'is_superuser',
         )
 
     def get_name(self, obj):
-        return f"{obj.first_name} {obj.last_name}"
+        return f'{obj.first_name} {obj.last_name}'
 

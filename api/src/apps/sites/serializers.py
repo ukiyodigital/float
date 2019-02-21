@@ -17,14 +17,14 @@ class SiteWriteSerializer(serializers.ModelSerializer):
         model = Site
 
         fields = (
-            "name",
-            "slug",
+            'name',
+            'slug',
         )
 
     def create(self, validated_data):
         # TODO raise validation error if owner / slug already exists
         site = Site.create(**validated_data)
-        site.owner = self.context.get("request").user
+        site.owner = self.context.get('request').user
 
         try:
             site.save()
@@ -41,7 +41,7 @@ class SiteAPIKeySerializer(serializers.ModelSerializer):
         model = SiteAPIKey
 
         fields = (
-            "key",
+            'key',
         )
 
 
@@ -58,12 +58,12 @@ class SiteDetailSerializer(serializers.ModelSerializer):
         model = Site
 
         fields = (
-            "id",
-            "name",
-            "slug",
-            "api_key",
-            "owner",
-            "users",
+            'id',
+            'name',
+            'slug',
+            'api_key',
+            'owner',
+            'users',
         )
 
     def get_api_key(self, obj):
@@ -78,8 +78,8 @@ class SiteListSerializer(serializers.ModelSerializer):
         model = Site
 
         fields = (
-            "id",
-            "name",
-            "slug",
+            'id',
+            'name',
+            'slug',
         )
 

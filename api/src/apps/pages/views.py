@@ -20,12 +20,7 @@ class CreatePage(CreateAPIView):
             context.update({'site': site})
             return context
         except Site.DoesNotExist:
-            print("noneee")
             return context
-
-    def post(self, request, *args, **kwargs):
-        super().post(request, *args, **kwargs)
-        return Response("done")
 
 # update page
 

@@ -40,7 +40,7 @@ class SiteTestCase(APITestCase):
             "slug": "test-site"
         }
 
-        response = self.client.post(reverse("sites_list"), json.dumps(data), content_type="application/json")
+        response = self.client.post(reverse("sites:sites_list"), json.dumps(data), content_type="application/json")
 
         site = Site.objects.filter(slug="test-site", owner=self.user).first()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -58,13 +58,13 @@ class SiteTestCase(APITestCase):
         self.site.name = data["name"]
         self.site.slug = data["slug"]
 
-        response = self.client.put(reverse("site_detail", kwargs=kwargs), json.dumps(data), content_type="application/json")
+        response = self.client.put(reverse("sites:site_detail", kwargs=kwargs), json.dumps(data), content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, SiteDetailSerializer(self.site).data)
 
     def test_can_list_sites(self):
         sites = Site.objects.filter(owner=self.user)
-        response = self.client.get(reverse("sites_list"))
+        response = self.client.get(reverse("sites:sites_list"))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, SiteListSerializer(sites, many=True).data)
@@ -74,7 +74,7 @@ class SiteTestCase(APITestCase):
             "slug": "i-love-cats"
         }
 
-        response = self.client.delete(reverse("site_detail", kwargs=kwargs), content_type="application/json")
+        response = self.client.delete(reverse("sites:site_detail", kwargs=kwargs), content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, SiteDetailSerializer(self.site).data)
         self.assertEqual(Site.objects.filter(slug="i-love-cats").first(), None)

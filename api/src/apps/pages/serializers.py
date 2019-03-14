@@ -1,45 +1,34 @@
 from rest_framework import serializers
 
+from apps.pages.models import Page, PageColumnHeader
 from apps.column_headers.serializers import ColumnHeaderSerializer
 from apps.users.serializers import UserListSerializer
-
-
-class PageDataWriteSerializer(serializers.ModelSerializer):
-    """
-    Given a list of data, store it in the data field
-    """
-    users = UserListSerializer(many=True)
-    columns = ColumnHeaderSerializer(many=True)
-
-    class Meta:
-        model = Site
-
-        fields = (
-            'name',
-            'slug',
-            'data',
-            'users',
-            'columns'
-        )
-
-    # TODO create a create method for storing the data values
 
 
 class PageSerializer(serializers.ModelSerializer):
     """
     Serializes the given page
     """
-    users = UserListSerializer(many=True)
+    columns = ColumnHeaderSerializer(many=True)
 
     class Meta:
-        model = Site
+        model = Page
 
         fields = (
             'name',
             'slug',
-            'data',
-            'users',
-            'columns'
+            'columns',
         )
 
+    def create(self, validated_data):
+        columns = validated_data.pop("columns", [])
+        validated_data["site"] = self.context["site"]
+        page = Page(**validated_data)
+        page.save()
 
+        for column in columns:
+            column["page"] = page
+            c = PageColumnHeader(**column)
+            c.save()
+
+        return page

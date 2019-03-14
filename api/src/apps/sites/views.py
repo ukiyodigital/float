@@ -28,7 +28,6 @@ class ListCreateSites(ListCreateAPIView):
 class RetrieveUpdateDestroySite(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     lookup_field = "slug"
-    serializer_class = SiteDetailSerializer
 
     def get_queryset(self):
         return Site.objects.filter(owner=self.request.user)

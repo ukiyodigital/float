@@ -10,9 +10,9 @@ class ColumnHeaderSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnHeader
 
-    fields = (
-        'name',
-        'type',
-        'order',
-        'slug'
-    )
+        fields = (
+            'name',
+            'type',
+            'order',
+            'slug'
+        )

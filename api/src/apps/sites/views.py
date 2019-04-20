@@ -26,6 +26,9 @@ class ListCreateSites(ListCreateAPIView):
 
 
 class RetrieveUpdateDestroySite(RetrieveUpdateDestroyAPIView):
+    """
+    Endpoint for retrieving, updating, and deleting sites owned by current user by slug
+    """
     permission_classes = (IsAuthenticated,)
     lookup_field = "slug"
 
@@ -37,15 +40,7 @@ class RetrieveUpdateDestroySite(RetrieveUpdateDestroyAPIView):
             return SiteWriteSerializer
         return SiteDetailSerializer
 
-    def put(self, request, *args, **kwargs):
-        super().put(request, *args, **kwargs)
-        site = Site.objects.filter(slug=request.data["slug"]).first()
-        return Response(SiteDetailSerializer(site).data)
-
     def delete(self, request, *args, **kwargs):
-        """
-        Deletes site by slug and returns deleted site
-        """
         site = Site.objects.filter(slug=self.kwargs["slug"]).first()
         super().delete(request, *args, **kwargs)
         return Response(SiteDetailSerializer(site).data)

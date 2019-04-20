@@ -52,7 +52,10 @@ class SiteTestCase(APITestCase):
             "slug": "i-love-cats"
         }
 
-        response = self.client.post(reverse("sites:pages:create_page", kwargs=kwargs), json.dumps(data), content_type="application/json")
+        response = self.client.post(reverse("sites:pages:list_create_page", kwargs=kwargs), json.dumps(data), content_type="application/json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data, PageSerializer(self.site.pages.filter(slug="test-page").first()).data)
+
+    def test_can_list_pages(self):
+        pass

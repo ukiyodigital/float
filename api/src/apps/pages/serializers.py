@@ -9,7 +9,27 @@ class PageSerializer(serializers.ModelSerializer):
     """
     Serializes the given page
     """
-    columns = ColumnHeaderSerializer(many=True)
+
+    class Meta:
+        model = Page
+
+        fields = (
+            'name',
+            'slug',
+        )
+
+    def create(self, validated_data):
+        validated_data["site"] = self.context["site"]
+        page = Page(**validated_data)
+        page.save()
+
+        return page
+
+
+class PageDetailSerializer(serializers.ModelSerializer):
+    """
+    Returns the columns and general data of a page
+    """
 
     class Meta:
         model = Page
@@ -19,16 +39,3 @@ class PageSerializer(serializers.ModelSerializer):
             'slug',
             'columns',
         )
-
-    def create(self, validated_data):
-        columns = validated_data.pop("columns", [])
-        validated_data["site"] = self.context["site"]
-        page = Page(**validated_data)
-        page.save()
-
-        for column in columns:
-            column["page"] = page
-            c = PageColumnHeader(**column)
-            c.save()
-
-        return page

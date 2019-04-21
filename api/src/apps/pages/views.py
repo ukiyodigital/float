@@ -1,6 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView, DestroyAPIView
-from apps.pages.serializers import PageSerializer, PageDetailSerializer
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView, DestroyAPIView, CreateAPIView
+from apps.pages.serializers import PageSerializer, PageDetailSerializer, PageColumnSerializer
 from apps.pages.models import Page
 from apps.sites.models import Site
 from rest_framework.response import Response
@@ -31,6 +31,7 @@ class RetrieveUpdateDestroyPage(RetrieveUpdateDestroyAPIView):
     """
     permission_classes = (IsAuthenticated,)
     lookup_field = "slug"
+    lookup_url_kwarg = "page_slug"
 
     def get_queryset(self):
         return Page.objects.filter(site__owner=self.request.user)
@@ -44,26 +45,40 @@ class RetrieveUpdateDestroyPage(RetrieveUpdateDestroyAPIView):
         """
         Deletes site by slug and returns deleted site
         """
-        page = Page.objects.filter(site__owner=self.request.user, slug=self.kwargs["slug"]).first()
+        page = Page.objects.filter(site__owner=self.request.user, site__slug=self.kwargs["slug"], slug=self.kwargs["page_slug"]).first()
         super().delete(request, *args, **kwargs)
         return Response(PageSerializer(page).data)
 
+
+# List, Create Page Column
+class CreatePageColumn(CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PageColumnSerializer
+    lookup_field = "slug"
+    lookup_url_kwarg = "page_slug"
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        try:
+            # get page
+            print(self.request.user, self.kwargs["slug"], self.kwargs["page_slug"])
+            page = Page.objects.filter(site__owner=self.request.user, site__slug=self.kwargs["slug"], slug=self.kwargs["page_slug"]).first()
+            print(page)
+            context.update({'page': page})
+            return context
+        except Site.DoesNotExist:
+            return context
+
+
 # Retrieve, Add, Delete Column on Specific Page
-class RetrieveUpdateDeletePage(RetrieveUpdateDestroyAPIView):
+class RetrieveUpdateDeleteColumn(RetrieveUpdateDestroyAPIView):
     """
     Endpoint for retrieving / deleting specified pages by slug, and update basic information about page
     """
-    pass
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PageColumnSerializer
+    lookup_field = "slug"
+    lookup_url_kwarg = "page_slug"
 
-class UpdatePageColumn(UpdateAPIView):
-    """
-    Either creates a new column or updates an existing column
-    """
-    pass
-
-class DeletePageColumn(DestroyAPIView):
-    """
-    Deletes a column in specified page if it exists
-    """
-    pass
-
+    def get_queryset(self):
+        return Page.objects.filter(site__owner=self.request.user, site__slug=self.kwargs["slug"], slug=self.kwargs["page_slug"])

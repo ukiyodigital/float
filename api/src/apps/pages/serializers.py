@@ -31,6 +31,8 @@ class PageDetailSerializer(serializers.ModelSerializer):
     Returns the columns and general data of a page
     """
 
+    columns = ColumnHeaderSerializer(many=True)
+
     class Meta:
         model = Page
 
@@ -39,3 +41,13 @@ class PageDetailSerializer(serializers.ModelSerializer):
             'slug',
             'columns',
         )
+
+
+class PageColumnSerializer(ColumnHeaderSerializer):
+
+    def create(self, validated_data):
+        validated_data["page"] = self.context["page"]
+        column = PageColumnHeader(**validated_data)
+        column.save()
+
+        return column

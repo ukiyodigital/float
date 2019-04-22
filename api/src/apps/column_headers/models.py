@@ -22,5 +22,8 @@ class ColumnHeaderType(Choice):
 class ColumnHeader(models.Model):
     name = models.CharField(max_length=15, blank=False)
     type = models.CharField(max_length=50, default=ColumnHeaderType.TEXT, choices=ColumnHeaderType.CHOICES)
-    order = models.PositiveSmallIntegerField()
+    order = models.PositiveSmallIntegerField(default=0)
     slug = models.SlugField(max_length=15)
+
+    class Meta:
+        abstract = True

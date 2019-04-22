@@ -23,3 +23,6 @@ class Page(models.Model):
 
 class PageColumnHeader(ColumnHeader):
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='columns')
+
+    class Meta:
+        unique_together = ('page', 'slug',)

@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView, DestroyAPIView, CreateAPIView
 from apps.pages.serializers import PageSerializer, PageDetailSerializer, PageColumnSerializer
-from apps.pages.models import Page
+from apps.pages.models import Page, PageColumnHeader
 from apps.sites.models import Site
 from rest_framework.response import Response
 
@@ -61,16 +61,14 @@ class CreatePageColumn(CreateAPIView):
         context = super().get_serializer_context()
         try:
             # get page
-            print(self.request.user, self.kwargs["slug"], self.kwargs["page_slug"])
             page = Page.objects.filter(site__owner=self.request.user, site__slug=self.kwargs["slug"], slug=self.kwargs["page_slug"]).first()
-            print(page)
             context.update({'page': page})
             return context
         except Site.DoesNotExist:
             return context
 
 
-# Retrieve, Add, Delete Column on Specific Page
+# Retrieve, Update, Delete Column on Specific Page
 class RetrieveUpdateDeleteColumn(RetrieveUpdateDestroyAPIView):
     """
     Endpoint for retrieving / deleting specified pages by slug, and update basic information about page
@@ -78,7 +76,15 @@ class RetrieveUpdateDeleteColumn(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PageColumnSerializer
     lookup_field = "slug"
-    lookup_url_kwarg = "page_slug"
+    lookup_url_kwarg = "column_slug"
 
     def get_queryset(self):
-        return Page.objects.filter(site__owner=self.request.user, site__slug=self.kwargs["slug"], slug=self.kwargs["page_slug"])
+        return PageColumnHeader.objects.filter(page__site__owner=self.request.user, page__site__slug=self.kwargs["slug"], page__slug=self.kwargs["page_slug"], slug=self.kwargs["column_slug"])
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Deletes site by slug and returns deleted site
+        """
+        page_column_header = PageColumnHeader.objects.filter(page__site__owner=self.request.user, page__site__slug=self.kwargs["slug"], page__slug=self.kwargs["page_slug"], slug=self.kwargs["column_slug"]).first()
+        super().delete(request, *args, **kwargs)
+        return Response(PageColumnSerializer(page_column_header).data)

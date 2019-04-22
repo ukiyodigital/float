@@ -26,12 +26,34 @@ class PageSerializer(serializers.ModelSerializer):
         return page
 
 
+class PageColumnSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PageColumnHeader
+
+        fields = (
+            'name',
+            'type',
+            'order',
+            'slug',
+            'data',
+        )
+
+
+    def create(self, validated_data):
+        validated_data["page"] = self.context["page"]
+        column = PageColumnHeader(**validated_data)
+        column.save()
+
+        return column
+
+
 class PageDetailSerializer(serializers.ModelSerializer):
     """
     Returns the columns and general data of a page
     """
 
-    columns = ColumnHeaderSerializer(many=True)
+    columns = PageColumnSerializer(many=True)
 
     class Meta:
         model = Page
@@ -41,13 +63,3 @@ class PageDetailSerializer(serializers.ModelSerializer):
             'slug',
             'columns',
         )
-
-
-class PageColumnSerializer(ColumnHeaderSerializer):
-
-    def create(self, validated_data):
-        validated_data["page"] = self.context["page"]
-        column = PageColumnHeader(**validated_data)
-        column.save()
-
-        return column

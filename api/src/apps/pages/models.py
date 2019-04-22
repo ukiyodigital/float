@@ -12,8 +12,6 @@ class Page(models.Model):
     name = models.CharField(max_length=15, blank=False)
     slug = models.SlugField(max_length=15)
 
-    data = JSONField(null=True, encoder=DjangoJSONEncoder)
-
     # Foreign Keys
     site = models.ForeignKey(Site, on_delete=models.PROTECT, related_name='pages')
     users = models.ManyToManyField(User)
@@ -23,6 +21,7 @@ class Page(models.Model):
 
 class PageColumnHeader(ColumnHeader):
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='columns')
+    data = JSONField(null=True, blank=True, encoder=DjangoJSONEncoder)
 
     class Meta:
         unique_together = ('page', 'slug',)

@@ -7,6 +7,7 @@ from secrets import token_urlsafe
 from apps.users.models import User
 from apps.sites.models import SiteAPIKey, Site
 from apps.users.serializers import UserListSerializer
+from apps.pages.serializers import PageSerializer
 
 
 class SiteWriteSerializer(serializers.ModelSerializer):
@@ -17,14 +18,14 @@ class SiteWriteSerializer(serializers.ModelSerializer):
         model = Site
 
         fields = (
-            "name",
-            "slug",
+            'name',
+            'slug',
         )
 
     def create(self, validated_data):
         # TODO raise validation error if owner / slug already exists
         site = Site.create(**validated_data)
-        site.owner = self.context.get("request").user
+        site.owner = self.context.get('request').user
 
         try:
             site.save()
@@ -41,7 +42,7 @@ class SiteAPIKeySerializer(serializers.ModelSerializer):
         model = SiteAPIKey
 
         fields = (
-            "key",
+            'key',
         )
 
 
@@ -52,18 +53,20 @@ class SiteDetailSerializer(serializers.ModelSerializer):
     api_key = serializers.SerializerMethodField()
     owner = UserListSerializer()
     users = UserListSerializer(many=True)
+    pages = PageSerializer(many=True)
 
 
     class Meta:
         model = Site
 
         fields = (
-            "id",
-            "name",
-            "slug",
-            "api_key",
-            "owner",
-            "users",
+            'id',
+            'name',
+            'slug',
+            'api_key',
+            'owner',
+            'users',
+            'pages'
         )
 
     def get_api_key(self, obj):
@@ -78,8 +81,8 @@ class SiteListSerializer(serializers.ModelSerializer):
         model = Site
 
         fields = (
-            "id",
-            "name",
-            "slug",
+            'id',
+            'name',
+            'slug',
         )
 

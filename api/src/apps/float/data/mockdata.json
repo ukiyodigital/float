@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "username": "testuser1",
+      "email": "test1@test.com",
+      "password": "test"
+    },
+    {
+      "username": "testuser2",
+      "email": "test2@test.com",
+      "password": "test"
+    },
+    {
+      "username": "testuser3",
+      "email": "test3@test.com",
+      "password": "test"
+    }
+  ],
+  "sites": [
+    {
+      "name": "Test Site 1",
+      "slug": "test-site-1"
+    },
+    {
+      "name": "Test Site 2",
+      "slug": "test-site-2"
+    },
+    {
+      "name": "Test Site 3",
+      "slug": "test-site-3"
+    }
+  ],
+  "pages": [
+    {
+      "name": "Test Page 1",
+      "slug": "test-page-1"
+    },
+    {
+      "name": "Test Page 2",
+      "slug": "test-page-2"
+    },
+    {
+      "name": "Test Page 3",
+      "slug": "test-page-3"
+    }
+  ]}

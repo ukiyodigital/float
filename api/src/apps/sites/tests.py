@@ -5,16 +5,16 @@ import json
 from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from rest_framework.authtoken.models import Token
 
+from apps.float.tests import AppTestCase
 from apps.users.models import User
 from apps.sites.models import Site
 from apps.sites.serializers import SiteDetailSerializer, SiteListSerializer
 
 
-class SiteTestCase(APITestCase):
+class SiteTestCase(AppTestCase):
     """
     python ./manage.py test apps/users
     """
@@ -55,12 +55,15 @@ class SiteTestCase(APITestCase):
             "slug": "i-love-cats"
         }
 
+        original_site = self.site
+
         self.site.name = data["name"]
         self.site.slug = data["slug"]
 
         response = self.client.put(reverse("sites:site_detail", kwargs=kwargs), json.dumps(data), content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, SiteDetailSerializer(self.site).data)
+        self.assertEqual(response.data["slug"], data["slug"])
+        self.assertEqual(response.data["name"], data["name"])
 
     def test_can_list_sites(self):
         sites = Site.objects.filter(owner=self.user)

@@ -40,6 +40,11 @@ class RetrieveUpdateDestroySite(RetrieveUpdateDestroyAPIView):
             return SiteWriteSerializer
         return SiteDetailSerializer
 
+    def put(self, request, *args, **kwargs):
+        site = super().put(request, *args, **kwargs)
+        site = Site.objects.filter(slug=site.data["slug"]).first()
+        return Response(SiteDetailSerializer(site).data)
+
     def delete(self, request, *args, **kwargs):
         site = Site.objects.filter(slug=self.kwargs["slug"]).first()
         super().delete(request, *args, **kwargs)

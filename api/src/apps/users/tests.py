@@ -5,26 +5,20 @@ import json
 from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
 
+
+from apps.float.tests import AppTestCase
 from apps.users.models import User
 from rest_framework.authtoken.models import Token
 from apps.users.serializers import UserSerializer, CreateUserSerializer
 
 
-class UserTestCase(APITestCase):
+class UserTestCase(AppTestCase):
     """
     python ./manage.py test apps/users
     """
     def setUp(self):
-        data = {
-            "username": "tester",
-            "password": "password",
-            "email": "tester@email.com"
-        }
-        serializer = CreateUserSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        super().setUp()
 
     def test_create_user(self):
         data = {
@@ -40,10 +34,12 @@ class UserTestCase(APITestCase):
 
     def test_user_login(self):
         data = {
-            "username": "tester",
-            "password": "password"
+            "username": self.mock_users_data[0]["username"],
+            "password": self.mock_users_data[0]["password"]
         }
+
         response = self.client.post(reverse("login"), json.dumps(data), content_type="application/json")
+
         user = User.objects.get(username=data["username"])
         token = Token.objects.get(user=user)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

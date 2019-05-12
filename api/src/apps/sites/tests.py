@@ -19,9 +19,8 @@ class SiteTestCase(AppTestCase):
     python ./manage.py test apps/users
     """
     def setUp(self):
-        self.user = User.objects.create_user("testuser", "password")
-        token, _ = Token.objects.get_or_create(user=self.user)
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        super().setUp()
+        self.user = self.users[0]
         self.site = Site.create(name="I Love Cats", slug="i-love-cats")
         self.site.owner = self.user
         self.site.save()
@@ -55,8 +54,6 @@ class SiteTestCase(AppTestCase):
             "slug": "i-love-cats"
         }
 
-        original_site = self.site
-
         self.site.name = data["name"]
         self.site.slug = data["slug"]
 
@@ -67,6 +64,7 @@ class SiteTestCase(AppTestCase):
 
     def test_can_list_sites(self):
         sites = Site.objects.filter(owner=self.user)
+
         response = self.client.get(reverse("sites:sites_list"))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

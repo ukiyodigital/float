@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.urls import path
-from apps.pages.views import ListCreatePage, RetrieveUpdateDestroyPage, CreatePageColumn, RetrieveUpdateDeleteColumn
 
 app_name = 'pages'
 

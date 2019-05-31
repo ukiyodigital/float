@@ -1,13 +1,15 @@
 import graphene
 import graphql_jwt
 
-import apps.sites.schema
 import apps.users.schema
+import apps.sites.schema
+import apps.pages.schema
 
 
 class Query(
         apps.users.schema.Query,
         apps.sites.schema.Query,
+        apps.pages.schema.Query,
         graphene.ObjectType,
     ):
     pass

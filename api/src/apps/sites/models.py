@@ -35,7 +35,6 @@ class Site(models.Model):
             return site
         # could be duplicate
         except IntegrityError as e:
-            print(e)
             raise Exception('Could not save with given slug and owner')
 
 

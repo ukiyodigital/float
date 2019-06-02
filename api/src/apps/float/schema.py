@@ -17,6 +17,7 @@ class Query(
 class Mutation(
         apps.users.schema.Mutation,
         apps.sites.schema.Mutation,
+        apps.pages.schema.Mutation,
         graphene.ObjectType,
     ):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()

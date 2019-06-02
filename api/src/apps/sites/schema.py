@@ -16,12 +16,20 @@ class SiteAPIKeyType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     sites = graphene.List(SiteType)
+    site = graphene.Field(SiteType, slug=graphene.String(required=True))
 
     def resolve_sites(self, info):
         user = info.context.user
         if user.is_anonymous:
             raise GraphQLError('You must login before accessing this endpoint')
         return Site.objects.filter(owner=user)
+
+    def resolve_site(self, info, slug):
+        user = info.context.user
+        if user.is_anonymous:
+            raise GraphQLError('You must login before accessing this endpoint')
+        site = Site.objects.filter(owner=user, slug=slug).first()
+        return site if site else GraphQLError('No site found with that slug')
 
 
 class CreateSite(graphene.Mutation):

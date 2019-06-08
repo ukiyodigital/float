@@ -45,10 +45,11 @@ class CreatePage(graphene.Mutation):
             raise GraphQLError('Site does not exist')
 
         try:
-            page = Page(name=name, slug=slug, site=site)
+            page = Page(site=site, **page)
             page.save()
         except IntegrityError as e:
             raise GraphQLError('Could not save with given slug and owner')
+
         return CreatePage(page=page)
 
 class UpdatePage(graphene.Mutation):

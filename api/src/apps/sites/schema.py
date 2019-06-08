@@ -3,6 +3,8 @@ from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 from django.db.models import Q
 
+from apps.float.utils import check_authentication
+
 from apps.sites.models import Site, SiteAPIKey
 
 
@@ -19,15 +21,11 @@ class Query(graphene.ObjectType):
     site = graphene.Field(SiteType, slug=graphene.String(required=True))
 
     def resolve_sites(self, info):
-        user = info.context.user
-        if user.is_anonymous:
-            raise GraphQLError('You must login before accessing this endpoint')
+        user = check_authentication(info.context.user)
         return Site.objects.filter(owner=user)
 
     def resolve_site(self, info, slug):
-        user = info.context.user
-        if user.is_anonymous:
-            raise GraphQLError('You must login before accessing this endpoint')
+        user = check_authentication(info.context.user)
         site = Site.objects.filter(owner=user, slug=slug).first()
         return site if site else GraphQLError('No site found with that slug')
 
@@ -40,10 +38,7 @@ class CreateSite(graphene.Mutation):
         slug = graphene.String(required=True)
 
     def mutate(self, info, **kwargs):
-        user = info.context.user or None
-
-        if user.is_anonymous:
-            raise GraphQLError('You must login before accessing this endpoint')
+        check_authentication(info.context.user)
 
         site = Site.create(owner=user, **kwargs)
         site.owner = user

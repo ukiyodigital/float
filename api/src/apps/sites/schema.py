@@ -50,5 +50,40 @@ class CreateSite(graphene.Mutation):
         site.save()
         return CreateSite(site=site)
 
+class UpdateSite(graphene.Mutation):
+    site = graphene.Field(SiteType)
+
+    class Arguments:
+        site_id = graphene.Int(required=True)
+        site = SiteInput(required=True)
+
+    def mutate(self, info, site_id, site):
+        check_authentication(info.context.user)
+
+        site_obj = Site.objects.filter(id=site_id).first()
+        if not site_obj:
+            raise GraphQLError('Site does not exist')
+
+        site_obj.name = site.name
+        site_obj.slug = site.slug
+
+        return UpdateSite(site=site_obj)
+
+
+class DeleteSite(graphene.Mutation):
+    site = graphene.Field(SiteType)
+
+    class Arguments:
+        site_id = graphene.Int(required=True)
+
+    def mutate(self, info, site_id):
+        check_authentication(info.context.user)
+
+        site_obj = Site.objects.filter(id=site_id).delete()
+
+        return DeleteSite(site=site_obj)
+
 class Mutation(graphene.ObjectType):
     create_site = CreateSite.Field()
+    update_site = UpdateSite.Field()
+    delete_site = DeleteSite.Field()

@@ -72,6 +72,21 @@ class UpdatePage(graphene.Mutation):
 
         return UpdatePage(page=page_obj)
 
+class DeletePage(graphene.Mutation):
+    page = graphene.Field(PageType)
+
+    class Arguments:
+        site_id = graphene.Int(required=True)
+        page_id = graphene.Int()
+
+    def mutate(self, info, site_id, page_id, page):
+        check_authentication(info.context.user)
+
+        page_obj = Page.objects.filter(id=page_id, site__id=site_id).delete()
+
+        return DeletePage(page=page_obj)
+
 class Mutation(graphene.ObjectType):
     create_page = CreatePage.Field()
     update_page = UpdatePage.Field()
+    delete_page = DeletePage.Field()

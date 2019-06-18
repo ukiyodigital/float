@@ -14,6 +14,13 @@ class PageInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
 
+class ColumnInput(graphene.InputObjectType):
+    name = graphene.String(required=True)
+    slug = graphene.String(required=True)
+    field = graphene.String(required=True)
+    order = graphene.String(required=True)
+    data = graphene.String(required=True)
+
 class PageType(DjangoObjectType):
     class Meta:
         model = Page
@@ -85,6 +92,18 @@ class DeletePage(graphene.Mutation):
         page_obj = Page.objects.filter(id=page_id, site__id=site_id).delete()
 
         return DeletePage(page=page_obj)
+
+class AddColumn(graphene.Mutation):
+    """
+    Add a column, return the rest of the columns on the page
+    """
+    pass
+
+class UpdateColumn(graphene.Mutation):
+    pass
+
+class DeleteColumn(graphene.Mutation):
+    pass
 
 class Mutation(graphene.ObjectType):
     create_page = CreatePage.Field()

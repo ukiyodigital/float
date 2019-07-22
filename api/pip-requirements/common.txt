@@ -1,5 +1,5 @@
 # django
-django>=2.1,<2.2
+django>=2.2.3
 
 # postgres
 psycopg2-binary>==2.7,<2.8

@@ -18,8 +18,8 @@ class ColumnInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
     field = graphene.String(required=True)
-    order = graphene.String(required=True)
     data = graphene.String(required=True)
+    order = graphene.Int()
 
 class PageType(DjangoObjectType):
     class Meta:
@@ -93,19 +93,33 @@ class DeletePage(graphene.Mutation):
 
         return DeletePage(page=page_obj)
 
-class AddColumn(graphene.Mutation):
+class AddPageColumn(graphene.Mutation):
     """
     Add a column, return the rest of the columns on the page
     """
-    pass
+    columns = graphene.List(PageColumnHeaderType)
 
-class UpdateColumn(graphene.Mutation):
-    pass
+    class Arguments:
+        site_id = graphene.Int(required=True)
+        page_id = graphene.Int(required=True)
+        column = ColumnInput(required=True)
 
-class DeleteColumn(graphene.Mutation):
-    pass
+    def mutate(self, info, site_id, page_id, column):
+        check_authentication(info.context.user)
+
+        page = Page.objects.filter(id=page_id, site__id=site_id).delete()
+        column_obj = page.columns.create(**column)
+
+        return AddColumn(columns=page.columns.all())
+
+# class UpdateColumn(graphene.Mutation):
+#     pass
+
+# class DeleteColumn(graphene.Mutation):
+#     pass
 
 class Mutation(graphene.ObjectType):
     create_page = CreatePage.Field()
     update_page = UpdatePage.Field()
     delete_page = DeletePage.Field()
+    add_page_column = AddPageColumn.Field()

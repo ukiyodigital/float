@@ -1,4 +1,6 @@
 import graphene
+from graphene.types import generic
+
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 
@@ -22,6 +24,8 @@ class ColumnInput(graphene.InputObjectType):
     order = graphene.Int()
 
 class PageType(DjangoObjectType):
+    data = generic.GenericScalar()
+
     class Meta:
         model = Page
 

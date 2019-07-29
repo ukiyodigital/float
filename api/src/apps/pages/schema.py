@@ -7,6 +7,8 @@ from graphql import GraphQLError
 from django.db import IntegrityError
 from django.db.models import Q
 
+import json
+
 from apps.float.utils import check_authentication
 
 from apps.pages.models import Page, PageColumnHeader
@@ -20,16 +22,18 @@ class ColumnInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
     field = graphene.String(required=True)
-    data = graphene.String(required=True)
     order = graphene.Int()
 
-class PageType(DjangoObjectType):
-    data = generic.GenericScalar()
+    # JSON object that gets parsed after sending to graphql
+    data = graphene.String()
 
+class PageType(DjangoObjectType):
     class Meta:
         model = Page
 
 class PageColumnHeaderType(DjangoObjectType):
+    data = generic.GenericScalar()
+
     class Meta:
         model = PageColumnHeader
 
@@ -38,6 +42,7 @@ class Query(graphene.ObjectType):
 
     def resolve_page(self, info, site_slug, page_slug):
         check_authentication(info.context.user)
+
         page = Page.objects.filter(site__slug=site_slug, slug=page_slug).first()
         return page if Page else GraphQLError('No page found with those slugs')
 
@@ -68,7 +73,7 @@ class UpdatePage(graphene.Mutation):
 
     class Arguments:
         site_id = graphene.Int(required=True)
-        page_id = graphene.Int()
+        page_id = graphene.Int(required=True)
         page = PageInput(required=True)
 
     def mutate(self, info, site_id, page_id, page):
@@ -80,6 +85,7 @@ class UpdatePage(graphene.Mutation):
 
         page_obj.name = page.name
         page_obj.slug = page.slug
+        page_obj.save()
 
         return UpdatePage(page=page_obj)
 
@@ -88,20 +94,24 @@ class DeletePage(graphene.Mutation):
 
     class Arguments:
         site_id = graphene.Int(required=True)
-        page_id = graphene.Int()
+        page_id = graphene.Int(required=True)
 
-    def mutate(self, info, site_id, page_id, page):
+    def mutate(self, info, site_id, page_id):
         check_authentication(info.context.user)
 
-        page_obj = Page.objects.filter(id=page_id, site__id=site_id).delete()
+        page_query = Page.objects.filter(id=page_id, site__id=site_id)
+        page = page_query.first()
+        if page:
+            page_query.delete()
 
-        return DeletePage(page=page_obj)
+            return DeletePage(page=page)
+        raise GraphQLError('Page not found')
 
 class AddPageColumn(graphene.Mutation):
     """
     Add a column, return the rest of the columns on the page
     """
-    columns = graphene.List(PageColumnHeaderType)
+    column = graphene.Field(PageColumnHeaderType)
 
     class Arguments:
         site_id = graphene.Int(required=True)
@@ -111,19 +121,65 @@ class AddPageColumn(graphene.Mutation):
     def mutate(self, info, site_id, page_id, column):
         check_authentication(info.context.user)
 
-        page = Page.objects.filter(id=page_id, site__id=site_id).delete()
-        column_obj = page.columns.create(**column)
+        page = Page.objects.filter(id=page_id, site__id=site_id).first()
+        if page:
+            c = PageColumnHeader(**column)
+            c.page_id = page_id
+            c.data = json.loads(c.data)
+            c.save()
+            page.columns.add(c)
 
-        return AddColumn(columns=page.columns.all())
+            return AddPageColumn(column=c)
+        raise GraphQLError('Page not found')
 
-# class UpdateColumn(graphene.Mutation):
-#     pass
+class UpdatePageColumn(graphene.Mutation):
+    column = graphene.Field(PageColumnHeaderType)
 
-# class DeleteColumn(graphene.Mutation):
-#     pass
+    class Arguments:
+        site_id = graphene.Int(required=True)
+        page_id = graphene.Int(required=True)
+        column_id = graphene.Int(required=True)
+        column = ColumnInput(required=True)
+
+    def mutate(self, info, site_id, page_id, column_id, column):
+        check_authentication(info.context.user)
+
+        column_obj = PageColumnHeader.objects.filter(page__site__id=site_id, page__id=page_id, id=column_id).first()
+        if column_obj:
+            column_obj.name = column.get("name", column.name)
+            column_obj.slug = column.get("slug", column.slug)
+            column_obj.order = column.get("order", column.order)
+            column_obj.field = column.get("field", column.field)
+
+            column_obj.data = column.get("data", json.loads(column.data))
+            column_obj.save()
+
+            return UpdatePageColumn(column=column_obj)
+        raise GraphQLError('Column not found')
+
+class DeletePageColumn(graphene.Mutation):
+    column = graphene.Field(PageColumnHeaderType)
+
+    class Arguments:
+        site_id = graphene.Int(required=True)
+        page_id = graphene.Int(required=True)
+        column_id = graphene.Int(required=True)
+
+    def mutate(self, info, site_id, page_id, column_id):
+        check_authentication(info.context.user)
+
+        column_query = PageColumnHeader.objects.filter(page__site__id=site_id, page__id=page_id, id=column_id)
+        column = column_query.first()
+        if column:
+            column_query.delete()
+
+            return DeletePageColumn(column=column)
+        raise GraphQLError('Column not found')
 
 class Mutation(graphene.ObjectType):
     create_page = CreatePage.Field()
     update_page = UpdatePage.Field()
     delete_page = DeletePage.Field()
     add_page_column = AddPageColumn.Field()
+    update_page_column = UpdatePageColumn.Field()
+    delete_page_column = DeletePageColumn.Field()

@@ -20,10 +20,9 @@ VENDOR_APPS = [
     'django.contrib.staticfiles',
 
     # plugins
-    'rest_framework',
+    'graphene_django',
     'django_extensions',
     'corsheaders',
-    'rest_framework.authtoken'
 ]
 
 FLOAT_APPS = [
@@ -38,11 +37,16 @@ INSTALLED_APPS = VENDOR_APPS + FLOAT_APPS
 
 if os.environ["APP_ENV"] == 'development':
     INSTALLED_APPS += [
-        'rest_framework_swagger',
         'silk',
         'django_nose',
     ]
 
+GRAPHENE = {
+    'SCHEMA': 'apps.float.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
 
 # middlewares
 MIDDLEWARE = [
@@ -60,6 +64,10 @@ if os.environ["APP_ENV"] == "development":
         'silk.middleware.SilkyMiddleware',
     ] + MIDDLEWARE
 
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # templates
 TEMPLATES = [

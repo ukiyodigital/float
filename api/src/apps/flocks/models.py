@@ -14,6 +14,7 @@ class Flock(models.Model):
     data = ArrayField(
         JSONField(null=True, blank=True, encoder=DjangoJSONEncoder),
         blank=True,
+        null=True,
     )
 
     # Foreign Keys

@@ -1,7 +1,7 @@
 {
   "name": "float",
-  "description": "Headless API",
-  "author": "Ukiyo Digital",
+  "description": "Float UI for submitting data to the Float service",
+  "author": "Kevin Cunanan",
   "version": "0.0.1",
   "private": true,
   "license": "UNLICENSED",
@@ -41,7 +41,6 @@
     "html-webpack-plugin": "~3.2.0",
     "less": "~3.9.0",
     "less-loader": "~4.1.0",
-    "mobx-react-devtools": "~6.0.3",
     "postcss-loader": "~3.0.0",
     "style-loader": "~0.23.1",
     "ts-loader": "^5.4.5",

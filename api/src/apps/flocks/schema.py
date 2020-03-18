@@ -43,9 +43,12 @@ class Query(graphene.ObjectType):
     def resolve_flock(self, info, site_slug, flock_slug):
         check_authentication(info.context.user)
 
-        # maybe switch to try catch statement instead
-        flock = Flock.objects.filter(site__slug=site_slug, slug=flock_slug).first()
-        return flock if flock else GraphQLError('No flock found with those slugs')
+        try:
+            flock = Flock.objects.get(site__slug=site_slug, slug=flock_slug)
+        except Flock.DoesNotExist as e:
+            raise GraphQLError('No flock found with those slugs')
+
+        return flock
 
 
 class CreateFlock(graphene.Mutation):
@@ -58,12 +61,13 @@ class CreateFlock(graphene.Mutation):
     def mutate(self, info, site_id, flock):
         check_authentication(info.context.user)
 
-        site = Site.objects.filter(id=site_id).first()
-        if not site:
+
+        try:
+            site = Site.objects.get(id=site_id)
+        except Site.DoesNotExist as e:
             raise GraphQLError('Site does not exist')
 
         try:
-            print(flock)
             flock_obj =  Flock.objects.create(site=site, **flock)
         except IntegrityError as e:
             raise GraphQLError(e)
@@ -95,7 +99,6 @@ class UpdateFlock(graphene.Mutation):
             flock_data['data'] = json.loads(data)
             flock_obj.name = flock_data.get('name', flock_obj.name)
             flock_obj.slug = flock_data.get('slug', flock_obj.slug)
-            print(data)
             # flock_obj.data = data.get('data', flock_obj.data)
             flock_obj.save()
         except IntegrityError as e:

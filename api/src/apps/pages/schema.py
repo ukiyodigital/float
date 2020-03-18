@@ -14,9 +14,11 @@ from apps.float.utils import check_authentication
 from apps.pages.models import Page, PageColumnHeader
 from apps.sites.models import Site
 
+
 class PageInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
+
 
 class ColumnInput(graphene.InputObjectType):
     name = graphene.String(required=True)
@@ -27,15 +29,18 @@ class ColumnInput(graphene.InputObjectType):
     # JSON object that gets parsed after sending to graphql
     data = graphene.String()
 
+
 class PageType(DjangoObjectType):
     class Meta:
         model = Page
+
 
 class PageColumnHeaderType(DjangoObjectType):
     data = generic.GenericScalar()
 
     class Meta:
         model = PageColumnHeader
+
 
 class Query(graphene.ObjectType):
     page = graphene.Field(PageType, site_slug=graphene.String(required=True), page_slug=graphene.String(required=True))
@@ -44,7 +49,8 @@ class Query(graphene.ObjectType):
         check_authentication(info.context.user)
 
         page = Page.objects.filter(site__slug=site_slug, slug=page_slug).first()
-        return page if Page else GraphQLError('No page found with those slugs')
+        return page if page else GraphQLError('No page found with those slugs')
+
 
 class CreatePage(graphene.Mutation):
     page = graphene.Field(PageType)
@@ -68,6 +74,7 @@ class CreatePage(graphene.Mutation):
 
         return CreatePage(page=page)
 
+
 class UpdatePage(graphene.Mutation):
     page = graphene.Field(PageType)
 
@@ -89,6 +96,7 @@ class UpdatePage(graphene.Mutation):
 
         return UpdatePage(page=page_obj)
 
+
 class DeletePage(graphene.Mutation):
     page = graphene.Field(PageType)
 
@@ -106,6 +114,7 @@ class DeletePage(graphene.Mutation):
 
             return DeletePage(page=page)
         raise GraphQLError('Page not found')
+
 
 class AddPageColumn(graphene.Mutation):
     """
@@ -132,6 +141,7 @@ class AddPageColumn(graphene.Mutation):
             return AddPageColumn(column=c)
         raise GraphQLError('Page not found')
 
+
 class UpdatePageColumn(graphene.Mutation):
     column = graphene.Field(PageColumnHeaderType)
 
@@ -157,6 +167,7 @@ class UpdatePageColumn(graphene.Mutation):
             return UpdatePageColumn(column=column_obj)
         raise GraphQLError('Column not found')
 
+
 class DeletePageColumn(graphene.Mutation):
     column = graphene.Field(PageColumnHeaderType)
 
@@ -175,6 +186,7 @@ class DeletePageColumn(graphene.Mutation):
 
             return DeletePageColumn(column=column)
         raise GraphQLError('Column not found')
+
 
 class Mutation(graphene.ObjectType):
     create_page = CreatePage.Field()

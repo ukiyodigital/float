@@ -31,6 +31,7 @@ FLOAT_APPS = [
     'apps.users',
     'apps.sites',
     'apps.pages',
+    'apps.flocks',
 ]
 
 INSTALLED_APPS = VENDOR_APPS + FLOAT_APPS

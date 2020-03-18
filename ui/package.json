@@ -1,7 +1,7 @@
 {
   "name": "float",
-  "description": "Headless API",
-  "author": "Ukiyo Digital",
+  "description": "Float UI for submitting data to the Float service",
+  "author": "Kevin Cunanan",
   "version": "0.0.1",
   "private": true,
   "license": "UNLICENSED",
@@ -19,12 +19,13 @@
     "build:production": "APP_ENV=production npm run build"
   },
   "dependencies": {
-    "antd": "~3.20.5",
-    "mobx": "~4.8.0",
-    "mobx-react": "^5.4.4",
-    "mobx-react-router": "^4.0.7",
+    "@apollo/react-hooks": "^3.1.3",
+    "@material-ui/core": "^4.9.5",
+    "apollo-boost": "^0.4.7",
+    "graphql": "^14.6.0",
     "react": "~16.8.6",
     "react-dom": "~16.7.0",
+    "react-hook-form": "^5.1.1",
     "react-hot-loader": "^4.6.5",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1"
@@ -40,7 +41,6 @@
     "html-webpack-plugin": "~3.2.0",
     "less": "~3.9.0",
     "less-loader": "~4.1.0",
-    "mobx-react-devtools": "~6.0.3",
     "postcss-loader": "~3.0.0",
     "style-loader": "~0.23.1",
     "ts-loader": "^5.4.5",

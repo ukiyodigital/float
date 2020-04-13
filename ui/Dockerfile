@@ -1,6 +1,6 @@
-FROM node:10-alpine AS dev
+FROM node:12.14-alpine AS dev
 
-RUN apk add --update --no-cache ca-certificates nodejs-npm && npm i -g npm@6.5.0
+RUN npm i -g npm@6.13
 
 # create app dir and set as workdir
 RUN mkdir -p /app
@@ -10,5 +10,5 @@ WORKDIR /app
 FROM dev AS pre-build
 
 # install npm packages
-COPY . /app/
-RUN npm install
+COPY ./ui /app/
+RUN npm ci

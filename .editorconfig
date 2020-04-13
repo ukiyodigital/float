@@ -12,7 +12,7 @@ charset = utf-8
 trim_trailing_whitespace = false
 
 [*.{js,jsx,html}]
-indent_size = 4
+indent_size = 2
 
 [{.eslintrc,.postcssrc}]
 indent_size = 2

@@ -1,18 +1,8 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const DefineEnvsPlugin = require('./tools/DefineEnvsPlugin');
 
-
-const ENVS = {
-  development: {
-    API_URL: 'https://api.float.lvh.me',
-  },
-};
-
-const GLOBAL_CONSTS = Object.entries(ENVS[process.env.APP_ENV]).reduce(
-  (acc, [key, val]) => Object.assign(acc, { [`process.env.${key}`]: JSON.stringify(val) }),
-  {},
-);
 
 const mode = process.env.APP_ENV === 'development' ? 'development' : 'production';
 const isDevMode = mode === 'development';
@@ -24,6 +14,9 @@ module.exports = {
   target: 'web',
   resolve: {
     extensions: ['*', '.js', '.jsx', '.json'],
+    alias: {
+      _: path.resolve(__dirname, 'src'),
+    },
   },
   entry: [
     './src/index.js',
@@ -31,6 +24,7 @@ module.exports = {
   output: {
     filename: '[name].[hash].js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
   devtool: isDevMode ? 'eval-source-map' : 'source-map',
   optimization: {
@@ -49,13 +43,16 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({ template: './src/index.html' }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin(GLOBAL_CONSTS),
+    new DefineEnvsPlugin([
+      'APP_VERSION',
+      'API_URL',
+    ], 'ENVS'),
   ],
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: path.resolve(__dirname, 'node_modules'),
+        exclude: /node_modules/,
         use: ['babel-loader'].concat(mode === 'development' ? ['eslint-loader'] : []),
       },
       {

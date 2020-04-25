@@ -1,4 +1,4 @@
-FROM python:3.7 AS dev
+FROM python:3.8 AS dev
 
 RUN apt-get update && apt-get install -y \
     postgresql

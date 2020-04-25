@@ -1,4 +1,4 @@
-FROM node:12.14-alpine AS dev
+FROM node:14.0-alpine AS dev
 
 RUN npm i -g npm@6.13
 

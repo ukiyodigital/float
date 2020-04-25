@@ -25,17 +25,9 @@ services:
     depends_on:
       - db
     restart: on-failure
-    environment:
-      - DJANGO_SECRET_KEY=(｡◕‿‿◕｡)
-      - DJANGO_DB_NAME=float
-      - DJANGO_DB_HOST=db
-      - DJANGO_DB_USER=testuser
-      - DJANGO_DB_PASSWORD=testuser_pwd
-
-      - APP_ENV=development
-      - DJANGO_SETTINGS_MODULE=settings.settings
-      - DJANGO_DEBUG=True
-      - DJANGO_ALLOWED_HOSTS=localhost
+    env_file:
+      - ./api/env/dev.properties
+      - ./env.properties
     ports:
       - "8000:8000"
 
@@ -45,8 +37,11 @@ services:
     build:
       context: ./ui
       target: dev
-    ports:
-      - "3000:3000"
     volumes:
       - ./ui:/app
+    env_file:
+      - ./ui/env/dev.properties
+      - ./env.properties
+    ports:
+      - "3000:3000"
     command: sh -c "npm install && npm run dev"

@@ -1,3 +1,13 @@
-import * as React from 'react';
+import React from 'react';
 
-export default () => <div>App</div>;
+import RouteNode from '_/components/RouteNode/RouteNode';
+
+export default () => {
+  console.log(ENVS);
+  return (
+    <div>
+      hello
+      <RouteNode />
+    </div>
+  );
+};

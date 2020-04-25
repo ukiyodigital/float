@@ -1,4 +1,4 @@
-import renderApp from './components/App';
+import renderApp from '_/components/App';
 
 // start router
 renderApp();

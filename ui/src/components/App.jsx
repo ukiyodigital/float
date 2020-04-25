@@ -1,10 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { hot } from 'react-hot-loader';
 
-import { Router } from 'react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-import Layout from './Layout/Layout';
+import Layout from '_/components/Layout/Layout';
 
 import '../assets/styles/main.less';
 

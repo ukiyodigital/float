@@ -1,13 +1,18 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { hot } from 'react-hot-loader';
 
 import { BrowserRouter as Router } from 'react-router-dom';
+
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
 
 import Layout from '_/components/Layout/Layout';
 
 import '../assets/styles/main.less';
 
+const client = new ApolloClient({
+  uri: `${ENVS.API_URL}/graphql/`,
+});
 
 // app container
 const appContainer = document.getElementById('app');
@@ -17,16 +22,16 @@ if (appContainer === null) {
 
 // app component
 const App = () => (
-  <Router>
-    <Layout />
-  </Router>
+  <ApolloProvider client={client}>
+    <Router>
+      <Layout />
+    </Router>
+  </ApolloProvider>
 );
-
-const HotApp = hot(module)(App);
 
 // renderer
 const renderApp = () => {
-  render(<HotApp />, appContainer);
+  render(<App />, appContainer);
 };
 
 export default renderApp;

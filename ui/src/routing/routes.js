@@ -1,7 +1,15 @@
-// import Dashboard from "../components/Dashboard/Dashboard";
-import Login from "_/components/Login/Login";
+import Home from '_/components/Home/Home';
+import Login from '_/components/Login/Login';
+import Signup from '_/components/Signup/Signup';
 
 export default [
-  // {name: "dashboard", path: "/", exact: true, component: Dashboard},
-  {name: "login", path: "/login", exact: true, component: Login},
+  {
+    name: 'home', path: '/', exact: true, component: Home, loginRequired: true,
+  },
+  {
+    name: 'login', path: '/login', exact: true, component: Login,
+  },
+  {
+    name: 'signup', path: '/signup', exact: true, component: Signup,
+  },
 ];

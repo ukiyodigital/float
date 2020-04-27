@@ -1,31 +1,24 @@
 import React from 'react';
 
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useForm, Controller } from 'react-hook-form';
+
+import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 
-const Copyright = () => {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://github.com/ukiyodigital/">
-        Ukiyo Digital
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import TokenAuth from '_/apollo/mutations';
+
+import Copyright from '_/components/Common/Copyright/Copyright';
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,7 +40,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default () => {
+  const client = useApolloClient();
+  const { control, errors, handleSubmit } = useForm();
+  const [tokenAuth] = useMutation(TokenAuth, {
+    onCompleted({ tokenAuth: { token } }) {
+      localStorage.setItem('token', token);
+      client.writeData({ data: { isLoggedIn: true } });
+    },
+  });
+
+  const [usernameValue, setUsername] = React.useState('');
+  const [passwordValue, setPassword] = React.useState('');
   const classes = useStyles();
+
+  const onSubmit = ({ username, password }) => {
+    tokenAuth({ variables: { username, password } });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,32 +67,46 @@ export default () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
+        <form
+          onSubmit={handleSubmit((data) => onSubmit(data))}
+          className={classes.form}
+        >
+          <Controller
+            name="username"
+            as={TextField}
+            control={control}
+            defaultValue={usernameValue}
+            onChange={([value]) => {
+              setUsername(value);
+              return value;
+            }}
+            error={!!errors.username}
+            helperText={errors.username?.message}
+            rules={{ required: 'Username is required' }}
+            label="Username"
             variant="outlined"
             margin="normal"
-            required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
             autoFocus
           />
-          <TextField
+          <Controller
+            name="password"
+            as={TextField}
+            control={control}
+            onChange={([value]) => {
+              setPassword(value);
+              return value;
+            }}
+            rules={{ required: 'Password is required' }}
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            defaultValue={passwordValue}
             variant="outlined"
             margin="normal"
-            required
             fullWidth
-            name="password"
             label="Password"
             type="password"
-            id="password"
             autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
           />
           <Button
             type="submit"
@@ -96,14 +118,9 @@ export default () => {
             Sign In
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
+              <Link href="/signup" variant="body2">
+                Don&apos;t have an account? Sign Up
               </Link>
             </Grid>
           </Grid>
@@ -114,4 +131,4 @@ export default () => {
       </Box>
     </Container>
   );
-}
+};

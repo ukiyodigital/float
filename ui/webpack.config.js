@@ -13,7 +13,7 @@ module.exports = {
   mode,
   target: 'web',
   resolve: {
-    extensions: ['*', '.js', '.jsx', '.json'],
+    extensions: ['*', '.gql', '.graphql', '.js', '.jsx', '.json'],
     alias: {
       _: path.resolve(__dirname, 'src'),
     },
@@ -54,6 +54,11 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: ['babel-loader'].concat(mode === 'development' ? ['eslint-loader'] : []),
+      },
+      {
+        test: /\.(graphql|gql)$/,
+        exclude: /node_modules/,
+        loader: 'graphql-tag/loader',
       },
       {
         test: /\.eot(\?v=\d+.\d+.\d+)?$/,

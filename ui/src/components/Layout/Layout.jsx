@@ -23,39 +23,44 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-  }
+  },
 }));
 
 export default () => {
   const classes = useStyles();
-  console.log(ENVS);
+
   return (
-      <>
-        <div className={classes.root}>
-          <AppBar position='static'>
-            <Toolbar>
-              <IconButton
-                className={classes.menuButton}
-                color='inherit'
-                aria-label='menu'
-                edge='start'
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" className={classes.title}>
-                Float
-              </Typography>
-              <Button color='inherit'>
-                <Link to="/login">
-                  Login
-                </Link>
-              </Button>
-            </Toolbar>
-          </AppBar>
-        </div>
-        <Container>
-          <RouteNode />
-        </Container>
-      </>
+    <>
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="menu"
+              edge="start"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              Float
+            </Typography>
+            <Button color="inherit">
+              <Link to="/login">
+                Login
+              </Link>
+            </Button>
+            <Button color="inherit">
+              <Link to="/signup">
+                Signup
+              </Link>
+            </Button>
+          </Toolbar>
+        </AppBar>
+      </div>
+      <Container>
+        <RouteNode />
+      </Container>
+    </>
   );
 };

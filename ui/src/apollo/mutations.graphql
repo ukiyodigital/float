@@ -1,7 +1,15 @@
-mutation TokenAuth($username: String!, $password: String!) {
+mutation GetToken($username: String!, $password: String!) {
   tokenAuth(username: $username, password: $password) {
     token
     payload
     refreshExpiresIn
   }
+}
+
+mutation Logout {
+  logoutUser @client
+}
+
+mutation Login($token: String!) {
+  loginUser(token: $token) @client
 }

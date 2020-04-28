@@ -2,7 +2,9 @@ import graphene
 from graphene.types import generic
 
 from graphene_django import DjangoObjectType
+
 from graphql import GraphQLError
+from graphql_jwt.decorators import login_required
 
 from django.db import IntegrityError
 from django.db.models import Q

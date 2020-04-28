@@ -1,6 +1,9 @@
 import graphene
 from graphene_django import DjangoObjectType
+
 from graphql import GraphQLError
+from graphql_jwt.decorators import login_required
+
 from django.db.models import Q
 
 from apps.sites.models import Site, SiteAPIKey

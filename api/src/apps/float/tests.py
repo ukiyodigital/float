@@ -6,6 +6,7 @@ from apps.sites.models import Site
 from apps.pages.models import Page
 from apps.users.models import User
 
+
 class AppTestCase(TestCase):
     @classmethod
     def setUpClass(cls):

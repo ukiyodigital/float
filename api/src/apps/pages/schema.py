@@ -2,14 +2,14 @@ import graphene
 from graphene.types import generic
 
 from graphene_django import DjangoObjectType
+
 from graphql import GraphQLError
+from graphql_jwt.decorators import login_required
 
 from django.db import IntegrityError
 from django.db.models import Q
 
 import json
-
-from apps.float.utils import check_authentication
 
 from apps.pages.models import Page, PageColumnHeader
 from apps.sites.models import Site
@@ -45,9 +45,8 @@ class PageColumnHeaderType(DjangoObjectType):
 class Query(graphene.ObjectType):
     page = graphene.Field(PageType, site_slug=graphene.String(required=True), page_slug=graphene.String(required=True))
 
+    @login_required
     def resolve_page(self, info, site_slug, page_slug):
-        check_authentication(info.context.user)
-
         page = Page.objects.filter(site__slug=site_slug, slug=page_slug).first()
         return page if page else GraphQLError('No page found with those slugs')
 
@@ -59,9 +58,8 @@ class CreatePage(graphene.Mutation):
         site_id = graphene.Int(required=True)
         page = PageInput(required=True)
 
+    @login_required
     def mutate(self, info, site_id, page):
-        check_authentication(info.context.user)
-
         site = Site.objects.filter(id=site_id).first()
         if not site:
             raise GraphQLError('Site does not exist')
@@ -83,9 +81,8 @@ class UpdatePage(graphene.Mutation):
         page_id = graphene.Int(required=True)
         page = PageInput(required=True)
 
+    @login_required
     def mutate(self, info, site_id, page_id, page):
-        check_authentication(info.context.user)
-
         page_obj = Page.objects.filter(id=page_id, site__id=site_id).first()
         if not page_obj:
             raise GraphQLError('Page does not exist')
@@ -104,9 +101,8 @@ class DeletePage(graphene.Mutation):
         site_id = graphene.Int(required=True)
         page_id = graphene.Int(required=True)
 
+    @login_required
     def mutate(self, info, site_id, page_id):
-        check_authentication(info.context.user)
-
         page_query = Page.objects.filter(id=page_id, site__id=site_id)
         page = page_query.first()
         if page:
@@ -127,9 +123,8 @@ class AddPageColumn(graphene.Mutation):
         page_id = graphene.Int(required=True)
         column = ColumnInput(required=True)
 
+    @login_required
     def mutate(self, info, site_id, page_id, column):
-        check_authentication(info.context.user)
-
         page = Page.objects.filter(id=page_id, site__id=site_id).first()
         if page:
             c = PageColumnHeader(**column)
@@ -151,9 +146,8 @@ class UpdatePageColumn(graphene.Mutation):
         column_id = graphene.Int(required=True)
         column = ColumnInput(required=True)
 
+    @login_required
     def mutate(self, info, site_id, page_id, column_id, column):
-        check_authentication(info.context.user)
-
         column_obj = PageColumnHeader.objects.filter(page__site__id=site_id, page__id=page_id, id=column_id).first()
         if column_obj:
             column_obj.name = column.get("name", column.name)
@@ -176,9 +170,8 @@ class DeletePageColumn(graphene.Mutation):
         page_id = graphene.Int(required=True)
         column_id = graphene.Int(required=True)
 
+    @login_required
     def mutate(self, info, site_id, page_id, column_id):
-        check_authentication(info.context.user)
-
         column_query = PageColumnHeader.objects.filter(page__site__id=site_id, page__id=page_id, id=column_id)
         column = column_query.first()
         if column:

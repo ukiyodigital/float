@@ -1,8 +1,9 @@
 import graphene
-from graphene_django import DjangoObjectType
-from graphql import GraphQLError
 
-from apps.float.utils import check_authentication
+from graphene_django import DjangoObjectType
+
+from graphql import GraphQLError
+from graphql_jwt.decorators import login_required
 
 from apps.users.models import User
 
@@ -17,9 +18,8 @@ class Query(graphene.ObjectType):
     def resolve_user(self, info, id):
         return User.objects.get(id=id)
 
+    @login_required
     def resolve_me(self, info):
-        user = check_authentication(info.context.user)
-
         return user
 
 class CreateUser(graphene.Mutation):

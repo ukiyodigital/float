@@ -2,14 +2,13 @@ import graphene
 from graphene.types import generic
 
 from graphene_django import DjangoObjectType
+from graphql_jwt.decorators import login_required
 from graphql import GraphQLError
 
 from django.db import IntegrityError
 from django.db.models import Q
 
 import json
-
-from apps.float.utils import check_authentication
 
 from apps.flocks.models import Flock, FlockColumnHeader
 from apps.sites.models import Site
@@ -40,9 +39,8 @@ class FlockColumnHeaderType(DjangoObjectType):
 class Query(graphene.ObjectType):
     flock = graphene.Field(FlockType, site_slug=graphene.String(required=True), flock_slug=graphene.String(required=True))
 
+    @login_required
     def resolve_flock(self, info, site_slug, flock_slug):
-        check_authentication(info.context.user)
-
         try:
             flock = Flock.objects.get(site__slug=site_slug, slug=flock_slug)
         except Flock.DoesNotExist as e:
@@ -58,10 +56,8 @@ class CreateFlock(graphene.Mutation):
         site_id = graphene.Int(required=True)
         flock = FlockInput(required=True)
 
+    @login_required
     def mutate(self, info, site_id, flock):
-        check_authentication(info.context.user)
-
-
         try:
             site = Site.objects.get(id=site_id)
         except Site.DoesNotExist as e:
@@ -87,9 +83,8 @@ class UpdateFlock(graphene.Mutation):
         # array of JSON data
         data = graphene.String()
 
+    @login_required
     def mutate(self, info, site_id, flock_id, flock_data, data):
-        check_authentication(info.context.user)
-
         try:
             flock_obj = Flock.objects.get(site__id=site_id, id=flock_id)
         except Flock.DoesNotExist as e:

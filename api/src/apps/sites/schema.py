@@ -3,8 +3,6 @@ from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 from django.db.models import Q
 
-from apps.float.utils import check_authentication
-
 from apps.sites.models import Site, SiteAPIKey
 
 
@@ -24,13 +22,12 @@ class Query(graphene.ObjectType):
     sites = graphene.List(SiteType)
     site = graphene.Field(SiteType, slug=graphene.String(required=True))
 
+    @login_required
     def resolve_sites(self, info):
-        user = check_authentication(info.context.user)
-
         return Site.objects.filter(owner=user)
 
+    @login_required
     def resolve_site(self, info, slug):
-        user = check_authentication(info.context.user)
         site = Site.objects.filter(owner=user, slug=slug).first()
 
         return site if site else GraphQLError('No site found with that slug')
@@ -42,11 +39,9 @@ class CreateSite(graphene.Mutation):
     class Arguments:
         site = SiteInput(required=True)
 
+    @login_required
     def mutate(self, info, site):
-        user = check_authentication(info.context.user)
-
-        site = Site.create(owner=user, **site)
-        site.owner = user
+        site = Site.create(owner=info.context.user, **site)
         site.save()
         return CreateSite(site=site)
 
@@ -57,9 +52,8 @@ class UpdateSite(graphene.Mutation):
         site_id = graphene.Int(required=True)
         site = SiteInput(required=True)
 
+    @login_required
     def mutate(self, info, site_id, site):
-        check_authentication(info.context.user)
-
         site_obj = Site.objects.filter(id=site_id).first()
         if not site_obj:
             raise GraphQLError('Site does not exist')
@@ -76,9 +70,8 @@ class DeleteSite(graphene.Mutation):
     class Arguments:
         site_id = graphene.Int(required=True)
 
+    @login_required
     def mutate(self, info, site_id):
-        check_authentication(info.context.user)
-
         site_obj = Site.objects.filter(id=site_id).delete()
 
         return DeleteSite(site=site_obj)

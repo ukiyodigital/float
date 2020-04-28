@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default () => {
   const history = useHistory();
+  const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
   const { control, errors, handleSubmit } = useForm();
   const [login] = useMutation(Login, {
     onCompleted() {
@@ -63,6 +64,10 @@ export default () => {
   const onSubmit = ({ username, password }) => {
     tokenAuth({ variables: { username, password } });
   };
+
+  React.useEffect(() => {
+    if (isLoggedIn) history.push('/');
+  }, [history, isLoggedIn]);
 
   return (
     <Container component="main" maxWidth="xs">

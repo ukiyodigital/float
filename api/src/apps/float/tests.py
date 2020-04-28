@@ -1,18 +1,12 @@
 import json
 
-from rest_framework.test import APITestCase, APIClient
-
-from rest_framework.authtoken.models import Token
+from django.test import TestCase
 
 from apps.sites.models import Site
 from apps.pages.models import Page
 from apps.users.models import User
-from apps.users.serializers import UserSerializer, CreateUserSerializer
 
-class AppTestCase(APITestCase):
-    def setUp(self):
-        self.setUpAuthUser()
-
+class AppTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -54,7 +48,3 @@ class AppTestCase(APITestCase):
             page.save()
 
         return Page.objects.all()
-
-    def setUpAuthUser(self):
-        token, _ = Token.objects.get_or_create(user=self.users[0])
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)

@@ -78,8 +78,6 @@ export default () => {
     },
   });
 
-  console.log(graphQLErrors, networkError);
-
   const [usernameValue, setUsername] = React.useState('');
   const [passwordValue, setPassword] = React.useState('');
   const classes = useStyles();

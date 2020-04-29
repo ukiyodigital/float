@@ -12,7 +12,7 @@
   "scripts": {
     "lint": "esw --ext .jsx,.js ./src/",
     "lint:watch": "npm run lint -- --watch",
-    "dev": "node ./tools/devServer.js",
+    "dev": "APP_ENV=development node ./tools/devServer.js",
     "build": "babel-node ./tools/build.js",
     "build:test": "APP_ENV=test npm run build",
     "build:staging": "APP_ENV=staging npm run build",

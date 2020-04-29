@@ -6,16 +6,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
+import {
+  Avatar, Box, Button, Container, Grid, Link, TextField, Typography, FormHelperText,
+} from '@material-ui/core';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 
 import { GetToken, Login } from '_/apollo/mutations';
 import IsUserLoggedIn from '_/apollo/queries';
@@ -42,10 +38,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialState = { graphQLErrors: [], networkError: '' };
+
+const reducer = (state, { type, payload }) => {
+  switch (type) {
+    case 'graphQLErrors':
+      return { ...state, graphQLErrors: payload };
+    case 'networkError':
+      return { ...state, networkError: payload };
+    case 'reset':
+      return initialState;
+    default:
+      throw new Error();
+  }
+};
+
 export default () => {
   const history = useHistory();
-  const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
   const { control, errors, handleSubmit } = useForm();
+  const [{
+    graphQLErrors,
+    networkError,
+  }, dispatch] = React.useReducer(reducer, initialState);
+  const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
   const [login] = useMutation(Login, {
     onCompleted() {
       history.push('/');
@@ -55,13 +70,22 @@ export default () => {
     onCompleted({ tokenAuth: { token } }) {
       login({ variables: { token } });
     },
+    onError({ graphQLErrors: g, networkError: n }) {
+      if (g) {
+        dispatch({ type: 'graphQLErrors', payload: g.map(({ message }, i) => ({ key: i, message })) });
+      }
+      if (n) dispatch({ type: 'networkError', payload: 'A network error occurred, please try again.' });
+    },
   });
+
+  console.log(graphQLErrors, networkError);
 
   const [usernameValue, setUsername] = React.useState('');
   const [passwordValue, setPassword] = React.useState('');
   const classes = useStyles();
 
   const onSubmit = ({ username, password }) => {
+    dispatch({ type: 'reset' });
     tokenAuth({ variables: { username, password } });
   };
 
@@ -92,7 +116,7 @@ export default () => {
               setUsername(value);
               return value;
             }}
-            error={!!errors.username}
+            error={!!errors.username || !!graphQLErrors.length}
             helperText={errors.username?.message}
             rules={{ required: 'Username is required' }}
             label="Username"
@@ -110,7 +134,7 @@ export default () => {
               return value;
             }}
             rules={{ required: 'Password is required' }}
-            error={!!errors.password}
+            error={!!errors.password || !!graphQLErrors.length}
             helperText={errors.password?.message}
             defaultValue={passwordValue}
             variant="outlined"
@@ -120,6 +144,18 @@ export default () => {
             type="password"
             autoComplete="current-password"
           />
+          {graphQLErrors || networkError ? (
+            <>
+              {[...graphQLErrors].map(({ key, message }) => (
+                <FormHelperText error key={key}>
+                  {message}
+                </FormHelperText>
+              ))}
+              <FormHelperText error key="network-error">
+                {networkError}
+              </FormHelperText>
+            </>
+          ) : null}
           <Button
             type="submit"
             fullWidth

@@ -6,11 +6,11 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 import routes from '_/routing/routes';
 
-import IS_LOGGED_IN from '_/apollo/queries';
+import IsUserLoggedIn from '_/apollo/queries';
 
 
 const RouteNode = () => {
-  const { data: { isLoggedIn } } = useQuery(IS_LOGGED_IN);
+  const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
 
   return (
     <Switch>
@@ -22,9 +22,10 @@ const RouteNode = () => {
               {...route}
               component={null}
               key={route.name}
-              render={({ location }) => (
-                isLoggedIn ? (
-                  route.component
+              render={({ location }) => {
+                const Component = route.component;
+                return isLoggedIn ? (
+                  <Component />
                 ) : (
                   <Redirect
                     to={{
@@ -32,8 +33,8 @@ const RouteNode = () => {
                       state: { from: location },
                     }}
                   />
-                )
-              )}
+                );
+              }}
             />
           ) : (
             <Route

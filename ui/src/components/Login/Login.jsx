@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useForm, Controller } from 'react-hook-form';
+
+import { useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
@@ -15,7 +17,8 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 
-import TokenAuth from '_/apollo/mutations';
+import { GetToken, Login } from '_/apollo/mutations';
+import IsUserLoggedIn from '_/apollo/queries';
 
 import Copyright from '_/components/Common/Copyright/Copyright';
 
@@ -40,12 +43,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default () => {
-  const client = useApolloClient();
+  const history = useHistory();
+  const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
   const { control, errors, handleSubmit } = useForm();
-  const [tokenAuth] = useMutation(TokenAuth, {
+  const [login] = useMutation(Login, {
+    onCompleted() {
+      history.push('/');
+    },
+  });
+  const [tokenAuth] = useMutation(GetToken, {
     onCompleted({ tokenAuth: { token } }) {
-      localStorage.setItem('token', token);
-      client.writeData({ data: { isLoggedIn: true } });
+      login({ variables: { token } });
     },
   });
 
@@ -56,6 +64,10 @@ export default () => {
   const onSubmit = ({ username, password }) => {
     tokenAuth({ variables: { username, password } });
   };
+
+  React.useEffect(() => {
+    if (isLoggedIn) history.push('/');
+  }, [history, isLoggedIn]);
 
   return (
     <Container component="main" maxWidth="xs">

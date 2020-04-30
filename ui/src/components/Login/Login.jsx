@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Avatar, Box, Button, Container, Grid, Link, TextField, Typography, FormHelperText,
+  Avatar, Box, Button, Container, Grid, Link, Typography,
 } from '@material-ui/core';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -16,8 +16,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { GetToken, Login } from '_/apollo/mutations';
 import IsUserLoggedIn from '_/apollo/queries';
 
-import Copyright from '_/components/Common/Copyright/Copyright';
+import { useErrorState } from '_/hooks';
 
+import Copyright from '_/components/Common/Copyright/Copyright';
+import ErrorList from '_/components/Common/ErrorList/ErrorList';
+import Input from '_/components/Common/Input/Input';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,29 +41,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const initialState = { graphQLErrors: [], networkError: '' };
-
-const reducer = (state, { type, payload }) => {
-  switch (type) {
-    case 'graphQLErrors':
-      return { ...state, graphQLErrors: payload };
-    case 'networkError':
-      return { ...state, networkError: payload };
-    case 'reset':
-      return initialState;
-    default:
-      throw new Error();
-  }
-};
 
 export default () => {
   const history = useHistory();
-  const { control, errors, handleSubmit } = useForm();
-  const [{
-    graphQLErrors,
-    networkError,
-  }, dispatch] = React.useReducer(reducer, initialState);
+  const [errors, dispatch, onError] = useErrorState([]);
+  const { control, errors: formErrors, handleSubmit } = useForm();
   const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
+
   const [login] = useMutation(Login, {
     onCompleted() {
       history.push('/');
@@ -70,22 +57,30 @@ export default () => {
     onCompleted({ tokenAuth: { token } }) {
       login({ variables: { token } });
     },
-    onError({ graphQLErrors: g, networkError: n }) {
-      if (g) {
-        dispatch({ type: 'graphQLErrors', payload: g.map(({ message }, i) => ({ key: i, message })) });
-      }
-      if (n) dispatch({ type: 'networkError', payload: 'A network error occurred, please try again.' });
-    },
+    onError,
   });
-
-  const [usernameValue, setUsername] = React.useState('');
-  const [passwordValue, setPassword] = React.useState('');
-  const classes = useStyles();
 
   const onSubmit = ({ username, password }) => {
     dispatch({ type: 'reset' });
     tokenAuth({ variables: { username, password } });
   };
+
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const usernameField = {
+    name: 'username',
+    label: 'Username',
+    onChange: (value) => setUsername(value),
+  };
+  const passwordField = {
+    name: 'password',
+    label: 'Password',
+    type: 'password',
+    onChange: (value) => setPassword(value),
+  };
+
+  const classes = useStyles();
 
   React.useEffect(() => {
     if (isLoggedIn) history.push('/');
@@ -105,55 +100,24 @@ export default () => {
           onSubmit={handleSubmit((data) => onSubmit(data))}
           className={classes.form}
         >
-          <Controller
-            name="username"
-            as={TextField}
+          <Input
+            error={!!formErrors.username || !!errors.length}
+            field={usernameField}
+            message={formErrors.username?.message}
+            value={username}
             control={control}
-            defaultValue={usernameValue}
-            onChange={([value]) => {
-              setUsername(value);
-              return value;
-            }}
-            error={!!errors.username || !!graphQLErrors.length}
-            helperText={errors.username?.message}
             rules={{ required: 'Username is required' }}
-            label="Username"
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            autoFocus
           />
-          <Controller
-            name="password"
-            as={TextField}
+          <Input
+            error={!!formErrors.password || !!errors.length}
+            field={passwordField}
+            message={formErrors.password?.message}
+            value={password}
             control={control}
-            onChange={([value]) => {
-              setPassword(value);
-              return value;
-            }}
             rules={{ required: 'Password is required' }}
-            error={!!errors.password || !!graphQLErrors.length}
-            helperText={errors.password?.message}
-            defaultValue={passwordValue}
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            label="Password"
-            type="password"
             autoComplete="current-password"
           />
-          {graphQLErrors || networkError ? (
-            <>
-              {[...graphQLErrors].map(({ key, message }) => (
-                <FormHelperText error key={key}>
-                  {message}
-                </FormHelperText>
-              ))}
-              <FormHelperText error key="network-error">
-                {networkError}
-              </FormHelperText>
-            </>
-          ) : null}
+          <ErrorList errors={errors} />
           <Button
             type="submit"
             fullWidth

@@ -27,7 +27,7 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_sites(self, info):
-        return Site.objects.filter(owner=user)
+        return Site.objects.filter(owner=info.context.user)
 
     @login_required
     def resolve_site(self, info, slug):

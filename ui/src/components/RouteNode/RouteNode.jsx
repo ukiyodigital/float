@@ -6,7 +6,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 import routes from '_/routing/routes';
 
-import IsUserLoggedIn from '_/apollo/queries';
+import { IsUserLoggedIn } from '_/apollo/queries';
 
 
 const RouteNode = () => {

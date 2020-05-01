@@ -15,12 +15,13 @@ class Query(graphene.ObjectType):
     user = graphene.Field(UserType, id=graphene.Int(required=True))
     me = graphene.Field(UserType)
 
+    @login_required
     def resolve_user(self, info, id):
         return User.objects.get(id=id)
 
     @login_required
     def resolve_me(self, info):
-        return user
+        return info.context.user
 
 class CreateUser(graphene.Mutation):
     user = graphene.Field(UserType)

@@ -1,3 +1,19 @@
 query IsUserLoggedIn {
   isLoggedIn @client
 }
+
+query GetSites {
+  me {
+    username
+    firstName
+    lastName
+  }
+  sites {
+    id
+    name
+    slug
+    owner {
+      username
+    }
+  }
+}

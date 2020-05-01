@@ -17,8 +17,16 @@ const error = PropTypes.shape({
   errorType: PropTypes.string.isRequired,
 });
 
+const site = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  slug: PropTypes.string.isRequired,
+  owner: PropTypes.objectOf(PropTypes.string.isRequired),
+});
+
 
 export default {
   input,
   error,
+  site,
 };

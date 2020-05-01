@@ -15,7 +15,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import LogoutButton from '_/components/Layout/Navigation/LogoutButton/LogoutButton';
 
-import IsUserLoggedIn from '_/apollo/queries';
+import { IsUserLoggedIn } from '_/apollo/queries';
 
 const useStyles = makeStyles((theme) => ({
   root: {

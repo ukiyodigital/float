@@ -14,10 +14,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import { GetToken, Login } from '_/apollo/mutations';
-import IsUserLoggedIn from '_/apollo/queries';
+import { IsUserLoggedIn } from '_/apollo/queries';
 
 import { useErrorState } from '_/hooks';
 
+import Loading from '_/components/Common/Loading/Loading';
 import Copyright from '_/components/Common/Copyright/Copyright';
 import ErrorList from '_/components/Common/ErrorList/ErrorList';
 import Input from '_/components/Common/Input/Input';
@@ -53,7 +54,7 @@ export default () => {
       history.push('/');
     },
   });
-  const [tokenAuth] = useMutation(GetToken, {
+  const [tokenAuth, { loading }] = useMutation(GetToken, {
     onCompleted({ tokenAuth: { token } }) {
       login({ variables: { token } });
     },
@@ -87,58 +88,61 @@ export default () => {
   }, [history, isLoggedIn]);
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form
-          onSubmit={handleSubmit((data) => onSubmit(data))}
-          className={classes.form}
-        >
-          <Input
-            error={!!formErrors.username || !!errors.length}
-            field={usernameField}
-            message={formErrors.username?.message}
-            value={username}
-            control={control}
-            rules={{ required: 'Username is required' }}
-          />
-          <Input
-            error={!!formErrors.password || !!errors.length}
-            field={passwordField}
-            message={formErrors.password?.message}
-            value={password}
-            control={control}
-            rules={{ required: 'Password is required' }}
-            autoComplete="current-password"
-          />
-          <ErrorList errors={errors} />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
+    <>
+      <Loading loading={loading} />
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <form
+            onSubmit={handleSubmit((data) => onSubmit(data))}
+            className={classes.form}
           >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item>
-              <Link href="/signup" variant="body2">
-                Don&apos;t have an account? Sign Up
-              </Link>
+            <Input
+              error={!!formErrors.username || !!errors.length}
+              field={usernameField}
+              message={formErrors.username?.message}
+              value={username}
+              control={control}
+              rules={{ required: 'Username is required' }}
+            />
+            <Input
+              error={!!formErrors.password || !!errors.length}
+              field={passwordField}
+              message={formErrors.password?.message}
+              value={password}
+              control={control}
+              rules={{ required: 'Password is required' }}
+              autoComplete="current-password"
+            />
+            <ErrorList errors={errors} />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item>
+                <Link href="/signup" variant="body2">
+                  Don&apos;t have an account? Sign Up
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
+          </form>
+        </div>
+        <Box mt={8}>
+          <Copyright />
+        </Box>
+      </Container>
+    </>
   );
 };

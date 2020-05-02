@@ -3,25 +3,33 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery } from '@apollo/react-hooks';
 
-import { Grid, Typography } from '@material-ui/core';
+import {
+  Fab, Grid, Typography,
+} from '@material-ui/core';
+import { Add } from '@material-ui/icons';
 
 import { GetSites } from '_/apollo/queries';
 
+import Link from '_/components/Common/Link/Link';
 import Loading from '_/components/Common/Loading/Loading';
 import SiteCard from '_/components/Common/SiteCard/SiteCard';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: 25,
+    position: 'relative',
   },
-});
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
+}));
 
 const Sites = () => {
   const classes = useStyles();
   const {
     loading,
     data: {
-      me = {},
       sites = [],
     } = {},
   } = useQuery(GetSites);
@@ -29,20 +37,32 @@ const Sites = () => {
   return loading ? (
     <Loading loading={loading} />
   ) : (
-    <Grid container spacing={2} className={classes.root}>
-      <Typography variant="h2">
-        {me.username}
-      </Typography>
-      <Grid item xs={12}>
-        <Grid container spacing={2}>
-          {sites.map((site) => (
-            <Grid key={site.id} item>
-              <SiteCard site={site} />
-            </Grid>
-          ))}
+    <>
+      <Grid container spacing={2} className={classes.root}>
+        <Typography variant="h2">
+          Sites
+        </Typography>
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            {sites.map((site) => (
+              <Grid key={site.id} item>
+                <SiteCard site={site} />
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+      <Fab
+        component={Link}
+        to="/sites/create"
+        color="primary"
+        variant="extended"
+        className={classes.fab}
+      >
+        <Add />
+        Create New Site
+      </Fab>
+    </>
   );
 };
 

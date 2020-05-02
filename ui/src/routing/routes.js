@@ -2,10 +2,14 @@ import Login from '_/components/Login/Login';
 import Signup from '_/components/Signup/Signup';
 
 import Sites from '_/components/Sites/Sites';
+import CreateSite from '_/components/CreateSite/CreateSite';
 
 export default [
   {
-    name: 'home', path: '/', exact: true, component: Sites, loginRequired: true,
+    name: 'sites', path: '/', exact: true, component: Sites, loginRequired: true,
+  },
+  {
+    name: 'create-site', path: '/sites/create', exact: true, component: CreateSite, loginRequired: true,
   },
   {
     name: 'login', path: '/login', exact: true, component: Login,

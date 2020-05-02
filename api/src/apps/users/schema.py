@@ -4,6 +4,7 @@ from graphene_django import DjangoObjectType
 
 from graphql import GraphQLError
 from graphql_jwt.decorators import login_required
+from graphql_jwt.shortcuts import get_token
 
 from apps.users.models import User
 
@@ -24,7 +25,7 @@ class Query(graphene.ObjectType):
         return info.context.user
 
 class CreateUser(graphene.Mutation):
-    user = graphene.Field(UserType)
+    token = graphene.Field(graphene.String)
 
     class Arguments:
         first_name = graphene.String(required=True)
@@ -43,7 +44,9 @@ class CreateUser(graphene.Mutation):
 
         user.set_password(password)
         user.save()
-        return CreateUser(user=user)
+        token = get_token(user)
+        return CreateUser(token=token)
+
 
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()

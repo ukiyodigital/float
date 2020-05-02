@@ -1,20 +1,25 @@
 import React from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  Avatar, Box, Button, Container, Grid, Link, Typography,
+} from '@material-ui/core';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
+import { IsUserLoggedIn } from '_/apollo/queries';
+import { Login, Signup as CreateUser } from '_/apollo/mutations';
+
+import { useErrorState } from '_/hooks';
+
+import Loading from '_/components/Common/Loading/Loading';
 import Copyright from '_/components/Common/Copyright/Copyright';
+import ErrorList from '_/components/Common/ErrorList/ErrorList';
+import Input from '_/components/Common/Input/Input';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,78 +41,182 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialState = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  username: '',
+  password: '',
+  confirmPassword: '',
+};
+
+const reducer = (state, { type, payload }) => {
+  switch (type) {
+    case 'firstName':
+      return { ...state, firstName: payload };
+    case 'lastName':
+      return { ...state, lastName: payload };
+    case 'email':
+      return { ...state, lastName: payload };
+    case 'username':
+      return { ...state, lastName: payload };
+    case 'password':
+      return { ...state, lastName: payload };
+    case 'confirmPassword':
+      return { ...state, lastName: payload };
+    default:
+      throw new Error();
+  }
+};
+
 export default () => {
   const classes = useStyles();
+  const history = useHistory();
+  const {
+    control, errors: formErrors, handleSubmit, watch,
+  } = useForm();
+  const [errors, handleError, onError] = useErrorState([]);
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
+
+  const [login] = useMutation(Login, {
+    onCompleted() {
+      history.push('/');
+    },
+  });
+
+  const [createUser, { loading }] = useMutation(CreateUser, {
+    onCompleted({ createUser: { token } }) {
+      login({ variables: { token } });
+    },
+    onError,
+  });
+
+  const onSubmit = ({ confirmPassword, ...data }) => {
+    handleError({ type: 'reset' });
+    createUser({ variables: { ...data } });
+  };
+
+  React.useEffect(() => {
+    if (isLoggedIn) history.push('/');
+  }, [history, isLoggedIn]);
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign Up
-        </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="confirm-password"
-            label="Confirm Password"
-            type="password"
-            id="confirm-password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
+    <>
+      <Loading loading={loading} />
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
             Sign Up
-          </Button>
-          <Grid container>
-            <Grid item>
-              <Link href="/login" variant="body2">
-                Have an account? Sign In
-              </Link>
+          </Typography>
+          <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+            <Input
+              error={!!formErrors.firstName || !!errors.length}
+              field={{
+                name: 'firstName',
+                label: 'First Name',
+                onChange: (value) => dispatch({ type: 'firstName', payload: value }),
+              }}
+              message={formErrors.firstName?.message}
+              value={state.firstName}
+              control={control}
+              rules={{ required: 'First Name is required' }}
+              autoFocus
+            />
+            <Input
+              error={!!formErrors.lastName || !!errors.length}
+              field={{
+                name: 'lastName',
+                label: 'Last Name',
+                onChange: (value) => dispatch({ type: 'lastName', payload: value }),
+              }}
+              message={formErrors.lastName?.message}
+              value={state.lastName}
+              control={control}
+              rules={{ required: 'Last Name is required' }}
+            />
+            <Input
+              error={!!formErrors.username || !!errors.length}
+              field={{
+                name: 'username',
+                label: 'Username',
+                onChange: (value) => dispatch({ type: 'username', payload: value }),
+              }}
+              message={formErrors.username?.message}
+              value={state.username}
+              control={control}
+              rules={{ required: 'Username is required' }}
+            />
+            <Input
+              error={!!formErrors.email || !!errors.length}
+              field={{
+                name: 'email',
+                label: 'Email',
+                onChange: (value) => dispatch({ type: 'email', payload: value }),
+              }}
+              message={formErrors.email?.message}
+              value={state.email}
+              control={control}
+              rules={{ required: 'Email is required' }}
+            />
+            <Input
+              error={!!(formErrors.password || formErrors.confirmPassword) || !!errors.length}
+              field={{
+                name: 'password',
+                label: 'Password',
+                type: 'password',
+                onChange: (value) => dispatch({ type: 'password', payload: value }),
+              }}
+              message={formErrors.password?.message}
+              value={state.password}
+              control={control}
+              rules={{ required: 'Password is required' }}
+              autoComplete="current-password"
+            />
+            <Input
+              error={!!(formErrors.password || formErrors.confirmPassword) || !!errors.length}
+              field={{
+                name: 'confirmPassword',
+                label: 'Confirm Password',
+                type: 'password',
+                onChange: (value) => dispatch({ type: 'confirmPassword', payload: value }),
+              }}
+              message={formErrors.confirmPassword?.message}
+              value={state.confirmPassword}
+              control={control}
+              rules={{
+                required: 'You must confirm password',
+                validate: (value) => value === watch('password') || 'Passwords do not match',
+              }}
+              autoComplete="current-password"
+            />
+            <ErrorList errors={errors} />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign Up
+            </Button>
+            <Grid container>
+              <Grid item>
+                <Link href="/login" variant="body2">
+                  Have an account? Sign In
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
+          </form>
+        </div>
+        <Box mt={8}>
+          <Copyright />
+        </Box>
+      </Container>
+    </>
   );
 };

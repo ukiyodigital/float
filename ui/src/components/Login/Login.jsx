@@ -110,6 +110,7 @@ export default () => {
               value={username}
               control={control}
               rules={{ required: 'Username is required' }}
+              autoFocus
             />
             <Input
               error={!!formErrors.password || !!errors.length}

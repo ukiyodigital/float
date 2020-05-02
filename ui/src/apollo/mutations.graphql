@@ -13,3 +13,9 @@ mutation Logout {
 mutation Login($token: String!) {
   loginUser(token: $token) @client
 }
+
+mutation Signup($email: String!, $firstName: String!, $lastName: String!, $username: String!, $password: String!) {
+  createUser(email: $email, firstName: $firstName, lastName: $lastName, username: $username, password: $password) {
+    token
+  }
+}

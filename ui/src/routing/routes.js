@@ -12,7 +12,7 @@ export default [
     name: 'create-site', path: '/create', exact: true, component: CreateSite, loginRequired: true,
   },
   {
-    name: 'site-detail', path: '/:siteSlug', exact: true, component: SiteDetail, loginRequired: true,
+    name: 'site-detail', path: '/:siteSlug', exact: true, component: , loginRequired: true,
   },
   {
     name: 'login', path: '/login', exact: true, component: Login,

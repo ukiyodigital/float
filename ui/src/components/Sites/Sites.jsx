@@ -19,9 +19,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
   fab: {
-    position: 'absolute',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
+    position: 'fixed',
+    bottom: theme.spacing(5),
+    right: theme.spacing(5),
   },
 }));
 
@@ -55,7 +55,7 @@ const Sites = () => {
       </Grid>
       <Fab
         component={Link}
-        to="/sites/create"
+        to="/create"
         color="primary"
         variant="extended"
         className={classes.fab}

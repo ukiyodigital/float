@@ -5,28 +5,62 @@ import {
   Card, CardActions, CardHeader, Typography,
 } from '@material-ui/core';
 
+import Link from '_/components/Common/Link/Link';
+
 import AppPropTypes from '_/proptypes';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
+    textDecoration: 'none',
+    cursor: 'pointer',
     display: 'grid',
     padding: '0 20px',
     width: 200,
     height: 200,
+    '&:hover': {
+      backgroundColor: 'black',
+      color: theme.color,
+      transition: '0.25s all',
+    },
   },
-  owner: {
+  title: ({ hover }) => ({
+    color: hover ? 'white' : 'inherit',
+    transition: '0.25s all',
+  }),
+  subheader: ({ hover }) => ({
+    color: hover ? 'white' : 'inherit',
+    transition: '0.25s all',
+  }),
+  owner: ({ hover }) => ({
+    color: hover ? 'white' : 'inherit',
+    transition: '0.25s all',
     display: 'flex',
     justifyContent: 'space-betwween',
-  },
-});
+  }),
+}));
 
 const SiteCard = ({ site }) => {
-  const classes = useStyles();
+  const [hover, setHover] = React.useState(false);
+  const classes = useStyles({ hover });
 
   return (
-    <Card className={classes.root}>
+    <Card
+      component={Link}
+      to={`/${site.slug}`}
+      className={classes.root}
+      onMouseOver={() => setHover(true)}
+      onFocus={() => setHover(true)}
+      onMouseOut={() => setHover(false)}
+      onBlur={() => setHover(false)}
+    >
       <CardHeader
         title={site.name}
+        titleTypographyProps={{
+          className: classes.title,
+        }}
+        subheaderTypographyProps={{
+          className: classes.subheader,
+        }}
         subheader={site.slug}
       />
 

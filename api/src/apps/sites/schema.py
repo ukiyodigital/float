@@ -31,7 +31,7 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_site(self, info, slug):
-        site = Site.objects.filter(owner=user, slug=slug).first()
+        site = Site.objects.filter(owner=info.context.user, slug=slug).first()
 
         return site if site else GraphQLError('No site found with that slug')
 

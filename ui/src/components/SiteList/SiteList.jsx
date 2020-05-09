@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Sites = () => {
+const SiteList = () => {
   const classes = useStyles();
 
   const {
@@ -36,7 +36,7 @@ const Sites = () => {
   } = useQuery(GetSites);
 
   return loading ? (
-    <Loading loading={loading} />
+    <Loading loading />
   ) : (
     <>
       <Grid container spacing={2} className={classes.root}>
@@ -67,4 +67,4 @@ const Sites = () => {
   );
 };
 
-export default Sites;
+export default SiteList;

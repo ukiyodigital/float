@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default () => {
+  console.log('trying to run');
   const history = useHistory();
   const [errors, dispatch, onError] = useErrorState([]);
   const { control, errors: formErrors, handleSubmit } = useForm();
@@ -51,7 +52,7 @@ export default () => {
 
   const [login] = useMutation(Login, {
     onCompleted() {
-      history.push('/');
+      history.push('/site');
     },
   });
   const [tokenAuth, { loading }] = useMutation(GetToken, {
@@ -84,7 +85,7 @@ export default () => {
   const classes = useStyles();
 
   React.useEffect(() => {
-    if (isLoggedIn) history.push('/');
+    if (isLoggedIn) history.push('/site');
   }, [history, isLoggedIn]);
 
   return (

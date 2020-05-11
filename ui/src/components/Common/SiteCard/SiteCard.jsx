@@ -46,7 +46,7 @@ const SiteCard = ({ site }) => {
   return (
     <Card
       component={Link}
-      to={`/${site.slug}`}
+      to={`/site/${site.slug}`}
       className={classes.root}
       onMouseOver={() => setHover(true)}
       onFocus={() => setHover(true)}

@@ -51,7 +51,7 @@ const CreateSiteForm = () => {
 
   const [createSite] = useMutation(CreateSite, {
     onCompleted() {
-      history.push('/');
+      history.push('/site');
     },
     onError,
   });

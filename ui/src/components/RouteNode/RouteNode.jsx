@@ -44,7 +44,8 @@ const RouteNode = () => {
               component={route.component}
               name={route.name}
             />
-          )),
+          )
+        ),
       )}
     </Switch>
   );

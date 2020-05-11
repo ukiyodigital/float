@@ -7,13 +7,13 @@ import CreateSite from '_/components/CreateSite/CreateSite';
 
 export default [
   {
-    name: 'sites', path: '/', exact: true, component: SiteList, loginRequired: true,
+    name: 'sites', path: '/site', exact: true, component: SiteList, loginRequired: true,
   },
   {
-    name: 'create-site', path: '/create', exact: true, component: CreateSite, loginRequired: true,
+    name: 'create-site', path: '/site/create', exact: true, component: CreateSite, loginRequired: true,
   },
   {
-    name: 'site-detail', path: '/:siteSlug', exact: true, component: SiteDetail, loginRequired: true,
+    name: 'site-detail', path: '/site/:siteSlug', exact: true, component: SiteDetail, loginRequired: true,
   },
   {
     name: 'login', path: '/login', exact: true, component: Login,

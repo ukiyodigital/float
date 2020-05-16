@@ -50,7 +50,7 @@ const SiteDetail = () => {
 
   return loading ? <Loading loading /> : (
     <Container className={classes.root}>
-      <Grid spacing={3}>
+      <Grid>
         <Typography variant="h2">
           {site.name}
         </Typography>
@@ -73,7 +73,7 @@ const SiteDetail = () => {
         </Grid>
       </Grid>
       <Divider className={classes.divider} />
-      <Grid spacing={3}>
+      <Grid>
         <Grid item xs={12}>
           <Grid container spacing={3} justify="space-between">
             <Grid item xs={3}>

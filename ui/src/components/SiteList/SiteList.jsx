@@ -55,7 +55,7 @@ const SiteList = () => {
       </Grid>
       <Fab
         component={Link}
-        to="/create"
+        to="/site/create"
         color="primary"
         variant="extended"
         className={classes.fab}

@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default () => {
-  console.log('trying to run');
   const history = useHistory();
   const [errors, dispatch, onError] = useErrorState([]);
   const { control, errors: formErrors, handleSubmit } = useForm();

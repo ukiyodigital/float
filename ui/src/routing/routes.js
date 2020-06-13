@@ -5,7 +5,9 @@ import SiteList from '_/components/SiteList/SiteList';
 import SiteDetail from '_/components/SiteDetail/SiteDetail';
 import CreateSite from '_/components/CreateSite/CreateSite';
 
-export default [
+export const defaultPath = '/site';
+
+export const routes = [
   {
     name: 'sites', path: '/site', exact: true, component: SiteList, loginRequired: true,
   },
@@ -22,3 +24,8 @@ export default [
     name: 'signup', path: '/signup', exact: true, component: Signup,
   },
 ];
+
+export default {
+  defaultPath,
+  routes,
+};

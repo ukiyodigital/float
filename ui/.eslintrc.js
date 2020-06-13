@@ -3,15 +3,12 @@ module.exports = {
   extends: [
     "airbnb",
     "airbnb/hooks",
+    "plugin:jest/recommended",
   ],
   plugins: [
     "babel",
     "jest",
   ],
-  env: {
-    browser: true,
-    "jest/globals": true,
-  },
   rules: {
     "camelcase": ["off"],
     "babel/camelcase": ["error"],

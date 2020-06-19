@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ import { Button, Container, Typography } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
 import { CreateSite } from '_/apollo/mutations';
+import { GetSites } from '_/apollo/queries';
 
 import { useErrorState } from '_/hooks';
 
@@ -44,6 +45,7 @@ const CreateSiteForm = () => {
   const classes = useStyles();
   const history = useHistory();
   const [errors, handleError, onError] = useErrorState([]);
+  const { refetch } = useQuery(GetSites);
   const {
     control, errors: formErrors, reset, handleSubmit,
   } = useForm();
@@ -51,7 +53,8 @@ const CreateSiteForm = () => {
 
   const [createSite] = useMutation(CreateSite, {
     onCompleted() {
-      history.push('/');
+      refetch();
+      history.push('/site');
     },
     onError,
   });

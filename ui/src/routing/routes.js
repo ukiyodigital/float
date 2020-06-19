@@ -1,15 +1,21 @@
 import Login from '_/components/Login/Login';
 import Signup from '_/components/Signup/Signup';
 
-import Sites from '_/components/Sites/Sites';
+import SiteList from '_/components/SiteList/SiteList';
+import SiteDetail from '_/components/SiteDetail/SiteDetail';
 import CreateSite from '_/components/CreateSite/CreateSite';
 
-export default [
+export const defaultPath = '/site';
+
+export const routes = [
   {
-    name: 'sites', path: '/', exact: true, component: Sites, loginRequired: true,
+    name: 'sites', path: '/site', exact: true, component: SiteList, loginRequired: true,
   },
   {
-    name: 'create-site', path: '/sites/create', exact: true, component: CreateSite, loginRequired: true,
+    name: 'create-site', path: '/site/create', exact: true, component: CreateSite, loginRequired: true,
+  },
+  {
+    name: 'site-detail', path: '/site/:siteSlug', exact: true, component: SiteDetail, loginRequired: true,
   },
   {
     name: 'login', path: '/login', exact: true, component: Login,
@@ -18,3 +24,8 @@ export default [
     name: 'signup', path: '/signup', exact: true, component: Signup,
   },
 ];
+
+export default {
+  defaultPath,
+  routes,
+};

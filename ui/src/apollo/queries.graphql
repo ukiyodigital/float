@@ -3,17 +3,36 @@ query IsUserLoggedIn {
 }
 
 query GetSites {
-  me {
-    username
-    firstName
-    lastName
-  }
   sites {
     id
     name
     slug
     owner {
       username
+    }
+  }
+}
+
+query GetSite($slug: String!) {
+  site (slug: $slug) {
+    id
+    name
+    slug
+    apiKey {
+      key
+    }
+    owner {
+      username
+    }
+    pages {
+      id
+      name
+      slug
+    }
+    flocks {
+      id
+      name
+      slug
     }
   }
 }

@@ -19,13 +19,13 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
   fab: {
-    position: 'absolute',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
+    position: 'fixed',
+    bottom: theme.spacing(5),
+    right: theme.spacing(5),
   },
 }));
 
-const Sites = () => {
+const SiteList = () => {
   const classes = useStyles();
 
   const {
@@ -36,7 +36,7 @@ const Sites = () => {
   } = useQuery(GetSites);
 
   return loading ? (
-    <Loading loading={loading} />
+    <Loading loading />
   ) : (
     <>
       <Grid container spacing={2} className={classes.root}>
@@ -55,7 +55,7 @@ const Sites = () => {
       </Grid>
       <Fab
         component={Link}
-        to="/sites/create"
+        to="/site/create"
         color="primary"
         variant="extended"
         className={classes.fab}
@@ -67,4 +67,4 @@ const Sites = () => {
   );
 };
 
-export default Sites;
+export default SiteList;

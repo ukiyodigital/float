@@ -10,7 +10,7 @@
     "url": ""
   },
   "scripts": {
-    "lint": "esw --ext .jsx,.js ./src/",
+    "lint": "eslint --ext .jsx,.js ./src/",
     "lint:watch": "npm run lint -- --watch",
     "dev": "APP_ENV=development node ./tools/devServer.js",
     "build": "babel-node ./tools/build.js",
@@ -67,6 +67,6 @@
     "style-loader": "~0.23.1",
     "url-loader": "~1.1.2",
     "webpack": "^4.43.0",
-    "webpack-dev-server": "^3.7.2"
+    "webpack-dev-server": "^3.11.0"
   }
 }

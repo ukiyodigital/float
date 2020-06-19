@@ -3,6 +3,7 @@ module.exports = {
   extends: [
     "airbnb",
     "airbnb/hooks",
+    "plugin:jest/recommended",
   ],
   plugins: [
     "babel",
@@ -10,7 +11,6 @@ module.exports = {
   ],
   env: {
     browser: true,
-    "jest/globals": true,
   },
   rules: {
     "camelcase": ["off"],

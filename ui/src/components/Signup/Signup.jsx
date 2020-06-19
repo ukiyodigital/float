@@ -81,7 +81,7 @@ export default () => {
 
   const [login] = useMutation(Login, {
     onCompleted() {
-      history.push('/');
+      history.push('/site');
     },
   });
 
@@ -98,7 +98,7 @@ export default () => {
   };
 
   React.useEffect(() => {
-    if (isLoggedIn) history.push('/');
+    if (isLoggedIn) history.push('/site');
   }, [history, isLoggedIn]);
 
   return (

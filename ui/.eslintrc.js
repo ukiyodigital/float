@@ -9,6 +9,9 @@ module.exports = {
     "babel",
     "jest",
   ],
+  env: {
+    browser: true,
+  },
   rules: {
     "camelcase": ["off"],
     "babel/camelcase": ["error"],

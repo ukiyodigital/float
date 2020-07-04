@@ -2,11 +2,12 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery } from '@apollo/react-hooks';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import {
-  Container, Divider, Grid, Typography, Paper,
+  Button, Container, Divider, Grid, Typography, Paper,
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 
 import { GetSite } from '_/apollo/queries';
 
@@ -67,7 +68,23 @@ const SiteDetail = () => {
               </Paper>
             </Grid>
             <Grid item xs={8}>
-              <Paper className={classes.paper}>Test</Paper>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>Test</Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    component={Link}
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    to={`/site/${site.slug}/page`}
+                  >
+                    <AddIcon />
+                    New Page
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
@@ -87,7 +104,23 @@ const SiteDetail = () => {
               </Paper>
             </Grid>
             <Grid item xs={8}>
-              <Paper className={classes.paper}>Test</Paper>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>Test</Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    component={Link}
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    to={`/site/${site.slug}/collection`}
+                  >
+                    <AddIcon />
+                    New Collection
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

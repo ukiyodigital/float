@@ -2,13 +2,13 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Container } from '@material-ui/core';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import AppDrawer from '_/components/Layout/Navigation/Drawer/Drawer';
-import TopNav from '_/components/Layout/Navigation/Navigation';
+import TopNav from '_/components/Layout/Navigation/TopNav/TopNav';
 import RouteNode from '_/components/RouteNode/RouteNode';
 
-import { routes } from '_/routing/routes';
+import { routes, defaultPath } from '_/routing/routes';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,6 +60,13 @@ export default () => {
                 <RouteNode />
               </Container>
             </>
+          </Route>
+          {/* Catch All for redirecting bad routes */}
+          <Route
+            exact
+            path="/"
+          >
+            <Redirect to={defaultPath} />
           </Route>
         </Switch>
       </div>

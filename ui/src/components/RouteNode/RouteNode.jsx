@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import { routes, defaultPath } from '_/routing/routes';
+import { routes } from '_/routing/routes';
 
 import { IsUserLoggedIn } from '_/apollo/queries';
 
@@ -47,12 +47,6 @@ const RouteNode = () => {
           )
         ),
       )}
-      <Route
-        exact
-        path="/"
-      >
-        <Redirect to={defaultPath} />
-      </Route>
     </Switch>
   );
 };

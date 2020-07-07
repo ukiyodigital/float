@@ -29,11 +29,16 @@ const SiteList = () => {
   const classes = useStyles();
 
   const {
+    refetch,
     loading,
     data: {
       sites = [],
     } = {},
   } = useQuery(GetSites);
+
+  React.useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return loading ? (
     <Loading loading />

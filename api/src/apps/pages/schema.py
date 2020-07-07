@@ -15,9 +15,6 @@ from apps.pages.models import Page, PageColumnHeader
 from apps.sites.models import Site
 
 
-class PageInput(graphene.InputObjectType):
-    name = graphene.String(required=True)
-    slug = graphene.String(required=True)
 
 
 class ColumnInput(graphene.InputObjectType):
@@ -29,6 +26,10 @@ class ColumnInput(graphene.InputObjectType):
     # JSON object that gets parsed after sending to graphql
     data = graphene.String()
 
+class PageInput(graphene.InputObjectType):
+    name = graphene.String(required=True)
+    slug = graphene.String(required=True)
+    columns = graphene.List(ColumnInput)
 
 class PageType(DjangoObjectType):
     class Meta:

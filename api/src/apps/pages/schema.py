@@ -15,8 +15,6 @@ from apps.pages.models import Page, PageColumnHeader
 from apps.sites.models import Site
 
 
-
-
 class ColumnInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
@@ -66,8 +64,19 @@ class CreatePage(graphene.Mutation):
             raise GraphQLError('Site does not exist')
 
         try:
+            columns = page.pop("columns", None)
             page = Page(site=site, **page)
             page.save()
+            if columns:
+                cols = PageColumnHeader.objects.bulk_create([
+                    PageColumnHeader(
+                        **c,
+                        page_id=page.id,
+                        data=json.loads(c.data or "{}"),
+                    )
+                    for c in columns
+                ])
+                page.columns.set(cols)
         except IntegrityError as e:
             raise GraphQLError('Could not save with given slug and owner')
 

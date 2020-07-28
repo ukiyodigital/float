@@ -111,6 +111,9 @@ export default () => {
               control={control}
               rules={{ required: 'Username is required' }}
               autoFocus
+              variant="outlined"
+              margin="normal"
+              fullWidth
             />
             <Input
               error={!!formErrors.password || !!errors.length}
@@ -120,6 +123,9 @@ export default () => {
               control={control}
               rules={{ required: 'Password is required' }}
               autoComplete="current-password"
+              variant="outlined"
+              margin="normal"
+              fullWidth
             />
             <ErrorList errors={errors} />
             <Button

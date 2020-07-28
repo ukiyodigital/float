@@ -19,13 +19,7 @@ export const routes = [
     name: 'site-detail', path: '/site/:siteSlug', exact: true, component: SiteDetail, loginRequired: true,
   },
   {
-    hash: 'create-page', name: 'create-page', path: '/site/:siteSlug/page', exact: true, component: EditPage, sidebar: true,
-  },
-  {
-    hash: 'create-collection', name: 'create-page', path: '/site/:siteSlug/collection', exact: true, component: EditPage, sidebar: true,
-  },
-  {
-    name: 'edit-page', path: '/site/:siteSlug/page/:pageSlug', exact: true, component: EditPage, sidebar: true,
+    name: 'edit-page', path: '/site/:siteSlug/page/:pageSlug/edit', exact: true, component: EditPage, sidebar: true, loginRequired: true,
   },
   {
     name: 'login', path: '/login', exact: true, component: Login,

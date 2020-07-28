@@ -40,6 +40,11 @@ class PageColumnHeaderType(DjangoObjectType):
     class Meta:
         model = PageColumnHeader
 
+    value = graphene.String()
+
+    def resolve_value(self, info):
+        return self.data.value if "value" in self.data else ""
+
 
 class Query(graphene.ObjectType):
     page = graphene.Field(PageType, site_slug=graphene.String(required=True), page_slug=graphene.String(required=True))

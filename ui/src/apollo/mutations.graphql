@@ -25,6 +25,16 @@ mutation CreateSite($site: SiteInput!) {
   }
 }
 
+mutation CreatePage($page: PageInput!, $siteId: Int!) {
+  createPage(page: $page, siteId: $siteId) {
+    page {
+      id
+      name
+      slug
+    }
+  }
+}
+
 # client mutations
 mutation Logout {
   logoutUser @client

@@ -126,6 +126,9 @@ export default () => {
               control={control}
               rules={{ required: 'First Name is required' }}
               autoFocus
+              variant="outlined"
+              margin="normal"
+              fullWidth
             />
             <Input
               error={!!formErrors.lastName || !!errors.length}
@@ -138,6 +141,9 @@ export default () => {
               value={state.lastName}
               control={control}
               rules={{ required: 'Last Name is required' }}
+              variant="outlined"
+              margin="normal"
+              fullWidth
             />
             <Input
               error={!!formErrors.username || !!errors.length}
@@ -150,6 +156,9 @@ export default () => {
               value={state.username}
               control={control}
               rules={{ required: 'Username is required' }}
+              variant="outlined"
+              margin="normal"
+              fullWidth
             />
             <Input
               error={!!formErrors.email || !!errors.length}
@@ -162,6 +171,9 @@ export default () => {
               value={state.email}
               control={control}
               rules={{ required: 'Email is required' }}
+              variant="outlined"
+              margin="normal"
+              fullWidth
             />
             <Input
               error={!!(formErrors.password || formErrors.confirmPassword) || !!errors.length}
@@ -176,6 +188,9 @@ export default () => {
               control={control}
               rules={{ required: 'Password is required' }}
               autoComplete="current-password"
+              variant="outlined"
+              margin="normal"
+              fullWidth
             />
             <Input
               error={!!(formErrors.password || formErrors.confirmPassword) || !!errors.length}
@@ -193,6 +208,8 @@ export default () => {
                 validate: (value) => value === watch('password') || 'Passwords do not match',
               }}
               autoComplete="current-password"
+              margin="normal"
+              fullWidth
             />
             <ErrorList errors={errors} />
             <Button

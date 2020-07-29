@@ -15,14 +15,16 @@ import { GetPage } from '_/apollo/queries';
 import { UpdatePage } from '_/apollo/mutations';
 
 import {
-  Button, Grid, Snackbar, Switch, Typography, TextField,
+  Button, Grid, Snackbar, Switch, Typography,
 } from '@material-ui/core';
-
 import MuiAlert from '@material-ui/lab/Alert';
+
 
 import AddIcon from '@material-ui/icons/Add';
 
 import FieldRow from '_/components/Common/FieldRow/FieldRow';
+import FieldSwitcher from '_/components/Common/FieldSwitcher/FieldSwitcher';
+
 
 const useStyles = makeStyles(() => ({
   buttonContainer: {
@@ -127,20 +129,14 @@ const EditPage = ({ page, updatePage }) => {
           Save
         </Button>
       </div>
-      {showValues ? (
-        columns.map((column) => (
-          <TextField
-            key={column.id}
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            control={control}
-            label={column.name}
-            defaultValue={column.value}
-            onChange={(e) => updateColumn({ ...column, value: e.target.value })}
-          />
-        ))
-      ) : (
+      {showValues ? columns.map((column) => (
+        <FieldSwitcher
+          key={column.id}
+          column={column}
+          control={control}
+          updateColumn={updateColumn}
+        />
+      )) : (
         <>
           {columns.map((column) => (
             <FieldRow

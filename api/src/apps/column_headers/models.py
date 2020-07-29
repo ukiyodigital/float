@@ -3,13 +3,13 @@ from django.core.validators import validate_slug
 
 class ColumnHeaderField:
     TEXT = "TEXT"
-    RICH_TEXT = "RICH_TEXT"
+    MARKDOWN = "MARKDOWN"
     IMAGE = "IMAGE"
 
     CHOICES = (
         (TEXT, "Text"),
         (IMAGE, "Image"),
-        (RICH_TEXT, "Rich Text"),
+        (MARKDOWN, "Markdown"),
     )
 
 class ColumnHeader(models.Model):

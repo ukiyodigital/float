@@ -49,20 +49,11 @@ const FieldSelect = ({ selectedField, onChange }) => {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const getIcon = () => {
-    let Icon = null;
-    switch (selectedField) {
-      case 'TEXT':
-        Icon = TitleIcon;
-        break;
-      case 'IMAGE':
-        Icon = ImageIcon;
-        break;
-      case 'RICH_TEXT':
-        Icon = CodeIcon;
-        break;
-      default:
-        throw new Error();
-    }
+    const Icon = {
+      TEXT: TitleIcon,
+      IMAGE: ImageIcon,
+      MARKDOWN: CodeIcon,
+    }[selectedField];
     return <Icon className={classes.icon} onClick={() => setOpen(true)} />;
   };
 
@@ -86,10 +77,10 @@ const FieldSelect = ({ selectedField, onChange }) => {
             Text
           </div>
         </MenuItem>
-        <MenuItem value="RICH_TEXT">
+        <MenuItem value="MARKDOWN">
           <div className="hide">
             <CodeIcon />
-            Rich Text
+            Markdown
           </div>
         </MenuItem>
         <MenuItem value="IMAGE">

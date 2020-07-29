@@ -16,6 +16,9 @@ import { IsUserLoggedIn } from '_/apollo/queries';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  hide: {
+    visibility: 'hidden',
+  },
   appBar: {
     [theme.breakpoints.up('sm')]: {
       width: `calc(100% - ${drawerWidth}px)`,
@@ -24,17 +27,25 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    visibility: (props) => (props.hasSidebar ? 'hidden' : ''),
+    color: 'inherit',
+    textDecoration: 'inherit',
   },
 }));
 
 const TopNav = ({ hasSidebar }) => {
-  const classes = useStyles();
+  const classes = useStyles({ hasSidebar });
   const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
 
   return (
     <AppBar position="fixed" className={hasSidebar ? classes.appBar : null}>
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
+        <Typography
+          variant="h6"
+          className={classes.title}
+          component={Link}
+          to="/"
+        >
           Float
         </Typography>
         {

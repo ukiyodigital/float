@@ -15,6 +15,16 @@ from apps.pages.models import Page, PageColumnHeader
 from apps.sites.models import Site
 
 
+def get_page_column_header(column, page_id):
+    value = column.pop('value', '')
+    col = PageColumnHeader(
+        **column,
+        page_id=page_id,
+        data={ 'value': column.value },
+    )
+    return col
+
+
 class ColumnInput(graphene.InputObjectType):
     id = graphene.String()
     name = graphene.String(required=True)

@@ -16,18 +16,17 @@ from apps.sites.models import Site
 
 
 class ColumnInput(graphene.InputObjectType):
+    id = graphene.String()
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
     field = graphene.String(required=True)
+    value = graphene.String()
     order = graphene.Int()
 
-    # JSON object that gets parsed after sending to graphql
-    data = graphene.String()
-
 class PageInput(graphene.InputObjectType):
+    id = graphene.String()
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
-    columns = graphene.List(ColumnInput)
 
 class PageType(DjangoObjectType):
     class Meta:

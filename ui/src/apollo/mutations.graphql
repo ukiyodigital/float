@@ -35,6 +35,23 @@ mutation CreatePage($page: PageInput!, $siteId: Int!) {
   }
 }
 
+mutation UpdatePage($page: PageInput!, $columns: [ColumnInput], $siteId: Int!) {
+  updatePage(page: $page, columns: $columns, siteId: $siteId) {
+    page {
+      id
+      name
+      slug
+      columns {
+        id
+        name
+        slug
+        field
+        data
+      }
+    }
+  }
+}
+
 # client mutations
 mutation Logout {
   logoutUser @client

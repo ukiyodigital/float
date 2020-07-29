@@ -37,6 +37,7 @@ class PageInput(graphene.InputObjectType):
     id = graphene.String()
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
+    columns = graphene.List(ColumnInput)
 
 class PageType(DjangoObjectType):
     class Meta:
@@ -102,18 +103,41 @@ class UpdatePage(graphene.Mutation):
 
     class Arguments:
         site_id = graphene.Int(required=True)
-        page_id = graphene.Int(required=True)
         page = PageInput(required=True)
 
     @login_required
-    def mutate(self, info, site_id, page_id, page):
-        page_obj = Page.objects.filter(id=page_id, site__id=site_id).first()
+    def mutate(self, info, site_id, page):
+        page_obj = Page.objects.filter(id=page.id, site__id=site_id).first()
         if not page_obj:
             raise GraphQLError('Page does not exist')
 
         page_obj.name = page.name
         page_obj.slug = page.slug
-        page_obj.save()
+
+        columns = page.get("columns", [])
+
+        existing_columns = [column for column in columns if column.id]
+        existing_column_dict = dict()
+        for column in PageColumnHeader.objects.filter(id__in=[c.id for c in existing_columns]):
+            existing_column_dict[str(column.id)] = column
+
+        for column in existing_columns:
+            existing_column = existing_column_dict[column.id]
+            existing_column.name = column.get('name', existing_column.name)
+            existing_column.slug = column.get('slug', existing_column.slug)
+            existing_column.order = column.get('order', existing_column.order)
+            existing_column.field = column.get('field', existing_column.field)
+            existing_column.data['value'] = column.get('value', '')
+
+        PageColumnHeader.objects.bulk_update(
+            existing_column_dict.values(),
+            ['name', 'slug', 'order', 'field', 'data']
+        )
+
+        new_columns = PageColumnHeader.objects.bulk_create([
+            get_page_column_header(column, page.id)
+            for column in [c for c in columns if not c.id]
+        ])
 
         return UpdatePage(page=page_obj)
 

@@ -52,7 +52,7 @@ class PageColumnHeaderType(DjangoObjectType):
     value = graphene.String()
 
     def resolve_value(self, info):
-        return self.data.value if "value" in self.data else ""
+        return self.data['value'] if "value" in self.data else ""
 
 
 class Query(graphene.ObjectType):

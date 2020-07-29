@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 const field = {
   name: PropTypes.string,
-  label: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   onChange: PropTypes.func,
 };
 

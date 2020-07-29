@@ -75,6 +75,9 @@ const CreatePageModal = ({ open, handleClose, site }) => {
             Choose a page name and a unique slug for the page.
           </DialogContentText>
           <Input
+            fullWidth
+            variant="outlined"
+            margin="normal"
             error={!!formErrors.name || !!errors.length}
             field={{
               name: 'name',
@@ -87,6 +90,9 @@ const CreatePageModal = ({ open, handleClose, site }) => {
             rules={{ required: 'Page name is required' }}
           />
           <Input
+            fullWidth
+            variant="outlined"
+            margin="normal"
             error={!!formErrors.slug || !!errors.length}
             field={{
               name: 'slug',

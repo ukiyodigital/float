@@ -75,6 +75,8 @@ const CreateSiteForm = () => {
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Input
+          fullWidth
+          margin="normal"
           error={!!formErrors.name || !!errors.length}
           field={{
             name: 'name',
@@ -87,6 +89,8 @@ const CreateSiteForm = () => {
           rules={{ required: 'Site name is required' }}
         />
         <Input
+          fullWidth
+          margin="normal"
           error={!!formErrors.slug || !!errors.length}
           field={{
             name: 'slug',

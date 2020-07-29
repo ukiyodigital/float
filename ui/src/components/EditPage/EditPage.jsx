@@ -181,7 +181,6 @@ const EditPageQuery = () => {
   const { siteSlug, pageSlug } = useParams();
   const {
     loading,
-    refetch,
     data: {
       page,
     } = {},
@@ -191,15 +190,14 @@ const EditPageQuery = () => {
 
   const [updatePage] = useMutation(UpdatePage, {
     onCompleted() {
-      refetch();
       setSnackbar(true);
     },
   });
 
   const handleUpdatePage = ({
-    __typename, site, columns, ...p
+    __typename, site, ...p
   }) => {
-    updatePage({ variables: { page: p, columns, siteId: page.site.id } });
+    updatePage({ variables: { page: p, siteId: site.id } });
   };
 
   return loading ? 'loading' : (

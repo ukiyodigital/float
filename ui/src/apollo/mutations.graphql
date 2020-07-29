@@ -35,8 +35,8 @@ mutation CreatePage($page: PageInput!, $siteId: Int!) {
   }
 }
 
-mutation UpdatePage($page: PageInput!, $columns: [ColumnInput], $siteId: Int!) {
-  updatePage(page: $page, columns: $columns, siteId: $siteId) {
+mutation UpdatePage($page: PageInput!, $siteId: Int!) {
+  updatePage(page: $page, siteId: $siteId) {
     page {
       id
       name

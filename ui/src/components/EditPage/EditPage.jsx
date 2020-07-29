@@ -23,6 +23,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import AddIcon from '@material-ui/icons/Add';
 
 import FieldRow from '_/components/Common/FieldRow/FieldRow';
+import Slate from '_/components/Common/Slate/Slate';
 
 const useStyles = makeStyles(() => ({
   buttonContainer: {
@@ -128,18 +129,33 @@ const EditPage = ({ page, updatePage }) => {
         </Button>
       </div>
       {showValues ? (
-        columns.map((column) => (
-          <TextField
-            key={column.id}
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            control={control}
-            label={column.name}
-            defaultValue={column.value}
-            onChange={(e) => updateColumn({ ...column, value: e.target.value })}
-          />
-        ))
+        columns.map((column) => {
+          if (column.field === 'RICH_TEXT') {
+            return (
+              <Slate
+                field={{
+                  name: column.slug,
+                  label: column.name,
+                  onChange: (value) => updateColumn({ ...column, value }),
+                }}
+                value={column.value}
+                control={control}
+              />
+            );
+          }
+          return (
+            <TextField
+              key={column.id}
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              control={control}
+              label={column.name}
+              defaultValue={column.value}
+              onChange={(e) => updateColumn({ ...column, value: e.target.value })}
+            />
+          );
+        })
       ) : (
         <>
           {columns.map((column) => (

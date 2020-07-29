@@ -10,6 +10,8 @@ services:
       - POSTGRES_USER=testuser
       - POSTGRES_PASSWORD=testuser_pwd
       - POSTGRES_MULTIPLE_DATABASES=float
+    ports:
+      - "5432:5432"
 
   api:
     tty: true

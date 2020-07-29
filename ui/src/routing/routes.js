@@ -4,6 +4,7 @@ import Signup from '_/components/Signup/Signup';
 import SiteList from '_/components/SiteList/SiteList';
 import SiteDetail from '_/components/SiteDetail/SiteDetail';
 import CreateSite from '_/components/CreateSite/CreateSite';
+import EditPage from '_/components/EditPage/EditPage';
 
 export const defaultPath = '/site';
 
@@ -16,6 +17,9 @@ export const routes = [
   },
   {
     name: 'site-detail', path: '/site/:siteSlug', exact: true, component: SiteDetail, loginRequired: true,
+  },
+  {
+    name: 'edit-page', path: '/site/:siteSlug/page/:pageSlug/edit', exact: true, component: EditPage, sidebar: true, loginRequired: true,
   },
   {
     name: 'login', path: '/login', exact: true, component: Login,

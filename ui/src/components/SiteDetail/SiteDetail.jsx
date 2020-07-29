@@ -2,15 +2,19 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery } from '@apollo/react-hooks';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import {
-  Container, Divider, Grid, Typography, Paper,
+  Button, Container, Divider, Grid, IconButton, Typography, Paper,
 } from '@material-ui/core';
+
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 
 import { GetSite } from '_/apollo/queries';
 
 import Loading from '_/components/Common/Loading/Loading';
+import CreatePageModal from '_/components/Common/CreatePageModal/CreatePageModal';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SiteDetail = () => {
+  const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const { siteSlug: slug } = useParams();
   const {
@@ -50,6 +55,11 @@ const SiteDetail = () => {
 
   return loading ? <Loading loading /> : (
     <Container className={classes.root}>
+      <CreatePageModal
+        site={site}
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
       <Grid>
         <Typography variant="h2">
           {site.name}
@@ -67,7 +77,39 @@ const SiteDetail = () => {
               </Paper>
             </Grid>
             <Grid item xs={8}>
-              <Paper className={classes.paper}>Test</Paper>
+              <Grid container spacing={2}>
+                {site.pages.map((page) => (
+                  <Grid item xs={12}>
+                    <Paper className={classes.paper}>
+                      <Grid container spacing={1}>
+                        <Grid item xs={11}>
+                          {page.name}
+                        </Grid>
+                        <Grid item xs={1}>
+                          <IconButton
+                            color="action"
+                            component={Link}
+                            to={`/site/${site.slug}/page/${page.slug}/edit`}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                ))}
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setOpen(true)}
+                  >
+                    <AddIcon />
+                    New Page
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
@@ -87,7 +129,23 @@ const SiteDetail = () => {
               </Paper>
             </Grid>
             <Grid item xs={8}>
-              <Paper className={classes.paper}>Test</Paper>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>Test</Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    component={Link}
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    to={`/site/${site.slug}/collection`}
+                  >
+                    <AddIcon />
+                    New Collection
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

@@ -36,3 +36,22 @@ query GetSite($slug: String!) {
     }
   }
 }
+
+query GetPage($siteSlug: String!, $pageSlug: String!) {
+  page (siteSlug: $siteSlug, pageSlug: $pageSlug) {
+    id
+    name
+    slug
+    site {
+      id
+    }
+    columns {
+      id
+      name
+      slug
+      field
+      value
+      order
+    }
+  }
+}

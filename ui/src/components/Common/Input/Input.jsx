@@ -7,7 +7,7 @@ import { TextField } from '@material-ui/core';
 import AppPropTypes from '_/proptypes';
 
 const Input = ({
-  error, field, message, value, ...props
+  field, message, value, ...props
 }) => (
   <Controller
     as={TextField}
@@ -19,24 +19,18 @@ const Input = ({
     label={field.label}
     type={field.type}
     defaultValue={value}
-    error={error}
     helperText={message}
-    variant="outlined"
-    margin="normal"
-    fullWidth
     {...props}
   />
 );
 
 Input.propTypes = {
-  error: PropTypes.bool,
   message: PropTypes.string,
   value: PropTypes.string.isRequired,
   field: AppPropTypes.input.isRequired,
 };
 
 Input.defaultProps = {
-  error: null,
   message: '',
 };
 

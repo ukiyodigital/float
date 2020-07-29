@@ -24,9 +24,26 @@ const site = PropTypes.shape({
   owner: PropTypes.objectOf(PropTypes.string.isRequired),
 });
 
+const column = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  slug: PropTypes.string.isRequired,
+  field: PropTypes.string.isRequired,
+  value: PropTypes.any,
+});
+
+const page = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  slug: PropTypes.string.isRequired,
+  columns: PropTypes.arrayOf(column),
+});
+
 
 export default {
   input,
   error,
   site,
+  column,
+  page,
 };

@@ -89,7 +89,7 @@ const AppDrawer = () => {
         {sites.map((site) => {
           const active = openMenus.includes(site.id);
           return (
-            <>
+            <React.Fragment key={site.id}>
               <ListItem
                 button
                 component={Link}
@@ -128,6 +128,7 @@ const AppDrawer = () => {
                 >
                   {site.pages.map((page) => (
                     <ListItem
+                      key={page.id}
                       button
                       className={classes.nested}
                       component={Link}
@@ -153,6 +154,7 @@ const AppDrawer = () => {
                 >
                   {site.flocks.map((flock) => (
                     <ListItem
+                      key={flock.id}
                       button
                       className={classes.nested}
                       component={Link}
@@ -164,7 +166,7 @@ const AppDrawer = () => {
                   <Divider />
                 </List>
               </Collapse>
-            </>
+            </React.Fragment>
           );
         })}
       </List>

@@ -42,12 +42,16 @@ query GetPage($siteSlug: String!, $pageSlug: String!) {
     id
     name
     slug
+    site {
+      id
+    }
     columns {
       id
       name
       slug
       field
       value
+      order
     }
   }
 }

@@ -13,10 +13,10 @@ class ColumnHeaderField:
     )
 
 class ColumnHeader(models.Model):
-    name = models.CharField(max_length=15, blank=False)
-    field = models.CharField(max_length=50, default=ColumnHeaderField.TEXT, choices=ColumnHeaderField.CHOICES)
+    name = models.CharField(max_length=50, blank=False)
+    field = models.CharField(max_length=25, default=ColumnHeaderField.TEXT, choices=ColumnHeaderField.CHOICES)
     order = models.PositiveSmallIntegerField(default=0)
-    slug = models.SlugField(max_length=15)
+    slug = models.SlugField(max_length=25)
 
     class Meta:
         abstract = True

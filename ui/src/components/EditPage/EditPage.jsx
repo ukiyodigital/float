@@ -3,13 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AppPropTypes from '_/proptypes';
 
-import { v4 as uuidv4 } from 'uuid';
-
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+
+import { addColumn, updateColumn, deleteColumn } from '_/utils/columns';
 
 import { GetPage } from '_/apollo/queries';
 import { UpdatePage } from '_/apollo/mutations';
@@ -55,37 +55,6 @@ const EditPage = ({ page, updatePage }) => {
   const {
     control, errors, triggerValidation, handleSubmit,
   } = useForm();
-
-  const addNewColumn = () => {
-    setColumns([
-      ...columns,
-      {
-        id: uuidv4(),
-        name: '',
-        slug: '',
-        field: 'TEXT',
-        value: '',
-        unsaved: true,
-      },
-    ]);
-  };
-
-  const updateColumn = (column) => {
-    const columnIdx = columns.findIndex((c) => c.id === column.id);
-    setColumns([
-      ...columns.slice(0, columnIdx),
-      column,
-      ...columns.slice(columnIdx + 1),
-    ]);
-  };
-
-  const deleteColumn = (column) => {
-    const columnIdx = columns.findIndex((c) => c.id === column.id);
-    setColumns([
-      ...columns.slice(0, columnIdx),
-      ...columns.slice(columnIdx + 1),
-    ]);
-  };
 
   const handleSave = () => {
     updatePage({
@@ -134,7 +103,9 @@ const EditPage = ({ page, updatePage }) => {
           key={column.id}
           column={column}
           control={control}
-          updateColumn={updateColumn}
+          name={column.slug}
+          onChange={(value) => updateColumn({ ...column, value }, columns, setColumns)}
+          value={column.value}
         />
       )) : (
         <>
@@ -142,8 +113,8 @@ const EditPage = ({ page, updatePage }) => {
             <FieldRow
               key={column.id}
               column={column}
-              updateColumn={updateColumn}
-              deleteColumn={deleteColumn}
+              updateColumn={(c) => updateColumn(c, columns, setColumns)}
+              deleteColumn={(c) => deleteColumn(c, columns, setColumns)}
               errors={errors}
               control={control}
             />
@@ -153,7 +124,7 @@ const EditPage = ({ page, updatePage }) => {
             variant="contained"
             color="secondary"
             className={classes.addButton}
-            onClick={() => addNewColumn()}
+            onClick={() => addColumn(columns, setColumns)}
           >
             <AddIcon />
             Add Field

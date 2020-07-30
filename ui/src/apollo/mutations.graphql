@@ -35,6 +35,16 @@ mutation CreatePage($page: PageInput!, $siteId: Int!) {
   }
 }
 
+mutation CreateFlock($flock: FlockInput!, $siteId: Int!) {
+  createFlock(flock: $flock, siteId: $siteId) {
+    flock {
+      id
+      name
+      slug
+    }
+  }
+}
+
 mutation UpdatePage($page: PageInput!, $siteId: Int!) {
   updatePage(page: $page, siteId: $siteId) {
     page {

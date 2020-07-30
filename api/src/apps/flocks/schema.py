@@ -65,12 +65,7 @@ class CreateFlock(graphene.Mutation):
     @login_required
     def mutate(self, info, site_id, flock):
         try:
-            site = Site.objects.get(id=site_id)
-        except Site.DoesNotExist as e:
-            raise GraphQLError('Site does not exist')
-
-        try:
-            flock_obj =  Flock.objects.create(site=site, **flock)
+            flock_obj = Flock.objects.create(site_id=site_id, **flock)
         except IntegrityError as e:
             raise GraphQLError(e)
 

@@ -159,6 +159,7 @@ const SiteDetail = () => {
                 ))}
                 <Grid item xs={12}>
                   <Button
+                    color="primary"
                     component={Link}
                     fullWidth
                     variant="contained"

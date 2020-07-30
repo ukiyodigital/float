@@ -8,7 +8,6 @@ import { routes } from '_/routing/routes';
 
 import { IsUserLoggedIn } from '_/apollo/queries';
 
-
 const RouteNode = () => {
   const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
 

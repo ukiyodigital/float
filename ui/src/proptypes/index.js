@@ -12,7 +12,7 @@ const input = PropTypes.shape({
 });
 
 const error = PropTypes.shape({
-  key: PropTypes.any,
+  key: PropTypes.string,
   message: PropTypes.string,
   errorType: PropTypes.string.isRequired,
 });
@@ -46,7 +46,6 @@ const flock = PropTypes.shape({
   columns: PropTypes.arrayOf(column),
   data: PropTypes.arrayOf(PropTypes.object),
 });
-
 
 export default {
   input,

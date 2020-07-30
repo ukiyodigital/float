@@ -20,7 +20,6 @@ import { useErrorState } from '_/hooks';
 import Input from '_/components/Common/Input/Input';
 import ErrorList from '_/components/Common/ErrorList/ErrorList';
 
-
 const initialState = {
   name: '',
   slug: '',

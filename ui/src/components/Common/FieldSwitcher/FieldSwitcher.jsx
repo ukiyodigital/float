@@ -10,9 +10,11 @@ import TitleIcon from '@material-ui/icons/Title';
 import CodeIcon from '@material-ui/icons/Code';
 import ImageIcon from '@material-ui/icons/Image';
 
-const FieldSwitcher = ({ column, control, updateColumn }) => {
+const FieldSwitcher = ({
+  column, control, onChange, value, name,
+}) => {
   const field = {
-    name: column.slug,
+    name,
     label: (
       <>
         {column.name}
@@ -25,7 +27,7 @@ const FieldSwitcher = ({ column, control, updateColumn }) => {
         }
       </>
     ),
-    onChange: (value) => updateColumn({ ...column, value }),
+    onChange,
   };
 
   return {
@@ -35,7 +37,7 @@ const FieldSwitcher = ({ column, control, updateColumn }) => {
         variant="outlined"
         margin="normal"
         field={field}
-        value={column.value}
+        value={value}
         control={control}
       />
     ),
@@ -46,7 +48,7 @@ const FieldSwitcher = ({ column, control, updateColumn }) => {
         variant="outlined"
         margin="normal"
         field={field}
-        value={column.value}
+        value={value}
         control={control}
       />
     ),
@@ -56,7 +58,7 @@ const FieldSwitcher = ({ column, control, updateColumn }) => {
         variant="outlined"
         margin="normal"
         field={field}
-        value={column.value}
+        value={value}
         control={control}
       />
     ),
@@ -65,8 +67,10 @@ const FieldSwitcher = ({ column, control, updateColumn }) => {
 
 FieldSwitcher.propTypes = {
   column: AppPropTypes.column.isRequired,
-  updateColumn: PropTypes.func.isRequired,
   control: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.any,
 };
 
 export default FieldSwitcher;

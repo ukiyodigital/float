@@ -39,7 +39,7 @@ const reducer = (state, { type, payload }) => {
   }
 };
 
-const CreatePageModal = ({ open, handleClose, site }) => {
+const CreatePageDialog = ({ open, handleClose, site }) => {
   const history = useHistory();
   const [errors, handleError, onError] = useErrorState([]);
   const [state, dispatch] = React.useReducer(reducer, initialState);
@@ -128,10 +128,10 @@ const CreatePageModal = ({ open, handleClose, site }) => {
   );
 };
 
-CreatePageModal.propTypes = {
+CreatePageDialog.propTypes = {
   site: AppPropTypes.site.isRequired,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
 };
 
-export default CreatePageModal;
+export default CreatePageDialog;

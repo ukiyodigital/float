@@ -3,6 +3,9 @@
 __pycache__/
 .env
 
+# fixture data
+api/src/apps/float/data/fixtures.json
+
 # unit test coverage reports
 .coverage
 

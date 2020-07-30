@@ -73,50 +73,56 @@ class CreateFlock(graphene.Mutation):
         return CreateFlock(flock=flock_obj)
 
 
-# TODO, play around with data field since it's an array of JSON instead of just JSON
 class UpdateFlock(graphene.Mutation):
     flock = graphene.Field(FlockType)
 
     class Arguments:
         site_id = graphene.Int(required=True)
-        flock_id = graphene.Int(required=True)
-        flock_data = FlockInput(required=True)
-        # array of JSON data
-        data = graphene.String()
+        flock = FlockInput(required=True)
 
     @login_required
-    def mutate(self, info, site_id, flock_id, flock_data, data):
+    def mutate(self, info, site_id, flock):
         try:
-            flock_obj = Flock.objects.get(site__id=site_id, id=flock_id)
+            flock_obj = Flock.objects.get(site__id=site_id, id=flock.id)
         except Flock.DoesNotExist as e:
             raise GraphQLError(e)
 
         try:
-            flock_data['data'] = json.loads(data)
-            flock_obj.name = flock_data.get('name', flock_obj.name)
-            flock_obj.slug = flock_data.get('slug', flock_obj.slug)
-            # flock_obj.data = data.get('data', flock_obj.data)
+            flock_obj.name = flock.get('name', flock_obj.name)
+            flock_obj.slug = flock.get('slug', flock_obj.slug)
+            flock_obj.data = flock.get('data', flock_obj.data)
+
+            columns = flock.get("columns", [])
+
+            existing_columns = [column for column in columns if column.id]
+            existing_column_dict = dict()
+            for column in FlockColumnHeader.objects.filter(id__in=[c.id for c in existing_columns]):
+                existing_column_dict[str(column.id)] = column
+
+            for column in existing_columns:
+                existing_column = existing_column_dict[column.id]
+                existing_column.name = column.get('name', existing_column.name)
+                existing_column.slug = column.get('slug', existing_column.slug)
+                existing_column.order = column.get('order', existing_column.order)
+                existing_column.field = column.get('field', existing_column.field)
+
+            FlockColumnHeader.objects.bulk_update(
+                existing_column_dict.values(),
+                ['name', 'slug', 'order', 'field']
+            )
+
+            new_columns = FlockColumnHeader.objects.bulk_create([
+                FlockColumnHeader(
+                    **column,
+                    flock_id=flock.id,
+                )
+                for column in [c for c in columns if not c.id]
+            ])
             flock_obj.save()
         except IntegrityError as e:
             raise GraphQLError(e)
 
         return UpdateFlock(flock=flock_obj)
-
-
-# class DeleteFlock(graphene.Mutation):
-#     pass
-
-
-# class AddFlockItem(graphene.Mutation):
-#     pass
-
-
-# class UpdateFlockItem(graphene.Mutation):
-#     pass
-
-
-# class RemoveFlockItem(graphene.Mutation):
-#     pass
 
 
 class Mutation(graphene.ObjectType):

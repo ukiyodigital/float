@@ -14,19 +14,25 @@ from apps.flocks.models import Flock, FlockColumnHeader
 from apps.sites.models import Site
 
 
-class FlockInput(graphene.InputObjectType):
-    name = graphene.String(required=True)
-    slug = graphene.String(required=True)
-
-
-class ColumnInput(graphene.InputObjectType):
+class FlockColumnInput(graphene.InputObjectType):
+    id = graphene.String()
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
     field = graphene.String(required=True)
     order = graphene.Int()
 
 
+class FlockInput(graphene.InputObjectType):
+    id = graphene.String()
+    name = graphene.String(required=True)
+    slug = graphene.String(required=True)
+    data = graphene.List(generic.GenericScalar)
+    columns = graphene.List(FlockColumnInput)
+
+
 class FlockType(DjangoObjectType):
+    data = graphene.List(generic.GenericScalar)
+
     class Meta:
         model = Flock
 

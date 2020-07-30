@@ -62,6 +62,24 @@ mutation UpdatePage($page: PageInput!, $siteId: Int!) {
   }
 }
 
+mutation UpdateFlock($flock: FlockInput!, $siteId: Int!) {
+  updateFlock(flock: $flock, siteId: $siteId) {
+    flock {
+      id
+      name
+      slug
+      data
+      columns {
+        id
+        name
+        slug
+        field
+        order
+      }
+    }
+  }
+}
+
 # client mutations
 mutation Logout {
   logoutUser @client

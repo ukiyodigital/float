@@ -73,3 +73,22 @@ query GetPage($siteSlug: String!, $pageSlug: String!) {
     }
   }
 }
+
+query GetFlock($siteSlug: String!, $flockSlug: String!) {
+  flock (siteSlug: $siteSlug, flockSlug: $flockSlug) {
+    id
+    name
+    slug
+    site {
+      id
+    }
+    data
+    columns {
+      id
+      name
+      slug
+      field
+      order
+    }
+  }
+}

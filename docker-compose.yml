@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   db:
-    image: postgres:10-alpine
+    image: postgres:12-alpine
     volumes:
       - ./db/data:/var/lib/postgresql/data
       - ./db/init.db:/docker-entrypoint-initdb.d

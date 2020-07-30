@@ -17,7 +17,8 @@ module.exports = {
     "babel/camelcase": ["error"],
     "react/jsx-props-no-spreading": [2, {
       exceptions: ["Controller"],
-    }]
+    }],
+    "react/forbid-prop-types": ["off"],
   },
   settings: {
     "import/resolver": ["node", "webpack"],

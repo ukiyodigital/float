@@ -14,7 +14,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import { GetSite } from '_/apollo/queries';
 
 import Loading from '_/components/Common/Loading/Loading';
-import CreatePageModal from '_/components/Common/CreatePageModal/CreatePageModal';
+import CreatePageDialog from '_/components/Common/Dialogs/CreatePage/CreatePage';
+import CreateFlockDialog from '_/components/Common/Dialogs/CreateFlock/CreateFlock';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SiteDetail = () => {
   const [open, setOpen] = React.useState(false);
+  const [flockDialog, setFlockDialog] = React.useState(false);
   const classes = useStyles();
   const { siteSlug: slug } = useParams();
   const {
@@ -55,10 +57,15 @@ const SiteDetail = () => {
 
   return loading ? <Loading loading /> : (
     <Container className={classes.root}>
-      <CreatePageModal
+      <CreatePageDialog
         site={site}
         open={open}
         handleClose={() => setOpen(false)}
+      />
+      <CreateFlockDialog
+        site={site}
+        open={flockDialog}
+        handleClose={() => setFlockDialog(false)}
       />
       <Grid>
         <Typography variant="h2">
@@ -83,7 +90,7 @@ const SiteDetail = () => {
                     <Paper className={classes.paper}>
                       <Grid container spacing={1}>
                         <Grid item xs={11}>
-                          {page.name}
+                          <Typography>{page.name}</Typography>
                         </Grid>
                         <Grid item xs={1}>
                           <IconButton
@@ -130,16 +137,33 @@ const SiteDetail = () => {
             </Grid>
             <Grid item xs={8}>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>Test</Paper>
-                </Grid>
+                {site.flocks.map((flock) => (
+                  <Grid item xs={12}>
+                    <Paper className={classes.paper}>
+                      <Grid container spacing={1}>
+                        <Grid item xs={11}>
+                          <Typography>{flock.name}</Typography>
+                        </Grid>
+                        <Grid item xs={1}>
+                          <IconButton
+                            color="action"
+                            component={Link}
+                            to={`/site/${site.slug}/flock/${flock.slug}/edit`}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                ))}
                 <Grid item xs={12}>
                   <Button
+                    color="primary"
                     component={Link}
                     fullWidth
                     variant="contained"
-                    color="primary"
-                    to={`/site/${site.slug}/collection`}
+                    onClick={() => setFlockDialog(true)}
                   >
                     <AddIcon />
                     New Collection

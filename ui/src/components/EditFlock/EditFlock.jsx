@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AppPropTypes from '_/proptypes';
 
+import { v4 as uuidv4 } from 'uuid';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useQuery, useMutation } from '@apollo/react-hooks';
@@ -11,19 +13,18 @@ import { useForm } from 'react-hook-form';
 
 import { addColumn, updateColumn, deleteColumn } from '_/utils/columns';
 
-import { GetPage } from '_/apollo/queries';
-import { UpdatePage } from '_/apollo/mutations';
+import { GetFlock } from '_/apollo/queries';
+import { UpdateFlock } from '_/apollo/mutations';
 
 import {
-  Button, Grid, Snackbar, Switch, Typography,
+  Button, Divider, Grid, Snackbar, Switch, Typography,
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-
 
 import AddIcon from '@material-ui/icons/Add';
 
 import FieldRow from '_/components/Common/FieldRow/FieldRow';
-import FieldSwitcher from '_/components/Common/FieldSwitcher/FieldSwitcher';
+import ValueRepeater from '_/components/EditFlock/ValueRepeater/ValueRepeater';
 
 
 const useStyles = makeStyles(() => ({
@@ -47,28 +48,47 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const EditPage = ({ page, updatePage }) => {
+const EditFlock = ({ flock, updateFlock }) => {
   const classes = useStyles();
-  const [columns, setColumns] = React.useState(page.columns.sort((a, b) => a.order - b.order));
+  const [columns, setColumns] = React.useState(flock.columns.sort((a, b) => a.order - b.order));
+  const [data, setData] = React.useState(flock.data || []);
   const [showValues, setShowValues] = React.useState(true);
   // const [errors, dispatch, onError] = useErrorState([]);
   const {
     control, errors, triggerValidation, handleSubmit,
   } = useForm();
 
+  const updateData = (item) => {
+    const itemIdx = data.findIndex((i) => i.id === item.id);
+    setData([
+      ...data.slice(0, itemIdx),
+      item,
+      ...data.slice(itemIdx + 1),
+    ]);
+  };
+
+  const addItem = () => {
+    setData([
+      ...data,
+      {
+        id: uuidv4(),
+      },
+    ]);
+  };
+
   const handleSave = () => {
-    updatePage({
-      ...page,
+    updateFlock({
+      ...flock,
       columns: columns.map(({
-        unsaved, id, __typename: typename, ...column
+        id, unsaved, value, __typename, ...column
       }, order) => {
         if (unsaved) return { ...column, order };
         return { ...column, order, id };
       }),
+      data,
     });
   };
 
-  // can be used for either editing existing or creating new pages
   return (
     <form onSubmit={handleSubmit(handleSave)}>
       <div className={classes.buttonContainer}>
@@ -83,7 +103,7 @@ const EditPage = ({ page, updatePage }) => {
                   const result = await triggerValidation();
                   if (result) setShowValues(!showValues);
                 }}
-                name="page-switch"
+                name="flock-switch"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
               />
             </Grid>
@@ -98,16 +118,31 @@ const EditPage = ({ page, updatePage }) => {
           Save
         </Button>
       </div>
-      {showValues ? columns.map((column) => (
-        <FieldSwitcher
-          key={column.id}
-          column={column}
-          control={control}
-          name={column.slug}
-          onChange={(value) => updateColumn({ ...column, value }, columns, setColumns)}
-          value={column.value}
-        />
-      )) : (
+      {showValues ? (
+        <>
+          {data.map((item) => (
+            <React.Fragment key={item.id}>
+              <ValueRepeater
+                columns={columns}
+                item={item}
+                control={control}
+                onChange={updateData}
+              />
+              <Divider />
+            </React.Fragment>
+          ))}
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.addButton}
+            onClick={addItem}
+          >
+            <AddIcon />
+            Add Item
+          </Button>
+        </>
+      ) : (
         <>
           {columns.map((column) => (
             <FieldRow
@@ -135,49 +170,49 @@ const EditPage = ({ page, updatePage }) => {
   );
 };
 
-EditPage.propTypes = {
-  page: AppPropTypes.page.isRequired,
-  updatePage: PropTypes.func.isRequired,
+EditFlock.propTypes = {
+  flock: AppPropTypes.flock.isRequired,
+  updateFlock: PropTypes.func.isRequired,
 };
 
 // eslint-disable-next-line react/jsx-props-no-spreading
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
-const EditPageQuery = () => {
+const EditFlockQuery = () => {
   const [snackbar, setSnackbar] = React.useState(false);
-  const { siteSlug, pageSlug } = useParams();
+  const { siteSlug, flockSlug } = useParams();
   const {
     loading,
     data: {
-      page,
+      flock,
     } = {},
-  } = useQuery(GetPage, {
-    variables: { siteSlug, pageSlug },
+  } = useQuery(GetFlock, {
+    variables: { siteSlug, flockSlug },
     fetchPolicy: 'no-cache',
   });
 
-  const [updatePage] = useMutation(UpdatePage, {
+  const [updateFlock] = useMutation(UpdateFlock, {
     onCompleted() {
       setSnackbar(true);
     },
   });
 
-  const handleUpdatePage = ({
-    __typename, site, ...p
+  const handleUpdateFlock = ({
+    __typename, site, ...f
   }) => {
-    updatePage({ variables: { page: p, siteId: site.id } });
+    updateFlock({ variables: { flock: f, siteId: site.id } });
   };
 
   return loading ? 'loading' : (
     <>
       <Snackbar open={snackbar} autoHideDuration={6000} onClose={() => setSnackbar(false)}>
         <Alert onClose={() => setSnackbar(false)} severity="success">
-          Page successfully updated.
+          Flock successfully updated.
         </Alert>
       </Snackbar>
-      <EditPage page={page} updatePage={handleUpdatePage} />
+      <EditFlock flock={flock} updateFlock={handleUpdateFlock} />
     </>
   );
 };
 
-export default EditPageQuery;
+export default EditFlockQuery;

@@ -158,7 +158,7 @@ const AppDrawer = () => {
                       button
                       className={classes.nested}
                       component={Link}
-                      to={`/site/${site.slug}/page/${flock.slug}/edit`}
+                      to={`/site/${site.slug}/flock/${flock.slug}/edit`}
                     >
                       <ListItemText primary={flock.name} />
                     </ListItem>

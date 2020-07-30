@@ -39,6 +39,14 @@ const page = PropTypes.shape({
   columns: PropTypes.arrayOf(column),
 });
 
+const flock = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  slug: PropTypes.string.isRequired,
+  columns: PropTypes.arrayOf(column),
+  data: PropTypes.arrayOf(PropTypes.object),
+});
+
 
 export default {
   input,
@@ -46,4 +54,5 @@ export default {
   site,
   column,
   page,
+  flock,
 };

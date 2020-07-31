@@ -1,0 +1,10 @@
+steps:
+- name: docker
+  image: plugins/docker
+  settings:
+    repo: floatcms/api
+    dockerfile: api/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password

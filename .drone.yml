@@ -1,5 +1,6 @@
+---
 kind: pipeline
-name: default
+name: api-build
 
 steps:
 - name: docker
@@ -11,6 +12,26 @@ steps:
     build_args_from_env:
       - env_file:
         - ./api/env/dev.properties
+        - ./env.properties
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+
+---
+kind: pipeline
+name: ui-build
+
+steps:
+- name: docker
+  image: plugins/docker
+  settings:
+    repo: floatcms/ui
+    dockerfile: ./ui/Dockerfile
+    context: ./ui
+    build_args_from_env:
+      - env_file:
+        - ./ui/env/dev.properties
         - ./env.properties
     username:
       from_secret: docker_username

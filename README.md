@@ -12,7 +12,5 @@
 Recreating Fixture Data:
 ```
 python manage.py dumpdata  > apps/float/data/fixtures.json --indent 4 --exclude=auth --exclude=contenttypes --exclude silk
-```
-```
 python manage.py loaddata  apps/float/data/fixtures.json
 ```

@@ -22,9 +22,9 @@ services:
 - name: db
   image: postgres:12-alpine
   environment:
-    POSTGRES_USER=drone
-    POSTGRES_PASSWORD=drone_pwd
-    POSTGRES_MULTIPLE_DATABASES=float
+    POSTGRES_USER: drone
+    POSTGRES_PASSWORD: drone_pwd
+    POSTGRES_MULTIPLE_DATABASES: float
 
 ---
 kind: pipeline

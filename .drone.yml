@@ -11,12 +11,20 @@ steps:
     context: ./api
     build_args_from_env:
       - env_file:
-        - ./api/env/dev.properties
+        - ./api/env/test.properties
         - ./env.properties
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
+
+services:
+- name: db
+  image: postgres:12-alpine
+  environment:
+    - POSTGRES_USER=drone
+    - POSTGRES_PASSWORD=drone_pwd
+    - POSTGRES_MULTIPLE_DATABASES=float
 
 ---
 kind: pipeline
@@ -31,7 +39,7 @@ steps:
     context: ./ui
     build_args_from_env:
       - env_file:
-        - ./ui/env/dev.properties
+        - ./ui/env/test.properties
         - ./env.properties
     username:
       from_secret: docker_username

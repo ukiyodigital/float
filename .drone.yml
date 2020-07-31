@@ -6,7 +6,12 @@ steps:
   image: plugins/docker
   settings:
     repo: floatcms/api
-    dockerfile: api/Dockerfile
+    dockerfile: ./api/Dockerfile
+    context: ./api
+    build_args_from_env:
+      - env_file:
+        - ./api/env/dev.properties
+        - ./env.properties
     username:
       from_secret: docker_username
     password:

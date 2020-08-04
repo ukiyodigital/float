@@ -25,3 +25,5 @@ db/data
 # OS
 .DS_Store
 
+# PEM files
+*.pem

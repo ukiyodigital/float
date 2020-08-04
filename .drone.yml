@@ -6,8 +6,7 @@ steps:
 - name: api_test
   image: python:3.8.5
   environment:
-    - env_file:
-      - ./api/env/drone.properties
+    - ./api/env/drone.properties
   commands:
     - cd api/
     - pip install -r pip-requirements/dev.txt

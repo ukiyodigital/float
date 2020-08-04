@@ -20,7 +20,6 @@ steps:
     - db/wait-for-postgres.sh
     - cd api/
     - pip install -r pip-requirements/dev.txt
-    - python src/manage.py runserver
     - python src/manage.py test
 - name: docker
   image: plugins/docker

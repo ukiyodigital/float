@@ -29,10 +29,9 @@ steps:
     context: ./api
     build_args:
       - PIP_REQ=production
-    build_args_from_env:
-      env_file:
-        - ./api/env/production.properties
-        - ./env.properties
+    environment:
+      - ./api/env/production.properties
+      - ./env.properties
     username:
       from_secret: docker_username
     password:

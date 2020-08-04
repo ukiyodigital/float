@@ -3,6 +3,11 @@ kind: pipeline
 name: api-build
 
 steps:
+- name: postgres
+  image: postgres:12-alpine
+  commands:
+    - sleep 5
+    - db/init.db/init.sh
 - name: api_test
   image: python:3.8.5
   environment:
@@ -45,9 +50,6 @@ services:
     POSTGRES_USER: drone
     POSTGRES_PASSWORD: drone_pwd
     POSTGRES_MULTIPLE_DATABASES: float
-  volumes:
-    - name: entrypoint
-    path: ./db/init.db:/docker-entrypoint-initdb.d
 
 ---
 kind: pipeline

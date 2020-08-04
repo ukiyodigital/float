@@ -3,15 +3,26 @@ kind: pipeline
 name: api-build
 
 steps:
+- name: api_test
+  image: python:3.8.5
+  environment:
+    - env_file:
+      - ./api/env/drone.properties
+  commands:
+    - cd api/
+    - pip install -r pip-requirements/dev.txt
+    - python manage.py test
 - name: docker
   image: plugins/docker
   settings:
     repo: floatcms/api
     dockerfile: ./api/Dockerfile
     context: ./api
+    build_args:
+      - PIP_REQ=production
     build_args_from_env:
       - env_file:
-        - ./api/env/test.properties
+        - ./api/env/production.properties
         - ./env.properties
     username:
       from_secret: docker_username

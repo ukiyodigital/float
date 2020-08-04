@@ -19,6 +19,8 @@ services:
     build:
       context: ./api
       target: dev
+      args:
+        PIP_REQ: dev
     volumes:
       - ./api/src:/app
       - ./db/wait-for-postgres.sh:/wait-for-postgres.sh

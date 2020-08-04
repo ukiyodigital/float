@@ -16,6 +16,7 @@ steps:
     DJANGO_DB_PASSWORD: drone_pwd
     DJANGO_SECRET_KEY: "(｡◕‿‿◕｡)"
   commands:
+    - apt-get update && apt-get install -y postgresql
     - db/wait-for-postgres.sh
     - cd api/
     - pip install -r pip-requirements/dev.txt

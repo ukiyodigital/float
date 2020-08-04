@@ -30,7 +30,7 @@ steps:
     build_args:
       - PIP_REQ=production
     build_args_from_env:
-      - env_file:
+      env_file:
         - ./api/env/production.properties
         - ./env.properties
     username:

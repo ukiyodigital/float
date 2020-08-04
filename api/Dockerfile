@@ -14,7 +14,7 @@ WORKDIR /app
 RUN pip install --upgrade pip
 COPY ./pip-requirements /pip-requirements/
 ARG PIP_REQ
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r /pip-requirements/$PIP_REQ.txt
+RUN pip install -r /pip-requirements/$PIP_REQ.txt
 
 
 FROM dev

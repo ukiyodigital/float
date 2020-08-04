@@ -10,7 +10,7 @@ steps:
   commands:
     - cd api/
     - pip install -r pip-requirements/dev.txt
-    - python manage.py test
+    - python src/manage.py test
 - name: docker
   image: plugins/docker
   settings:

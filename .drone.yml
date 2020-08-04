@@ -30,8 +30,15 @@ steps:
     build_args:
       - PIP_REQ=production
     environment:
-      - ./api/env/production.properties
-      - ./env.properties
+      APP_ENV: production
+      DJANGO_SETTINGS_MODULE: "settings.settings"
+      DJANGO_DEBUG: True
+      DJANGO_ALLOWED_HOSTS: "*"
+      DJANGO_DB_HOST: db
+      DJANGO_DB_NAME: float
+      DJANGO_DB_USER: testuser
+      DJANGO_DB_PASSWORD: testpassword
+      DJANGO_SECRET_KEY: "(｡◕‿‿◕｡)"
     username:
       from_secret: docker_username
     password:

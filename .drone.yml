@@ -3,11 +3,6 @@ kind: pipeline
 name: api-build
 
 steps:
-- name: postgres
-  image: postgres:12-alpine
-  commands:
-    - sleep 5
-    - db/init.db/init.sh
 - name: api_test
   image: python:3.8.5
   environment:
@@ -49,7 +44,7 @@ services:
   environment:
     POSTGRES_USER: drone
     POSTGRES_PASSWORD: drone_pwd
-    POSTGRES_MULTIPLE_DATABASES: float
+    POSTGRES_DB: float
 
 ---
 kind: pipeline

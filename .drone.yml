@@ -10,7 +10,6 @@ steps:
   commands:
     - cd api/
     - pip install -r pip-requirements/dev.txt
-    - python src/manage.py recreate_db
     - python src/manage.py runserver
     - python src/manage.py test
 - name: docker

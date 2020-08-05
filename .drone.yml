@@ -118,6 +118,27 @@ steps:
     strip_prefix: ui/dist/
   depends_on:
     - Build UI
+- name: Deploy API to EC2
+  image: ubuntu:18.04
+  environment:
+    - PRIVATE_KEY:
+        from_secret: rsa_private_key
+    - EC2_PUBLIC_IP_ADDRESS:
+        from_secret: ec2_public_ip_address
+    - DOCKER_USERNAME:
+        from_secret: username
+    - DOCKER_PASSWORD:
+        from_secret: password
+  commands:
+    - mkdir -p ~/.ssh
+    - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - chmod +x ./deploy.sh
+    - scp -o StrictHostKeyChecking=no -r ./env.properties ./api/env/production.properties ./docker-compose.prod.yml ec2-user@$EC2_PUBLIC_IP_ADDRESS:/home/ec2-user/app
+    - bash ./deploy.sh
+
 
 depends_on:
   - Build Images

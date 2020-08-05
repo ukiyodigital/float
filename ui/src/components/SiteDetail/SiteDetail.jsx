@@ -17,7 +17,6 @@ import Loading from '_/components/Common/Loading/Loading';
 import CreatePageDialog from '_/components/Common/Dialogs/CreatePage/CreatePage';
 import CreateFlockDialog from '_/components/Common/Dialogs/CreateFlock/CreateFlock';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,

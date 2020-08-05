@@ -10,7 +10,6 @@ import RouteNode from '_/components/RouteNode/RouteNode';
 
 import { routes, defaultPath } from '_/routing/routes';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',

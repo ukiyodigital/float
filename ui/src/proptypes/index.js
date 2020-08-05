@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import PropTypes from 'prop-types';
 
 const field = {
@@ -46,7 +47,6 @@ const flock = PropTypes.shape({
   columns: PropTypes.arrayOf(column),
   data: PropTypes.arrayOf(PropTypes.object),
 });
-
 
 export default {
   input,

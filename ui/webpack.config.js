@@ -3,7 +3,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const DefineEnvsPlugin = require('./tools/DefineEnvsPlugin');
 
-
 const mode = process.env.APP_ENV === 'development' ? 'development' : 'production';
 const isDevMode = mode === 'development';
 

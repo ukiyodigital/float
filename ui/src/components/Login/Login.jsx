@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default () => {
   const history = useHistory();
   const [errors, dispatch, onError] = useErrorState([]);

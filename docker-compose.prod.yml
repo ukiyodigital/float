@@ -8,7 +8,7 @@ services:
     expose:
       - 5000
     env_file:
-      - ./api/env/production.properties
+      - ./production.properties
       - ./env.properties
       - ./aws.properties
   nginx:

@@ -12,7 +12,7 @@ services:
       - ./env.properties
       - ./aws.properties
   nginx:
-    build: ./nginx
+    image: floatcms/nginx
     volumes:
       - static_volume:/home/app/web/static
     ports:

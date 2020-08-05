@@ -9,7 +9,13 @@
     "type": "git",
     "url": ""
   },
+  "jest": {
+    "moduleNameMapper": {
+      "^_(.*)$": "<rootDir>/src/$1"
+    }
+  },
   "scripts": {
+    "test": "jest",
     "lint": "eslint --ext .jsx,.js ./src/",
     "lint:watch": "npm run lint -- --watch",
     "dev": "APP_ENV=development node ./tools/devServer.js",

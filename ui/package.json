@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": ""
-  },
+},
   "jest": {
     "moduleNameMapper": {
       "^_(.*)$": "<rootDir>/src/$1"
@@ -18,11 +18,8 @@
     "test": "jest",
     "lint": "eslint --ext .jsx,.js ./src/",
     "lint:watch": "npm run lint -- --watch",
-    "dev": "APP_ENV=development node ./tools/devServer.js",
-    "build": "node ./tools/build.js",
-    "build:test": "APP_ENV=test npm run build",
-    "build:staging": "APP_ENV=staging npm run build",
-    "build:production": "APP_ENV=production npm run build"
+    "dev": "node ./tools/devServer.js",
+    "build": "node ./tools/build.js"
   },
   "dependencies": {
     "@apollo/react-hooks": "~3.1.5",

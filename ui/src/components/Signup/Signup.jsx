@@ -21,7 +21,6 @@ import Copyright from '_/components/Common/Copyright/Copyright';
 import ErrorList from '_/components/Common/ErrorList/ErrorList';
 import Input from '_/components/Common/Input/Input';
 
-
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -208,6 +207,7 @@ export default () => {
                 validate: (value) => value === watch('password') || 'Passwords do not match',
               }}
               autoComplete="current-password"
+              variant="outlined"
               margin="normal"
               fullWidth
             />

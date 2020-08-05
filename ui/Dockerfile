@@ -10,5 +10,6 @@ WORKDIR /app
 FROM dev AS pre-build
 
 # install npm packages
-COPY ./ui /app/
+COPY ./ /app/
 RUN npm ci
+RUN npm run build

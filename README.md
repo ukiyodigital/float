@@ -1,4 +1,4 @@
-# Float: The Content Management System No One Asked For
+# Float: The Content Management System No One Asked For [![Build Status](https://cloud.drone.io/api/badges/ukiyodigital/float/status.svg?ref=refs/heads/develop)](https://cloud.drone.io/ukiyodigital/float)
 
 ## Setup
 1. `git clone` and `cd` into the repository

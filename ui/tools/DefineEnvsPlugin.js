@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const webpack = require('webpack');
 
-
 class DefineEnvsPlugin {
   /**
    * @description - takes array of keys, stringify each of the proccess.env.key values,

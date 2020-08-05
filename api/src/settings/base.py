@@ -1,10 +1,11 @@
 import os
+import boto3
+import json
 
-
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-DEBUG = os.environ["DJANGO_DEBUG"]
+DEBUG = os.environ["DJANGO_DEBUG"] == "True"
 ALLOWED_HOSTS = os.environ["DJANGO_ALLOWED_HOSTS"].split(",")
 
 ROOT_URLCONF = 'urls'
@@ -100,7 +101,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files
-STATIC_URL = '/api/static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 
@@ -119,10 +120,10 @@ CACHES = {
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ["DJANGO_DB_NAME"],
-        'USER': os.environ["DJANGO_DB_USER"],
-        'PASSWORD': os.environ["DJANGO_DB_PASSWORD"],
-        'HOST': os.environ["DJANGO_DB_HOST"],
+        'NAME': os.environ.get("DJANGO_DB_NAME", ""),
+        'USER': os.environ.get("DJANGO_DB_USER", ""),
+        'PASSWORD': os.environ.get("DJANGO_DB_PASSWORD", ""),
+        'HOST': os.environ.get("DJANGO_DB_HOST", ""),
         'PORT': 5432,
         'ATOMIC_REQUESTS': True,
     }
@@ -142,3 +143,34 @@ if "django_nose" in INSTALLED_APPS:
         '--with-coverage',
         '--cover-package={}'.format(",".join(FLOAT_APPS))
     ]
+
+
+if os.environ.get("USE_AWS", False) == "True":
+    ssm = boto3.client(
+        'ssm',
+        region_name='us-west-2',
+        aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
+        aws_secret_access_key=os.environ["AWS_ACCESS_KEY"],
+    )
+    def _get_ssm_key(name):
+        key = ssm.get_parameter(Name=name, WithDecryption=True)
+        try:
+            return json.loads(key['Parameter']['Value'])
+        except ValueError:
+            # Assume value is a simple string
+            return key['Parameter']['Value']
+
+    SECRET_KEY = _get_ssm_key('/Float/API/DJANGO_SECRET_KEY')
+
+    # Database
+    DATABASES = {
+        "default": {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': _get_ssm_key('/Float/API/DJANGO_DB_NAME'),
+            'USER': _get_ssm_key('/Float/API/DJANGO_DB_USER'),
+            'PASSWORD': _get_ssm_key('/Float/API/DJANGO_DB_PASSWORD'),
+            'HOST': _get_ssm_key('/Float/API/DJANGO_DB_HOST'),
+            'PORT': 5432,
+            'ATOMIC_REQUESTS': True,
+        }
+    }

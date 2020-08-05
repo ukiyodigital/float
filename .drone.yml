@@ -1,13 +1,117 @@
+---
 kind: pipeline
-name: default
+type: docker
+name: Test API / UI
+
+environment:
+  APP_VERSION: 0.0.1
 
 steps:
-- name: docker
+- name: Test API
+  image: python:3.8.5
+  environment:
+    APP_ENV: test
+    DJANGO_SETTINGS_MODULE: "settings.settings"
+    DJANGO_DEBUG: True
+    DJANGO_ALLOWED_HOSTS: "*"
+    DJANGO_DB_HOST: db
+    DJANGO_DB_NAME: float
+    DJANGO_DB_USER: drone
+    DJANGO_DB_PASSWORD: drone_pwd
+    DJANGO_SECRET_KEY: "(｡◕‿‿◕｡)"
+  commands:
+    - apt-get update && apt-get install -y postgresql
+    - db/wait-for-postgres.sh
+    - cd api/
+    - pip install -r pip-requirements/dev.txt
+    - python src/manage.py test
+
+- name: Test UI
+  image: node:14.0
+  environment:
+    API_URL: http://localhost:8000/api/graphql/
+    APP_ENV: test
+  commands:
+    - cd ui/
+    - npm ci
+    - npm run test
+
+services:
+  - name: db
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: drone
+      POSTGRES_PASSWORD: drone_pwd
+      POSTGRES_DB: float
+
+---
+kind: pipeline
+type: docker
+name: Build Images
+
+steps:
+- name: Build API
   image: plugins/docker
   settings:
     repo: floatcms/api
-    dockerfile: api/Dockerfile
+    dockerfile: ./api/Dockerfile
+    context: ./api
+    auto_tag: true
+    build_args:
+      - PIP_REQ=production
     username:
-      from_secret: docker_username
+      from_secret: username
     password:
-      from_secret: docker_password
+      from_secret: password
+
+depends_on:
+  - Test API / UI
+
+trigger:
+  branch:
+    - develop
+  event:
+    - push
+
+---
+kind: pipeline
+type: docker
+name: Deploy to AWS
+
+steps:
+- name: Build UI
+  image: node:14.0
+  environment:
+    API_URL: http://api.floatql.com/graphql/
+    APP_ENV: production
+  commands:
+    - cd ui/
+    - npm ci
+    - npm run build
+- name: Deploy UI to S3
+  image: plugins/s3
+  settings:
+    bucket: floatql.com
+    region: us-west-2
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    commands:
+      - cd ui/
+      - npm ci
+      - npm run test
+    source: ui/dist/*
+    target: /
+    strip_prefix: ui/dist/
+  depends_on:
+    - Build UI
+
+depends_on:
+  - Build Images
+
+trigger:
+  branch:
+    - develop
+  event:
+    - push

@@ -1,4 +1,4 @@
-FROM python:3.8 AS dev
+FROM python:3.8.5 AS dev
 
 RUN apt-get update && apt-get install -y \
     postgresql
@@ -14,10 +14,12 @@ WORKDIR /app
 RUN pip install --upgrade pip
 COPY ./pip-requirements /pip-requirements/
 ARG PIP_REQ
-RUN pip install -r /pip-requirements/dev.txt
+RUN pip install -r /pip-requirements/$PIP_REQ.txt
 
 
-FROM dev
+FROM dev AS deploy
+
+EXPOSE 5000
 
 COPY ./src ./entry.sh /app/
 RUN chmod 744 ./entry.sh

@@ -119,7 +119,7 @@ steps:
   depends_on:
     - Build UI
 - name: Deploy API to EC2
-  image: ubuntu:18.04
+  image: floatcms/ssh
   environment:
     PRIVATE_KEY:
         from_secret: rsa_private_key

@@ -207,6 +207,7 @@ export default () => {
                 validate: (value) => value === watch('password') || 'Passwords do not match',
               }}
               autoComplete="current-password"
+              variant="outlined"
               margin="normal"
               fullWidth
             />

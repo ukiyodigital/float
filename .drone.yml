@@ -63,6 +63,18 @@ steps:
       from_secret: username
     password:
       from_secret: password
+steps:
+- name: Build Nginx
+  image: plugins/docker
+  settings:
+    repo: floatcms/nginx
+    dockerfile: ./nginx/Dockerfile
+    context: ./nginx
+    auto_tag: true
+    username:
+      from_secret: username
+    password:
+      from_secret: password
 
 depends_on:
   - Test API / UI

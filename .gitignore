@@ -27,3 +27,6 @@ db/data
 
 # PEM files
 *.pem
+
+# Properties
+aws.properties

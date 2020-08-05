@@ -12,3 +12,4 @@ FROM dev AS pre-build
 # install npm packages
 COPY ./ /app/
 RUN npm ci
+RUN npm run build

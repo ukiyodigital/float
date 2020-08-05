@@ -8,8 +8,9 @@ services:
     volumes:
       - ui_volume:/app/dist
     env_file:
-      - ./ui/env/dev.properties
+      - ./ui/env/production.properties
       - ./env.properties
+    command: "npm run build"
   api:
     image: floatcms/api:latest
     volumes:
@@ -24,11 +25,12 @@ services:
     build: ./nginx
     volumes:
       - static_volume:/home/app/web/static
-      - static_volume:/home/app/web/ui
+      - ui_volume:/home/app/web/ui
     ports:
       - 80:80
     depends_on:
       - api
+      - ui
 
 volumes:
   static_volume:

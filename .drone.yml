@@ -110,3 +110,5 @@ depends_on:
 trigger:
   branch:
     - develop
+  event:
+    - push

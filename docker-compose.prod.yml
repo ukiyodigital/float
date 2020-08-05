@@ -19,7 +19,6 @@ services:
       - 80:80
     depends_on:
       - api
-      - ui
 
 volumes:
   static_volume:

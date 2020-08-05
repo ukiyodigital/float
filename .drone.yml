@@ -1,84 +1,69 @@
-kind: pipeline
-type: docker
-name: Test API / UI
+# kind: pipeline
+# type: docker
+# name: Test API / UI
 
-environment:
-  APP_VERSION: 0.0.1
+# environment:
+#   APP_VERSION: 0.0.1
 
-steps:
-- name: Test API
-  image: python:3.8.5
-  environment:
-    APP_ENV: test
-    DJANGO_SETTINGS_MODULE: "settings.settings"
-    DJANGO_DEBUG: True
-    DJANGO_ALLOWED_HOSTS: "*"
-    DJANGO_DB_HOST: db
-    DJANGO_DB_NAME: float
-    DJANGO_DB_USER: drone
-    DJANGO_DB_PASSWORD: drone_pwd
-    DJANGO_SECRET_KEY: "(｡◕‿‿◕｡)"
-  commands:
-    - apt-get update && apt-get install -y postgresql
-    - db/wait-for-postgres.sh
-    - cd api/
-    - pip install -r pip-requirements/dev.txt
-    - python src/manage.py test
+# steps:
+# - name: Test API
+#   image: python:3.8.5
+#   environment:
+#     APP_ENV: test
+#     DJANGO_SETTINGS_MODULE: "settings.settings"
+#     DJANGO_DEBUG: True
+#     DJANGO_ALLOWED_HOSTS: "*"
+#     DJANGO_DB_HOST: db
+#     DJANGO_DB_NAME: float
+#     DJANGO_DB_USER: drone
+#     DJANGO_DB_PASSWORD: drone_pwd
+#     DJANGO_SECRET_KEY: "(｡◕‿‿◕｡)"
+#   commands:
+#     - apt-get update && apt-get install -y postgresql
+#     - db/wait-for-postgres.sh
+#     - cd api/
+#     - pip install -r pip-requirements/dev.txt
+#     - python src/manage.py test
 
-- name: Test UI
-  image: node:14.0
-  environment:
-    API_URL: http://localhost:8000/api/graphql/
-    APP_ENV: test
-  commands:
-    - cd ui/
-    - npm ci
-    - npm run test
+# - name: Test UI
+#   image: node:14.0
+#   environment:
+#     API_URL: http://localhost:8000/api/graphql/
+#     APP_ENV: test
+#   commands:
+#     - cd ui/
+#     - npm ci
+#     - npm run test
 
-services:
-  - name: db
-    image: postgres:12-alpine
-    environment:
-      POSTGRES_USER: drone
-      POSTGRES_PASSWORD: drone_pwd
-      POSTGRES_DB: float
+# services:
+#   - name: db
+#     image: postgres:12-alpine
+#     environment:
+#       POSTGRES_USER: drone
+#       POSTGRES_PASSWORD: drone_pwd
+#       POSTGRES_DB: float
 
----
-kind: pipeline
-type: docker
-name: Build Images
+# ---
+# kind: pipeline
+# type: docker
+# name: Build Images
 
-steps:
-- name: Build API
-  image: plugins/docker
-  settings:
-    repo: floatcms/api
-    dockerfile: ./api/Dockerfile
-    context: ./api
-    build_args:
-      - PIP_REQ=production
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
+# steps:
+# - name: Build API
+#   image: plugins/docker
+#   settings:
+#     repo: floatcms/api
+#     dockerfile: ./api/Dockerfile
+#     context: ./api
+#     build_args:
+#       - PIP_REQ=production
+#     username:
+#       from_secret: docker_username
+#     password:
+#       from_secret: docker_password
 
-- name: Build UI
-  image: plugins/docker
-  settings:
-    repo: floatcms/ui
-    dockerfile: ./ui/Dockerfile
-    context: ./ui
-    build_args_from_env:
-      - env_file:
-        - ./ui/env/test.properties
-        - ./env.properties
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
-
-depends_on:
-  - Test API / UI
+# depends_on:
+#   - Test API
 
 ---
 kind: pipeline
@@ -86,6 +71,15 @@ type: docker
 name: Deploy to AWS
 
 steps:
+  name: Build UI
+  image: node:14.0
+  environment:
+    API_URL: http://floatql.com/api/graphql/
+    APP_ENV: production
+  commands:
+    - cd ui/
+    - npm ci
+    - npm run build:production
 - name: Deploy UI to S3
   image: plugins/s3
   settings:
@@ -100,6 +94,8 @@ steps:
       - npm run test
     source: ui/dist/*
     target: /
+  depends_on:
+    - Build UI
 
 depends_on:
   - Build Images

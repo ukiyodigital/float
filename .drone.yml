@@ -96,6 +96,7 @@ steps:
       - npm run test
     source: ui/dist/*
     target: /
+    strip_prefix: public/dist/
   depends_on:
     - Build UI
 

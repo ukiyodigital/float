@@ -121,13 +121,13 @@ steps:
 - name: Deploy API to EC2
   image: ubuntu:18.04
   environment:
-    - PRIVATE_KEY:
+    PRIVATE_KEY:
         from_secret: rsa_private_key
-    - EC2_PUBLIC_IP_ADDRESS:
+    EC2_PUBLIC_IP_ADDRESS:
         from_secret: ec2_public_ip_address
-    - DOCKER_USERNAME:
+    DOCKER_USERNAME:
         from_secret: username
-    - DOCKER_PASSWORD:
+    DOCKER_PASSWORD:
         from_secret: password
   commands:
     - mkdir -p ~/.ssh

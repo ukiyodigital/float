@@ -19,12 +19,10 @@ import {
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 
-
 import AddIcon from '@material-ui/icons/Add';
 
 import FieldRow from '_/components/Common/FieldRow/FieldRow';
 import FieldSwitcher from '_/components/Common/FieldSwitcher/FieldSwitcher';
-
 
 const useStyles = makeStyles(() => ({
   buttonContainer: {

@@ -26,7 +26,6 @@ import AddIcon from '@material-ui/icons/Add';
 import FieldRow from '_/components/Common/FieldRow/FieldRow';
 import ValueRepeater from '_/components/EditFlock/ValueRepeater/ValueRepeater';
 
-
 const useStyles = makeStyles(() => ({
   buttonContainer: {
     display: 'flex',

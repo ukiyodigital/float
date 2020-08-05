@@ -1,3 +1,4 @@
+---
 kind: pipeline
 type: docker
 name: Test API / UI
@@ -63,7 +64,7 @@ steps:
       from_secret: docker_password
 
 depends_on:
-  - Test API
+  - Test API / UI
 
 ---
 kind: pipeline

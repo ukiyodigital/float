@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  api:
+    image: floatcms/api:latest
+    volumes:
+      - static_volume:/app/static
+    expose:
+      - 5000
+    env_file:
+      - ./api/env/production.properties
+      - ./env.properties
+      - ./aws.properties
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/web/static
+    ports:
+      - 80:80
+    depends_on:
+      - api
+
+volumes:
+  static_volume:

@@ -19,6 +19,8 @@ RUN pip install -r /pip-requirements/$PIP_REQ.txt
 
 FROM dev
 
+EXPOSE 5000
+
 COPY ./src ./entry.sh /app/
 RUN chmod 744 ./entry.sh
 ENTRYPOINT ["./entry.sh"]

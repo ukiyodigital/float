@@ -141,8 +141,8 @@ steps:
     - echo DOCKER_USERNAME=$DOCKER_USERNAME >> .env
     - echo DOCKER_TOKEN=$DOCKER_TOKEN >> .env
     - scp -o StrictHostKeyChecking=no -r ./.env ./env.properties ./api/env/production.properties ./docker-compose.prod.yml ec2-user@$EC2_PUBLIC_IP_ADDRESS:/home/ec2-user/app
-    - bash ./deploy.sh
     - rm .env
+    - bash ./deploy.sh
 
 depends_on:
   - Build Images

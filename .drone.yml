@@ -29,5 +29,5 @@ steps:
   depends_on:
     - Build UI
 
-depends_on:
-  - Build Images
+# depends_on:
+#   - Build Images

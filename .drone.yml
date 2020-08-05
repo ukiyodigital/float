@@ -1,9 +1,13 @@
 ---
 kind: pipeline
-name: api-build
+type: docker
+name: test
+
+environment:
+  APP_VERSION: 0.0.1
 
 steps:
-- name: api_test
+- name: Test API
   image: python:3.8.5
   environment:
     APP_ENV: test
@@ -21,7 +25,31 @@ steps:
     - cd api/
     - pip install -r pip-requirements/dev.txt
     - python src/manage.py test
-- name: docker
+- name: Test UI
+  image: node:14.0
+  environment:
+    API_URL: http://localhost:8000/api/graphql/
+    APP_ENV: test
+  commands:
+    - cd ui/
+    - npm ci
+    - npm run test
+
+services:
+  - name: db
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: drone
+      POSTGRES_PASSWORD: drone_pwd
+      POSTGRES_DB: float
+
+---
+kind: pipeline
+type: docker
+name: Build Images
+
+steps:
+- name: Build API
   image: plugins/docker
   settings:
     repo: floatcms/api
@@ -29,35 +57,14 @@ steps:
     context: ./api
     build_args:
       - PIP_REQ=production
-    environment:
-      APP_ENV: production
-      DJANGO_SETTINGS_MODULE: "settings.settings"
-      DJANGO_DEBUG: True
-      DJANGO_ALLOWED_HOSTS: "*"
-      DJANGO_DB_HOST: db
-      DJANGO_DB_NAME: float
-      DJANGO_DB_USER: testuser
-      DJANGO_DB_PASSWORD: testpassword
-      DJANGO_SECRET_KEY: "(｡◕‿‿◕｡)"
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
+  depends_on:
+    - Test API
 
-services:
-- name: db
-  image: postgres:12-alpine
-  environment:
-    POSTGRES_USER: drone
-    POSTGRES_PASSWORD: drone_pwd
-    POSTGRES_DB: float
-
----
-kind: pipeline
-name: ui-build
-
-steps:
-- name: docker
+- name: Build UI
   image: plugins/docker
   settings:
     repo: floatcms/ui
@@ -71,3 +78,27 @@ steps:
       from_secret: docker_username
     password:
       from_secret: docker_password
+  depends_on:
+    - Test UI
+
+---
+kind: pipeline
+type: docker
+name: Deploy to AWS
+
+- name: Deploy UI to S3
+  image: plugins/s3
+  settings:
+    bucket: floatql
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    commands:
+      - cd ui/
+      - npm ci
+      - npm run test
+    source: ui/dist/*
+    target: /
+  depends_on:
+    - Build Images

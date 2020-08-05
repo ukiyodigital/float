@@ -32,6 +32,7 @@ services:
     env_file:
       - ./api/env/dev.properties
       - ./env.properties
+      - ./aws.properties
     ports:
       - "8000:8000"
 

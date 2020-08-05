@@ -1,7 +1,6 @@
----
 kind: pipeline
 type: docker
-name: test
+name: Test API / UI
 
 environment:
   APP_VERSION: 0.0.1

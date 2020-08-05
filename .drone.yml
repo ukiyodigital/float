@@ -3,7 +3,7 @@ type: docker
 name: Deploy to AWS
 
 steps:
-  name: Build UI
+- name: Build UI
   image: node:14.0
   environment:
     API_URL: http://floatql.com/api/graphql/
@@ -11,7 +11,7 @@ steps:
   commands:
     - cd ui/
     - npm ci
-    - npm run build:production
+    - 'npm run build:production'
 - name: Deploy UI to S3
   image: plugins/s3
   settings:

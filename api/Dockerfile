@@ -17,7 +17,7 @@ ARG PIP_REQ
 RUN pip install -r /pip-requirements/$PIP_REQ.txt
 
 
-FROM dev
+FROM dev AS deploy
 
 EXPOSE 5000
 

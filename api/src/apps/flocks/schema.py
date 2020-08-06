@@ -48,9 +48,13 @@ class Query(graphene.ObjectType):
     @login_required
     def resolve_flock(self, info, site_slug, flock_slug):
         try:
-            flock = Flock.objects.get(site__slug=site_slug, slug=flock_slug)
+            flock = Flock.objects.get(
+                site__slug=site_slug,
+                slug=flock_slug,
+                site__owner=info.context.user,
+            )
         except Flock.DoesNotExist as e:
-            raise GraphQLError('No flock found with those slugs')
+            raise GraphQLError(e)
 
         return flock
 

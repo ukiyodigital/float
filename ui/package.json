@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": ""
-},
+  },
   "jest": {
     "moduleNameMapper": {
       "^_(.*)$": "<rootDir>/src/$1"

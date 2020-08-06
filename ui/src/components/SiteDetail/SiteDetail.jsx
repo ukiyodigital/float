@@ -130,7 +130,7 @@ const SiteDetail = () => {
                   {site.flocks.length}
                 </Typography>
                 <Typography variant="h5">
-                  Collections
+                  Flocks
                 </Typography>
               </Paper>
             </Grid>
@@ -165,7 +165,7 @@ const SiteDetail = () => {
                     onClick={() => setFlockDialog(true)}
                   >
                     <AddIcon />
-                    New Collection
+                    New Flock
                   </Button>
                 </Grid>
               </Grid>

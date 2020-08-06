@@ -95,6 +95,7 @@ steps:
   environment:
     API_URL: http://api.floatql.com/graphql/
     APP_ENV: production
+    TRACKING_ID: UA-83207653-3
   commands:
     - cd ui/
     - npm ci

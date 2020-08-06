@@ -61,8 +61,15 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_page(self, info, site_slug, page_slug):
-        page = Page.objects.filter(site__slug=site_slug, slug=page_slug).first()
-        return page if page else GraphQLError('No page found with those slugs')
+        try:
+            page = Page.objects.get(
+                site__slug=site_slug,
+                slug=page_slug,
+                site__owner=info.context.user,
+            )
+        except Page.DoesNotExist as e:
+            raise GraphQLError(e)
+        return page
 
 
 class CreatePage(graphene.Mutation):
@@ -74,9 +81,10 @@ class CreatePage(graphene.Mutation):
 
     @login_required
     def mutate(self, info, site_id, page):
-        site = Site.objects.filter(id=site_id).first()
-        if not site:
-            raise GraphQLError('Site does not exist')
+        try:
+            site = Site.objects.get(id=site_id)
+        except Site.DoesNotExist as e:
+            raise GraphQLError(e)
 
         try:
             columns = page.pop("columns", None)
@@ -93,7 +101,7 @@ class CreatePage(graphene.Mutation):
                 ])
                 page.columns.set(cols)
         except IntegrityError as e:
-            raise GraphQLError('Could not save with given slug and owner')
+            raise GraphQLError(e)
 
         return CreatePage(page=page)
 
@@ -107,9 +115,14 @@ class UpdatePage(graphene.Mutation):
 
     @login_required
     def mutate(self, info, site_id, page):
-        page_obj = Page.objects.filter(id=page.id, site__id=site_id).first()
-        if not page_obj:
-            raise GraphQLError('Page does not exist')
+        try:
+            page_obj = Page.objects.get(
+                id=page.id,
+                site__id=site_id,
+                site__owner=info.context.user,
+            )
+        except Page.DoesNotExist as e:
+            raise GraphQLError(e)
 
         page_obj.name = page.name
         page_obj.slug = page.slug
@@ -151,6 +164,14 @@ class DeletePage(graphene.Mutation):
 
     @login_required
     def mutate(self, info, site_id, page_id):
+        try:
+            page = Page.objects.filter(
+                id=page_id,
+                site__id=site_id,
+                site__owner=info.context.user,
+            ).delete()
+        except Exception as e:
+            raise GraphQLError(e)
         return DeletePage(page=page)
 
 

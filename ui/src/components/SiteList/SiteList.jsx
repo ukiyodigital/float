@@ -10,9 +10,9 @@ import { Add } from '@material-ui/icons';
 
 import { GetSites } from '_/apollo/queries';
 
-import Link from '_/components/Common/Link/Link';
 import Loading from '_/components/Common/Loading/Loading';
 import SiteCard from '_/components/Common/SiteCard/SiteCard';
+import CreateSiteDialog from '_/components/Common/Dialogs/CreateSite/CreateSite';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SiteList = () => {
+  const [open, setOpen] = React.useState(false);
   const classes = useStyles();
 
   const {
@@ -44,6 +45,10 @@ const SiteList = () => {
     <Loading loading />
   ) : (
     <>
+      <CreateSiteDialog
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
       <Grid container spacing={2} className={classes.root}>
         <Typography variant="h2">
           Sites
@@ -59,11 +64,10 @@ const SiteList = () => {
         </Grid>
       </Grid>
       <Fab
-        component={Link}
-        to="/site/create"
         color="primary"
         variant="extended"
         className={classes.fab}
+        onClick={() => setOpen(true)}
       >
         <Add />
         Create New Site

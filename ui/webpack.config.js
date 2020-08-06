@@ -45,6 +45,7 @@ module.exports = {
     new DefineEnvsPlugin([
       'APP_VERSION',
       'API_URL',
+      'TRACKING_ID',
     ], 'ENVS'),
   ],
   module: {

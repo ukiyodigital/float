@@ -149,8 +149,8 @@ if os.environ.get("USE_AWS", False) == "True":
     ssm = boto3.client(
         'ssm',
         region_name='us-west-2',
-        aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
-        aws_secret_access_key=os.environ["AWS_ACCESS_KEY"],
+        aws_access_key_id=os.environ["SSM_ACCESS_KEY_ID"],
+        aws_secret_access_key=os.environ["SSM_SECRET_ACCESS_KEY"],
     )
     def _get_ssm_key(name):
         key = ssm.get_parameter(Name=name, WithDecryption=True)

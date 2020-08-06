@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ssh -tt -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP_ADDRESS << 'ENDSSH'
+ssh -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP_ADDRESS << 'ENDSSH'
   cd /home/ec2-user/app
   export $(cat .env)
   rm .env

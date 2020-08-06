@@ -31,9 +31,14 @@ class Query(graphene.ObjectType):
 
     @login_required
     def resolve_site(self, info, slug):
-        site = Site.objects.filter(owner=info.context.user, slug=slug).first()
-
-        return site if site else GraphQLError('No site found with that slug')
+        try:
+            site = Site.objects.get(
+                slug=slug,
+                owner=info.context.user,
+            )
+        except Site.DoesNotExist as e:
+            raise GraphQLError(e)
+        return site
 
 
 class CreateSite(graphene.Mutation):
@@ -44,8 +49,11 @@ class CreateSite(graphene.Mutation):
 
     @login_required
     def mutate(self, info, site):
-        site = Site.create(owner=info.context.user, **site)
-        site.save()
+        try:
+            site = Site.create(owner=info.context.user, **site)
+        except IntegrityError as e:
+            raise GraphQLError(e)
+
         return CreateSite(site=site)
 
 class UpdateSite(graphene.Mutation):
@@ -57,9 +65,13 @@ class UpdateSite(graphene.Mutation):
 
     @login_required
     def mutate(self, info, site_id, site):
-        site_obj = Site.objects.filter(id=site_id).first()
-        if not site_obj:
-            raise GraphQLError('Site does not exist')
+        try:
+            site_obj = Site.objects.get(
+                id=site_id,
+                owner=info.context.user
+            )
+        except Site.DoesNotExist as e:
+            raise GraphQLError(e)
 
         site_obj.name = site.name
         site_obj.slug = site.slug
@@ -75,7 +87,10 @@ class DeleteSite(graphene.Mutation):
 
     @login_required
     def mutate(self, info, site_id):
-        site_obj = Site.objects.filter(id=site_id).delete()
+        site_obj = Site.objects.filter(
+            id=site_id,
+            owner=info.context.user,
+        ).delete()
 
         return DeleteSite(site=site_obj)
 

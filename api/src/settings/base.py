@@ -144,32 +144,35 @@ if "django_nose" in INSTALLED_APPS:
         '--cover-package={}'.format(",".join(FLOAT_APPS))
     ]
 
+USE_AWS = os.environ.get("USE_AWS") == "True"
+USE_ACCESS_KEYS = os.environ.get("USE_ACCESS_KEYS") == "True"
+SECRET_PATH = '/Float/API/'
 
-if os.environ.get("USE_AWS", False) == "True":
+if USE_AWS:
     ssm = boto3.client(
         'ssm',
         region_name='us-west-2',
-        aws_access_key_id=os.environ["SSM_ACCESS_KEY_ID"],
-        aws_secret_access_key=os.environ["SSM_SECRET_ACCESS_KEY"],
-    )
+        aws_access_key_id=os.environ["ACCESS_KEY_ID"],
+        aws_secret_access_key=os.environ["SECRET_ACCESS_KEY"],
+    ) if USE_ACCESS_KEYS else boto3.client('ssm', region_name='us-west-2')
     def _get_ssm_key(name):
-        key = ssm.get_parameter(Name=name, WithDecryption=True)
+        key = ssm.get_parameter(Name=f'{SECRET_PATH}{name}', WithDecryption=True)
         try:
             return json.loads(key['Parameter']['Value'])
         except ValueError:
             # Assume value is a simple string
             return key['Parameter']['Value']
 
-    SECRET_KEY = _get_ssm_key('/Float/API/DJANGO_SECRET_KEY')
+    SECRET_KEY = _get_ssm_key('DJANGO_SECRET_KEY')
 
     # Database
     DATABASES = {
         "default": {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': _get_ssm_key('/Float/API/DJANGO_DB_NAME'),
-            'USER': _get_ssm_key('/Float/API/DJANGO_DB_USER'),
-            'PASSWORD': _get_ssm_key('/Float/API/DJANGO_DB_PASSWORD'),
-            'HOST': _get_ssm_key('/Float/API/DJANGO_DB_HOST'),
+            'NAME': _get_ssm_key('DJANGO_DB_NAME'),
+            'USER': _get_ssm_key('DJANGO_DB_USER'),
+            'PASSWORD': _get_ssm_key('DJANGO_DB_PASSWORD'),
+            'HOST': _get_ssm_key('DJANGO_DB_HOST'),
             'PORT': 5432,
             'ATOMIC_REQUESTS': True,
         }

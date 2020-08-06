@@ -105,9 +105,9 @@ steps:
     bucket: floatql.com
     region: us-west-2
     access_key:
-      from_secret: aws_access_key_id
+      from_secret: s3_user_access_key_id
     secret_key:
-      from_secret: aws_secret_access_key
+      from_secret: s3_user_secret_access_key
     commands:
       - cd ui/
       - npm ci

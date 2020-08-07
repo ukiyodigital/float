@@ -43,6 +43,12 @@ class PageType(DjangoObjectType):
     class Meta:
         model = Page
 
+    data = generic.GenericScalar()
+
+    def resolve_data(self, info):
+        data = {}
+        columns = self.columns.all()
+        return dict((c.slug, c.data.get('value', '') if c.data else '') for c in columns)
 
 class PageColumnHeaderType(DjangoObjectType):
     data = generic.GenericScalar()
@@ -57,7 +63,16 @@ class PageColumnHeaderType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    page = graphene.Field(PageType, site_slug=graphene.String(required=True), page_slug=graphene.String(required=True))
+    page = graphene.Field(
+        PageType,
+        site_slug=graphene.String(required=True),
+        page_slug=graphene.String(required=True),
+    )
+    page_by_key = graphene.Field(
+        PageType,
+        api_key=graphene.String(required=True),
+        page_slug=graphene.String(required=True),
+    )
 
     @login_required
     def resolve_page(self, info, site_slug, page_slug):
@@ -66,6 +81,16 @@ class Query(graphene.ObjectType):
                 site__slug=site_slug,
                 slug=page_slug,
                 site__owner=info.context.user,
+            )
+        except Page.DoesNotExist as e:
+            raise GraphQLError(e)
+        return page
+
+    def resolve_page_by_key(self, info, api_key, page_slug):
+        try:
+            page = Page.objects.get(
+                site__api_key__key=api_key,
+                slug=page_slug,
             )
         except Page.DoesNotExist as e:
             raise GraphQLError(e)

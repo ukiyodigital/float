@@ -24,7 +24,14 @@ class SiteAPIKeyType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     sites = graphene.List(SiteType)
-    site = graphene.Field(SiteType, slug=graphene.String(required=True))
+    site = graphene.Field(
+        SiteType,
+        slug=graphene.String(required=True),
+    )
+    site_by_key = graphene.Field(
+        SiteType,
+        api_key=graphene.String(required=True),
+    )
 
     @login_required
     def resolve_sites(self, info):
@@ -36,6 +43,15 @@ class Query(graphene.ObjectType):
             site = Site.objects.get(
                 slug=slug,
                 owner=info.context.user,
+            )
+        except Site.DoesNotExist as e:
+            raise GraphQLError(e)
+        return site
+
+    def resolve_site_by_key(self, info, api_key):
+        try:
+            site = Site.objects.get(
+                api_key__key=api_key
             )
         except Site.DoesNotExist as e:
             raise GraphQLError(e)

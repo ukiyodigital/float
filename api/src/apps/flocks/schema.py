@@ -43,7 +43,16 @@ class FlockColumnHeaderType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    flock = graphene.Field(FlockType, site_slug=graphene.String(required=True), flock_slug=graphene.String(required=True))
+    flock = graphene.Field(
+        FlockType,
+        site_slug=graphene.String(required=True),
+        flock_slug=graphene.String(required=True),
+    )
+    flock_by_key = graphene.Field(
+        FlockType,
+        api_key=graphene.String(required=True),
+        flock_slug=graphene.String(required=True),
+    )
 
     @login_required
     def resolve_flock(self, info, site_slug, flock_slug):
@@ -56,6 +65,16 @@ class Query(graphene.ObjectType):
         except Flock.DoesNotExist as e:
             raise GraphQLError(e)
 
+        return flock
+
+    def resolve_flock_by_key(self, info, api_key, flock_slug):
+        try:
+            flock = Flock.objects.get(
+                site__api_key__key=api_key,
+                slug=flock_slug,
+            )
+        except Flock.DoesNotExist as e:
+            raise GraphQLError(e)
         return flock
 
 

@@ -51,7 +51,7 @@ const SiteList = () => {
       />
       <Grid container spacing={2} className={classes.root}>
         <Typography variant="h2">
-          Sites
+          Your Sites
         </Typography>
         <Grid item xs={12}>
           <Grid container spacing={2}>

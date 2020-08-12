@@ -80,6 +80,12 @@ mutation UpdateFlock($flock: FlockInput!, $siteId: Int!) {
   }
 }
 
+mutation UploadFile($f: Upload!) {
+  uploadFile(f: $f) {
+    success
+  }
+}
+
 # client mutations
 mutation Logout {
   logoutUser @client

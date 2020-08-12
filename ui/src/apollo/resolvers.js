@@ -1,4 +1,5 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
+import { isLoggedIn } from '_/apollo/cache';
 
 export const typeDefs = gql`
   extend type Query {
@@ -8,16 +9,14 @@ export const typeDefs = gql`
 
 export const resolvers = {
   Mutation: {
-    logoutUser: (_root, variables, { cache }) => {
+    logoutUser: () => {
       localStorage.removeItem('token');
-      const data = { isLoggedIn: false };
-      cache.writeData({ data });
+      isLoggedIn(false);
       return null;
     },
-    loginUser: (_root, variables, { cache }) => {
+    loginUser: (_root, variables) => {
       localStorage.setItem('token', variables.token);
-      const data = { isLoggedIn: true };
-      cache.writeData({ data });
+      isLoggedIn(true);
       return null;
     },
   },

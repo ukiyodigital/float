@@ -24,6 +24,7 @@ VENDOR_APPS = [
     'graphene_django',
     'django_extensions',
     'corsheaders',
+    'storages',
 ]
 
 FLOAT_APPS = [
@@ -147,13 +148,39 @@ if "django_nose" in INSTALLED_APPS:
 USE_AWS = os.environ.get("USE_AWS") == "True"
 USE_ACCESS_KEYS = os.environ.get("USE_ACCESS_KEYS") == "True"
 SECRET_PATH = '/Float/API/'
+AWS_DEFAULT_ACL = None
 
 if USE_AWS:
+    if USE_ACCESS_KEYS:
+        SSM_ACCESS_KEY_ID = os.environ["SSM_ACCESS_KEY_ID"]
+        SSM_SECRET_ACCESS_KEY = os.environ["SSM_SECRET_ACCESS_KEY"]
+
+        S3_AWS_ACCESS_KEY_ID = os.environ["S3_ACCESS_KEY_ID"]
+        S3_SECRET_ACCESS_KEY = os.environ["S3_ACCESS_KEY_ID"]
+        s3 = boto3.resource('s3',
+            region_name='us-west-2',
+            aws_access_key_id=S3_AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=S3_SECRET_ACCESS_KEY,
+        )
+    AWS_STORAGE_BUCKET_NAME = os.environ["AWS_BUCKET_NAME"]
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    AWS_LOCATION = 'static'
+
+    AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
+    DEFAULT_FILE_STORAGE = 'float.storage_backends.PublicMediaStorage'
+
+    AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
+    PRIVATE_FILE_STORAGE = 'float.storage_backends.PrivateMediaStorage'
+
+    # SSM setup
     ssm = boto3.client(
         'ssm',
         region_name='us-west-2',
-        aws_access_key_id=os.environ["ACCESS_KEY_ID"],
-        aws_secret_access_key=os.environ["SECRET_ACCESS_KEY"],
+        aws_access_key_id=SSM_ACCESS_KEY_ID,
+        aws_secret_access_key=SSM_SECRET_ACCESS_KEY,
     ) if USE_ACCESS_KEYS else boto3.client('ssm', region_name='us-west-2')
     def _get_ssm_key(name):
         key = ssm.get_parameter(Name=f'{SECRET_PATH}{name}', WithDecryption=True)

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';

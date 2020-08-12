@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { Link, useParams } from 'react-router-dom';
 
 import {
@@ -85,7 +85,7 @@ const SiteDetail = () => {
             <Grid item xs={8}>
               <Grid container spacing={2}>
                 {site.pages.map((page) => (
-                  <Grid item xs={12}>
+                  <Grid key={page.id} item xs={12}>
                     <Paper className={classes.paper}>
                       <Grid container spacing={1}>
                         <Grid item xs={11}>
@@ -93,7 +93,7 @@ const SiteDetail = () => {
                         </Grid>
                         <Grid item xs={1}>
                           <IconButton
-                            color="action"
+                            color="inherit"
                             component={Link}
                             to={`/site/${site.slug}/page/${page.slug}/edit`}
                           >
@@ -137,7 +137,7 @@ const SiteDetail = () => {
             <Grid item xs={8}>
               <Grid container spacing={2}>
                 {site.flocks.map((flock) => (
-                  <Grid item xs={12}>
+                  <Grid key={flock.id} item xs={12}>
                     <Paper className={classes.paper}>
                       <Grid container spacing={1}>
                         <Grid item xs={11}>

@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 

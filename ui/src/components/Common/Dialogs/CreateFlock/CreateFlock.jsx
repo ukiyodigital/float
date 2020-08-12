@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AppPropTypes from '_/proptypes';
 
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 

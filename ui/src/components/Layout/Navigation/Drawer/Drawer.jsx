@@ -14,7 +14,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Link from '_/components/Common/Link/Link';
 
 import { GetSitesDrawer } from '_/apollo/queries';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const drawerWidth = 240;
 

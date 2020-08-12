@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import AppPropTypes from '_/proptypes';
 
 import Input from '_/components/Common/Input/Input';
+import FileInput from '_/components/Common/FileInput/FileInput';
 
 import TitleIcon from '@material-ui/icons/Title';
 import CodeIcon from '@material-ui/icons/Code';
@@ -32,10 +33,7 @@ const FieldSwitcher = ({
 
   return {
     IMAGE: (
-      <Input
-        fullWidth
-        variant="outlined"
-        margin="normal"
+      <FileInput
         field={field}
         value={value}
         control={control}

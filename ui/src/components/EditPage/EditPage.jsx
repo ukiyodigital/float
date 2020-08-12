@@ -5,7 +5,7 @@ import AppPropTypes from '_/proptypes';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -68,7 +68,7 @@ const EditPage = ({ page, updatePage }) => {
 
   // can be used for either editing existing or creating new pages
   return (
-    <form onSubmit={handleSubmit(handleSave)}>
+    <form onSubmit={handleSubmit(handleSave)} encType="multipart/form-data">
       <div className={classes.buttonContainer}>
         <Typography component="div">
           <Grid component="label" container alignItems="center" spacing={1}>

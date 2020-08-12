@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  api:
+    tty: true
+    stdin_open: true
+    build:
+      context: ./api
+      target: dev
+      args:
+        PIP_REQ: dev
+    volumes:
+      - ./api/src:/app
+    command: ["./manage.py", "runserver_plus", "0.0.0.0:8000"]
+    restart: on-failure
+    env_file:
+      - ./api/env/dev.properties
+      - ./env.properties
+      - ./aws.properties
+    ports:
+      - "8000:8000"
+
+  ui:
+    tty: true
+    stdin_open: true
+    build:
+      context: ./ui
+      target: dev
+    volumes:
+      - ./ui:/app
+    env_file:
+      - ./ui/env/dev.properties
+      - ./env.properties
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm run dev"

@@ -1,6 +1,4 @@
 import os
-import boto3
-import json
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
 
@@ -24,6 +22,7 @@ VENDOR_APPS = [
     'graphene_django',
     'django_extensions',
     'corsheaders',
+    'storages',
 ]
 
 FLOAT_APPS = [
@@ -143,37 +142,3 @@ if "django_nose" in INSTALLED_APPS:
         '--with-coverage',
         '--cover-package={}'.format(",".join(FLOAT_APPS))
     ]
-
-USE_AWS = os.environ.get("USE_AWS") == "True"
-USE_ACCESS_KEYS = os.environ.get("USE_ACCESS_KEYS") == "True"
-SECRET_PATH = '/Float/API/'
-
-if USE_AWS:
-    ssm = boto3.client(
-        'ssm',
-        region_name='us-west-2',
-        aws_access_key_id=os.environ["ACCESS_KEY_ID"],
-        aws_secret_access_key=os.environ["SECRET_ACCESS_KEY"],
-    ) if USE_ACCESS_KEYS else boto3.client('ssm', region_name='us-west-2')
-    def _get_ssm_key(name):
-        key = ssm.get_parameter(Name=f'{SECRET_PATH}{name}', WithDecryption=True)
-        try:
-            return json.loads(key['Parameter']['Value'])
-        except ValueError:
-            # Assume value is a simple string
-            return key['Parameter']['Value']
-
-    SECRET_KEY = _get_ssm_key('DJANGO_SECRET_KEY')
-
-    # Database
-    DATABASES = {
-        "default": {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': _get_ssm_key('DJANGO_DB_NAME'),
-            'USER': _get_ssm_key('DJANGO_DB_USER'),
-            'PASSWORD': _get_ssm_key('DJANGO_DB_PASSWORD'),
-            'HOST': _get_ssm_key('DJANGO_DB_HOST'),
-            'PORT': 5432,
-            'ATOMIC_REQUESTS': True,
-        }
-    }

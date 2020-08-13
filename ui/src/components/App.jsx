@@ -9,7 +9,6 @@ import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
 
 import { cache } from '_/apollo/cache';
-import { resolvers, typeDefs } from '_/apollo/resolvers';
 
 import Layout from '_/components/Layout/Layout';
 
@@ -37,8 +36,6 @@ const authLink = setContext((_, { headers }) => {
 const client = new ApolloClient({
   cache,
   link: authLink.concat(link),
-  typeDefs,
-  resolvers,
 });
 
 // app container

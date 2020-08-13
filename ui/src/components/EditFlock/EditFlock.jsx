@@ -54,7 +54,7 @@ const EditFlock = ({ flock, updateFlock }) => {
   const [showValues, setShowValues] = React.useState(true);
   // const [errors, dispatch, onError] = useErrorState([]);
   const {
-    control, errors, triggerValidation, handleSubmit,
+    control, errors, triggerValidation, handleSubmit, setValue,
   } = useForm();
 
   const updateData = (item) => {
@@ -126,6 +126,7 @@ const EditFlock = ({ flock, updateFlock }) => {
                 item={item}
                 control={control}
                 onChange={updateData}
+                setValue={setValue}
               />
               <Divider />
             </React.Fragment>

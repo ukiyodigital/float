@@ -80,9 +80,17 @@ mutation UpdateFlock($flock: FlockInput!, $siteId: Int!) {
   }
 }
 
-mutation UploadFile($f: Upload!) {
-  uploadFile(f: $f) {
-    success
+mutation UploadFile($fileUpload: Upload!, $siteId: Int!) {
+  uploadFile(fileUpload: $fileUpload, siteId: $siteId) {
+    file {
+      id
+      site {
+        id
+      }
+      file
+      uploadedAt
+    }
+    url
   }
 }
 

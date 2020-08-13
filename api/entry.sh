@@ -1,6 +1,9 @@
 #!/bin/sh
 
 # generate static files
+python ./manage.py migrate
+
+# generate static files
 python ./manage.py collectstatic --clear --noinput
 
 # Prepare log files

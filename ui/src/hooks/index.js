@@ -1,4 +1,7 @@
 import React from 'react';
+import { useQuery } from '@apollo/client';
+import { GetSite } from '_/apollo/queries';
+import { currentSiteVar } from '_/apollo/cache';
 
 const initialState = { errors: [] };
 
@@ -26,4 +29,22 @@ export const useErrorState = (errs) => {
   return [errors, dispatch, onError];
 };
 
-export default useErrorState;
+export const useGetSiteQuery = (slug) => {
+  const { loading, data: { site } = {} } = useQuery(GetSite, {
+    variables: { slug },
+  });
+
+  React.useEffect(() => {
+    currentSiteVar(site);
+    return function cleanup() {
+      currentSiteVar(null);
+    };
+  }, [site]);
+
+  return [loading, site];
+};
+
+export default {
+  useGetSiteQuery,
+  useErrorState,
+};

@@ -12,7 +12,7 @@ import CodeIcon from '@material-ui/icons/Code';
 import ImageIcon from '@material-ui/icons/Image';
 
 const FieldSwitcher = ({
-  column, control, onChange, value, name, siteId, setValue,
+  column, control, onChange, value, name, setValue,
 }) => {
   const field = {
     name,
@@ -38,7 +38,6 @@ const FieldSwitcher = ({
         field={field}
         value={value}
         control={control}
-        siteId={siteId}
       />
     ),
     MARKDOWN: (
@@ -71,7 +70,6 @@ FieldSwitcher.propTypes = {
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   setValue: PropTypes.func.isRequired,
-  siteId: PropTypes.string.isRequired,
   value: PropTypes.any,
 };
 

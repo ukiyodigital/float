@@ -7,6 +7,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useMutation } from '@apollo/client';
 import { useDropzone } from 'react-dropzone';
 
+import { currentSiteVar } from '_/apollo/cache';
+
 import { Controller } from 'react-hook-form';
 import { UploadFile } from '_/apollo/mutations';
 import { Typography } from '@material-ui/core';
@@ -72,26 +74,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FileInput = ({
-  field, message, value, siteId, ...props
+  field, message, value, ...props
 }) => {
   const classes = useStyles();
   const [uploadFile] = useMutation(UploadFile, {
-    onCompleted({ uploadFile: { file, url } }) {
-      console.log(file, file.file, url);
-      field.onChange({ id: file.id, file: file.file });
-      field.setValue(field.name, { id: file.id, file: file.file }, true);
+    onCompleted({ uploadFile: { file } }) {
+      const data = { id: file.id, file: file.file };
+      field.onChange({ ...data });
+      field.setValue(field.name, { ...data }, true);
     },
   });
 
   const onDrop = React.useCallback((acceptedFiles) => {
-    uploadFile({ variables: { fileUpload: acceptedFiles[0], siteId } });
-  }, [siteId, uploadFile]);
+    uploadFile({ variables: { fileUpload: acceptedFiles[0], siteId: currentSiteVar()?.id } });
+  }, [uploadFile]);
   const {
     getRootProps, getInputProps, isDragActive,
   } = useDropzone({ onDrop });
 
   const file = typeof value === 'string' ? JSON.parse(value.replace(/'/g, '"')) : value;
-  console.log(file, typeof file);
 
   return (
     <div className={classes.root}>
@@ -119,7 +120,7 @@ const FileInput = ({
           </div>
         )}
         onChange={([{ target: { files } }]) => {
-          uploadFile({ variables: { fileUpload: files[0], siteId } });
+          uploadFile({ variables: { fileUpload: files[0], siteId: currentSiteVar().id } });
         }}
         name={field.name}
         defaultValue={value}

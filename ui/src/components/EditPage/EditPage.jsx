@@ -13,6 +13,7 @@ import { addColumn, updateColumn, deleteColumn } from '_/utils/columns';
 
 import { GetPage } from '_/apollo/queries';
 import { UpdatePage } from '_/apollo/mutations';
+import { useGetSiteQuery } from '_/hooks';
 
 import {
   Button, Grid, Snackbar, Switch, Typography,
@@ -47,22 +48,27 @@ const useStyles = makeStyles(() => ({
 
 const EditPage = ({ page, updatePage }) => {
   const classes = useStyles();
-  const [columns, setColumns] = React.useState(page.columns.sort((a, b) => a.order - b.order));
+  const [columns, setColumns] = React.useState([]);
   const [showValues, setShowValues] = React.useState(true);
+
   // const [errors, dispatch, onError] = useErrorState([]);
   const {
     control, errors, triggerValidation, handleSubmit, setValue,
   } = useForm();
 
+  React.useEffect(() => {
+    setColumns(page.columns.slice().sort((a, b) => a.order - b.order));
+  }, [page.columns]);
+
   const handleSave = () => {
     updatePage({
       ...page,
       columns: columns.map(({
-        unsaved, id, data, __typename: typename, ...column
+        unsaved, id, value, data, __typename: typename, ...column
       }, order) => {
         if (unsaved) return { ...column, order };
         return {
-          ...column, data: JSON.stringify(data), order, id,
+          ...column, data: JSON.stringify(data || {}), order, id,
         };
       }),
     });
@@ -101,7 +107,6 @@ const EditPage = ({ page, updatePage }) => {
       {showValues ? columns.map((column) => (
         <FieldSwitcher
           setValue={setValue}
-          siteId={page.site.id}
           key={column.id}
           column={column}
           control={control}
@@ -148,6 +153,7 @@ const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 const EditPageQuery = () => {
   const [snackbar, setSnackbar] = React.useState(false);
   const { siteSlug, pageSlug } = useParams();
+  const [, currentSite] = useGetSiteQuery(siteSlug);
   const {
     loading,
     data: {
@@ -155,7 +161,6 @@ const EditPageQuery = () => {
     } = {},
   } = useQuery(GetPage, {
     variables: { siteSlug, pageSlug },
-    fetchPolicy: 'no-cache',
   });
 
   const [updatePage] = useMutation(UpdatePage, {
@@ -167,7 +172,13 @@ const EditPageQuery = () => {
   const handleUpdatePage = ({
     __typename, site, ...p
   }) => {
-    updatePage({ variables: { page: p, siteId: site.id } });
+    updatePage({
+      variables: { page: p, siteId: currentSite.id },
+      refetchQueries: [{
+        query: GetPage,
+        variables: { siteSlug, pageSlug },
+      }],
+    });
   };
 
   return loading ? 'loading' : (

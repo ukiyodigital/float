@@ -21,7 +21,6 @@ def get_page_column_header(column, page_id):
     col = PageColumnHeader(
         **column,
         page_id=page_id,
-        data=column.value,
     )
     return col
 

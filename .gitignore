@@ -3,6 +3,9 @@
 __pycache__/
 .env
 
+# static directories
+api/src/static
+
 # unit test coverage reports
 .coverage
 

@@ -68,7 +68,7 @@ query GetPage($siteSlug: String!, $pageSlug: String!) {
       name
       slug
       field
-      value
+      data
       order
     }
   }

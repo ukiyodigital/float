@@ -1,22 +1,18 @@
 import React from 'react';
 
-import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';
 
-import { Logout } from '_/apollo/mutations';
+import { isLoggedInVar } from '_/apollo/cache';
 
 const LogoutButton = () => {
   const history = useHistory();
-  const [logoutUser] = useMutation(Logout, {
-    onCompleted() {
-      history.push('/login');
-    },
-  });
 
   const handleLogout = () => {
-    logoutUser();
+    localStorage.removeItem('token');
+    isLoggedInVar(false);
+    history.push('/login');
   };
 
   return (

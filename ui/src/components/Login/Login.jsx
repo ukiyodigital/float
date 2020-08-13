@@ -3,18 +3,19 @@ import React from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Avatar, Box, Button, Container, Grid, Link, Typography,
+  Avatar, Box, Button, Container, Grid, Typography,
 } from '@material-ui/core';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
-import { GetToken, Login } from '_/apollo/mutations';
+import { GetToken } from '_/apollo/mutations';
 import { IsUserLoggedIn } from '_/apollo/queries';
+import { isLoggedInVar } from '_/apollo/cache';
 
 import { useErrorState } from '_/hooks';
 
@@ -48,14 +49,10 @@ export default () => {
   const { control, errors: formErrors, handleSubmit } = useForm();
   const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
 
-  const [login] = useMutation(Login, {
-    onCompleted() {
-      history.push('/site');
-    },
-  });
   const [tokenAuth, { loading }] = useMutation(GetToken, {
     onCompleted({ tokenAuth: { token } }) {
-      login({ variables: { token } });
+      localStorage.setItem('token', token);
+      isLoggedInVar(true);
     },
     onError,
   });
@@ -138,7 +135,7 @@ export default () => {
             </Button>
             <Grid container>
               <Grid item>
-                <Link href="/signup" variant="body2">
+                <Link to="/signup" variant="body2">
                   Don&apos;t have an account? Sign Up
                 </Link>
               </Grid>

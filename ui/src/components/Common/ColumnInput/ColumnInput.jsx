@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -26,7 +27,7 @@ const ColumnInput = ({
 
 ColumnInput.propTypes = {
   message: PropTypes.string,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.object.isRequired,
   field: AppPropTypes.input.isRequired,
 };
 

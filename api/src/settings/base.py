@@ -32,6 +32,7 @@ FLOAT_APPS = [
     'apps.sites',
     'apps.pages',
     'apps.flocks',
+    'apps.uploads',
 ]
 
 INSTALLED_APPS = VENDOR_APPS + FLOAT_APPS
@@ -103,10 +104,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+# Media
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
-
-
-# cache
+# Cache
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',

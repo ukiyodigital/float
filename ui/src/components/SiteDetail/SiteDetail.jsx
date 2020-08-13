@@ -145,7 +145,7 @@ const SiteDetail = () => {
                         </Grid>
                         <Grid item xs={1}>
                           <IconButton
-                            color="action"
+                            color="inherit"
                             component={Link}
                             to={`/site/${site.slug}/flock/${flock.slug}/edit`}
                           >
@@ -159,7 +159,6 @@ const SiteDetail = () => {
                 <Grid item xs={12}>
                   <Button
                     color="primary"
-                    component={Link}
                     fullWidth
                     variant="contained"
                     onClick={() => setFlockDialog(true)}

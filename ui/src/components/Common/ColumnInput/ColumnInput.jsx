@@ -27,12 +27,15 @@ const ColumnInput = ({
 
 ColumnInput.propTypes = {
   message: PropTypes.string,
-  value: PropTypes.object.isRequired,
+  value: PropTypes.object,
   field: AppPropTypes.input.isRequired,
 };
 
 ColumnInput.defaultProps = {
   message: '',
+  value: {
+    value: '',
+  },
 };
 
 export default ColumnInput;

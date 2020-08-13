@@ -130,14 +130,14 @@ const FileInput = ({
 };
 
 FileInput.propTypes = {
-  siteId: PropTypes.string.isRequired,
   message: PropTypes.string,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any,
   field: AppPropTypes.input.isRequired,
 };
 
 FileInput.defaultProps = {
   message: '',
+  value: null,
 };
 
 export default FileInput;

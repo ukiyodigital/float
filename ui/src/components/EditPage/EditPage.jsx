@@ -51,17 +51,19 @@ const EditPage = ({ page, updatePage }) => {
   const [showValues, setShowValues] = React.useState(true);
   // const [errors, dispatch, onError] = useErrorState([]);
   const {
-    control, errors, triggerValidation, handleSubmit,
+    control, errors, triggerValidation, handleSubmit, setValue,
   } = useForm();
 
   const handleSave = () => {
     updatePage({
       ...page,
       columns: columns.map(({
-        unsaved, id, __typename: typename, ...column
+        unsaved, id, data, __typename: typename, ...column
       }, order) => {
         if (unsaved) return { ...column, order };
-        return { ...column, order, id };
+        return {
+          ...column, data: JSON.stringify(data), order, id,
+        };
       }),
     });
   };
@@ -98,12 +100,14 @@ const EditPage = ({ page, updatePage }) => {
       </div>
       {showValues ? columns.map((column) => (
         <FieldSwitcher
+          setValue={setValue}
+          siteId={page.site.id}
           key={column.id}
           column={column}
           control={control}
           name={column.slug}
-          onChange={(value) => updateColumn({ ...column, value }, columns, setColumns)}
-          value={column.value}
+          onChange={(data) => updateColumn({ ...column, data }, columns, setColumns)}
+          value={column.data}
         />
       )) : (
         <>

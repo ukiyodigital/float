@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AppPropTypes from '_/proptypes';
 
-import Input from '_/components/Common/Input/Input';
+import ColumnInput from '_/components/Common/ColumnInput/ColumnInput';
 import FileInput from '_/components/Common/FileInput/FileInput';
 
 import TitleIcon from '@material-ui/icons/Title';
@@ -12,7 +12,7 @@ import CodeIcon from '@material-ui/icons/Code';
 import ImageIcon from '@material-ui/icons/Image';
 
 const FieldSwitcher = ({
-  column, control, onChange, value, name,
+  column, control, onChange, value, name, siteId, setValue,
 }) => {
   const field = {
     name,
@@ -29,6 +29,7 @@ const FieldSwitcher = ({
       </>
     ),
     onChange,
+    setValue,
   };
 
   return {
@@ -37,10 +38,11 @@ const FieldSwitcher = ({
         field={field}
         value={value}
         control={control}
+        siteId={siteId}
       />
     ),
     MARKDOWN: (
-      <Input
+      <ColumnInput
         multiline
         fullWidth
         variant="outlined"
@@ -51,7 +53,7 @@ const FieldSwitcher = ({
       />
     ),
     TEXT: (
-      <Input
+      <ColumnInput
         fullWidth
         variant="outlined"
         margin="normal"
@@ -68,6 +70,8 @@ FieldSwitcher.propTypes = {
   control: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  setValue: PropTypes.func.isRequired,
+  siteId: PropTypes.string.isRequired,
   value: PropTypes.any,
 };
 

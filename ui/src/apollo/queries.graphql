@@ -2,18 +2,11 @@ query IsUserLoggedIn {
   isLoggedIn @client
 }
 
-query GetSites {
-  sites {
-    id
-    name
-    slug
-    owner {
-      username
-    }
-  }
+query GetCurrentSite {
+  currentSite @client
 }
 
-query GetSitesDrawer {
+query GetSites {
   sites {
     id
     name

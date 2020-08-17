@@ -13,6 +13,8 @@ import { Controller } from 'react-hook-form';
 import { UploadFile } from '_/apollo/mutations';
 import { Typography } from '@material-ui/core';
 
+import DeleteIcon from '@material-ui/icons/Delete';
+
 import AppPropTypes from '_/proptypes';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,6 +23,24 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '8px',
     position: 'relative',
   },
+  flex: {
+    display: 'flex',
+    alignItems: 'center',
+    '&:hover fieldset': {
+      border: '1px solid',
+      borderColor: theme.palette.text.primary,
+    },
+  },
+  deleteIcon: {
+    padding: '10px',
+    cursor: 'pointer',
+  },
+  disabledIcon: {
+    padding: '10px',
+  },
+  dragText: {
+    color: theme.palette.grey[500],
+  },
   dropzoneContainer: {
     backgroundColor: theme.palette.background.paper,
     cursor: 'pointer',
@@ -28,6 +48,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     padding: '18.5px 14px',
+    flexGrow: 1,
+    '&:focus': {
+      outline: 'none',
+    },
+    '&:focus > fieldset': {
+      border: '2px solid #3f51b5',
+    },
   },
   label: {
     zIndex: 1,
@@ -53,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     pointerEvents: 'none',
     border: '1px solid',
-    borderColor: theme.palette.divider,
+    borderColor: theme.palette.action.disabled,
     borderRadius: theme.shape.borderRadius,
   },
   legend: {
@@ -85,6 +112,11 @@ const FileInput = ({
     },
   });
 
+  const clearFile = () => {
+    field.onChange(null);
+    field.setValue(field.name, null, true);
+  };
+
   const onDrop = React.useCallback((acceptedFiles) => {
     uploadFile({ variables: { fileUpload: acceptedFiles[0], siteId: currentSiteVar()?.id } });
   }, [uploadFile]);
@@ -99,24 +131,29 @@ const FileInput = ({
       <label className={classes.label} htmlFor={field.name}>{field.label}</label>
       <Controller
         as={(
-          <div {...getRootProps({ className: classes.dropzoneContainer })}>
-            <input name={field.name} {...getInputProps()} />
-            <Typography className={classes.typography} variant="h5">
-              {
-                isDragActive ? (
-                  'Drop the files here ...'
-                ) : (
-                  file?.file || 'Drag files here or browse'
-                )
-              }
-            </Typography>
-            <fieldset className={classes.fieldset}>
-              <legend className={classes.legend}>
-                <span>
-                  {field.label}
-                </span>
-              </legend>
-            </fieldset>
+          <div className={classes.flex}>
+            <div {...getRootProps({ className: classes.dropzoneContainer })}>
+              <input name={field.name} {...getInputProps()} />
+              <Typography className={classes.typography} variant="h5">
+                {
+                  isDragActive ? (
+                    <Typography variant="h6" className={classes.dragText}>
+                      Drop the files here ...
+                    </Typography>
+                  ) : (
+                    file?.file || <Typography variant="h6" className={classes.dragText}>Drag Files or Click to Browse</Typography>
+                  )
+                }
+              </Typography>
+              <fieldset className={classes.fieldset}>
+                <legend className={classes.legend}>
+                  <span>
+                    {field.label}
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+            {file?.file ? <DeleteIcon className={classes.deleteIcon} onClick={clearFile} /> : <DeleteIcon className={classes.disabledIcon} color="disabled" />}
           </div>
         )}
         onChange={([{ target: { files } }]) => {

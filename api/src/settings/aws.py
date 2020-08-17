@@ -6,6 +6,8 @@ USE_SSM = os.environ.get("USE_SSM") == "True"
 USE_S3 = os.environ.get("USE_S3") == "True"
 USE_ACCESS_KEYS = os.environ.get("USE_ACCESS_KEYS") == "True"
 
+AWS_MEDIA_LOCATION = 'media'
+
 if USE_SSM:
     # SSM setup
     ssm = boto3.client(
@@ -52,6 +54,5 @@ if USE_S3:
         'CacheControl': 'max-age=86400',
     }
 
-    AWS_MEDIA_LOCATION = 'media'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/'
     DEFAULT_FILE_STORAGE = 'float.storage_backends.MediaStorage'

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { useQuery } from '@apollo/client';
 import { Link, useParams } from 'react-router-dom';
 
 import {
@@ -11,7 +10,7 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 
-import { GetSite } from '_/apollo/queries';
+import { useGetSiteQuery } from '_/hooks';
 
 import Loading from '_/components/Common/Loading/Loading';
 import CreatePageDialog from '_/components/Common/Dialogs/CreatePage/CreatePage';
@@ -45,14 +44,7 @@ const SiteDetail = () => {
   const [flockDialog, setFlockDialog] = React.useState(false);
   const classes = useStyles();
   const { siteSlug: slug } = useParams();
-  const {
-    loading,
-    data: {
-      site,
-    } = {},
-  } = useQuery(GetSite, {
-    variables: { slug },
-  });
+  const [loading, site] = useGetSiteQuery(slug);
 
   return loading ? <Loading loading /> : (
     <Container className={classes.root}>
@@ -145,7 +137,7 @@ const SiteDetail = () => {
                         </Grid>
                         <Grid item xs={1}>
                           <IconButton
-                            color="action"
+                            color="inherit"
                             component={Link}
                             to={`/site/${site.slug}/flock/${flock.slug}/edit`}
                           >
@@ -159,7 +151,6 @@ const SiteDetail = () => {
                 <Grid item xs={12}>
                   <Button
                     color="primary"
-                    component={Link}
                     fullWidth
                     variant="contained"
                     onClick={() => setFlockDialog(true)}

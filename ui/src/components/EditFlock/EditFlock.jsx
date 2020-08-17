@@ -15,6 +15,7 @@ import { addColumn, updateColumn, deleteColumn } from '_/utils/columns';
 
 import { GetFlock } from '_/apollo/queries';
 import { UpdateFlock } from '_/apollo/mutations';
+import { useGetSiteQuery } from '_/hooks';
 
 import {
   Button, Divider, Grid, Snackbar, Switch, Typography,
@@ -49,12 +50,14 @@ const useStyles = makeStyles(() => ({
 
 const EditFlock = ({ flock, updateFlock }) => {
   const classes = useStyles();
-  const [columns, setColumns] = React.useState(flock.columns.sort((a, b) => a.order - b.order));
-  const [data, setData] = React.useState(flock.data || []);
+  const [columns, setColumns] = React.useState(
+    flock.columns.slice().sort((a, b) => a.order - b.order),
+  );
+  const [data, setData] = React.useState(flock.data.slice() || []);
   const [showValues, setShowValues] = React.useState(true);
   // const [errors, dispatch, onError] = useErrorState([]);
   const {
-    control, errors, triggerValidation, handleSubmit,
+    control, errors, triggerValidation, handleSubmit, setValue,
   } = useForm();
 
   const updateData = (item) => {
@@ -126,6 +129,7 @@ const EditFlock = ({ flock, updateFlock }) => {
                 item={item}
                 control={control}
                 onChange={updateData}
+                setValue={setValue}
               />
               <Divider />
             </React.Fragment>
@@ -180,6 +184,7 @@ const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 const EditFlockQuery = () => {
   const [snackbar, setSnackbar] = React.useState(false);
   const { siteSlug, flockSlug } = useParams();
+  const [, currentSite] = useGetSiteQuery(siteSlug);
   const {
     loading,
     data: {
@@ -187,7 +192,6 @@ const EditFlockQuery = () => {
     } = {},
   } = useQuery(GetFlock, {
     variables: { siteSlug, flockSlug },
-    fetchPolicy: 'no-cache',
   });
 
   const [updateFlock] = useMutation(UpdateFlock, {
@@ -199,7 +203,7 @@ const EditFlockQuery = () => {
   const handleUpdateFlock = ({
     __typename, site, ...f
   }) => {
-    updateFlock({ variables: { flock: f, siteId: site.id } });
+    updateFlock({ variables: { flock: f, siteId: currentSite.id } });
   };
 
   return loading ? 'loading' : (

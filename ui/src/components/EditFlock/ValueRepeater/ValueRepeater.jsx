@@ -7,7 +7,7 @@ import AppPropTypes from '_/proptypes';
 import FieldSwitcher from '_/components/Common/FieldSwitcher/FieldSwitcher';
 
 const ValueRepeater = ({
-  columns, control, item, onChange,
+  columns, control, item, onChange, setValue,
 }) => (
   columns.map((column) => (
     <FieldSwitcher
@@ -16,8 +16,9 @@ const ValueRepeater = ({
       column={column}
       control={control}
       value={item[column.slug]}
+      setValue={setValue}
       onChange={(value) => {
-        const updatedItem = item;
+        const updatedItem = { ...item };
         updatedItem[`${column.slug}`] = value;
         onChange(updatedItem);
       }}
@@ -27,6 +28,7 @@ const ValueRepeater = ({
 
 ValueRepeater.propTypes = {
   columns: PropTypes.arrayOf(AppPropTypes.column),
+  setValue: PropTypes.func.isRequired,
   item: PropTypes.object,
   control: PropTypes.object,
 };

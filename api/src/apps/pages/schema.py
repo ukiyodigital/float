@@ -1,4 +1,5 @@
 import graphene
+import json
 from graphene.types import generic
 
 from graphene_django import DjangoObjectType
@@ -16,11 +17,10 @@ from apps.sites.models import Site
 
 
 def get_page_column_header(column, page_id):
-    value = column.pop('value', '')
+    value = column.pop('value', {})
     col = PageColumnHeader(
         **column,
         page_id=page_id,
-        data={ 'value': column.value },
     )
     return col
 
@@ -30,7 +30,7 @@ class ColumnInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
     field = graphene.String(required=True)
-    value = graphene.String()
+    data = graphene.JSONString()
     order = graphene.Int()
 
 class PageInput(graphene.InputObjectType):
@@ -40,6 +40,10 @@ class PageInput(graphene.InputObjectType):
     columns = graphene.List(ColumnInput)
 
 class PageType(DjangoObjectType):
+    class Meta:
+        model = Page
+
+class PageAPIType(DjangoObjectType):
     class Meta:
         model = Page
 
@@ -56,11 +60,6 @@ class PageColumnHeaderType(DjangoObjectType):
     class Meta:
         model = PageColumnHeader
 
-    value = graphene.String()
-
-    def resolve_value(self, info):
-        return self.data['value'] if "value" in self.data else ""
-
 
 class Query(graphene.ObjectType):
     page = graphene.Field(
@@ -69,7 +68,7 @@ class Query(graphene.ObjectType):
         page_slug=graphene.String(required=True),
     )
     page_by_key = graphene.Field(
-        PageType,
+        PageAPIType,
         api_key=graphene.String(required=True),
         page_slug=graphene.String(required=True),
     )
@@ -107,24 +106,8 @@ class CreatePage(graphene.Mutation):
     @login_required
     def mutate(self, info, site_id, page):
         try:
-            site = Site.objects.get(id=site_id)
-        except Site.DoesNotExist as e:
-            raise GraphQLError(e)
-
-        try:
-            columns = page.pop("columns", None)
-            page = Page(site=site, **page)
+            page = Page(site_id=site_id, **page)
             page.save()
-            if columns:
-                cols = PageColumnHeader.objects.bulk_create([
-                    PageColumnHeader(
-                        **c,
-                        page_id=page.id,
-                        data=json.loads(c.data or "{}"),
-                    )
-                    for c in columns
-                ])
-                page.columns.set(cols)
         except IntegrityError as e:
             raise GraphQLError(e)
 
@@ -165,7 +148,7 @@ class UpdatePage(graphene.Mutation):
             existing_column.slug = column.get('slug', existing_column.slug)
             existing_column.order = column.get('order', existing_column.order)
             existing_column.field = column.get('field', existing_column.field)
-            existing_column.data['value'] = column.get('value', '')
+            existing_column.data = column.get('data', {})
 
         PageColumnHeader.objects.bulk_update(
             existing_column_dict.values(),

@@ -13,7 +13,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import Link from '_/components/Common/Link/Link';
 
-import { GetSitesDrawer } from '_/apollo/queries';
+import { GetSites } from '_/apollo/queries';
 import { useQuery } from '@apollo/client';
 
 const drawerWidth = 240;
@@ -47,7 +47,7 @@ const AppDrawer = () => {
     data: {
       sites = [],
     } = {},
-  } = useQuery(GetSitesDrawer);
+  } = useQuery(GetSites);
 
   const toggleSite = (siteId) => {
     const idx = openMenus.findIndex((sId) => sId === siteId);

@@ -1,6 +1,5 @@
 import graphene
 from graphene_django import DjangoObjectType
-from graphene_file_upload.scalars import Upload
 
 from graphql import GraphQLError
 from graphql_jwt.decorators import login_required
@@ -112,21 +111,7 @@ class DeleteSite(graphene.Mutation):
 
         return DeleteSite(site=site_obj)
 
-class UploadFile(graphene.Mutation):
-    class Arguments:
-        f = Upload(required=True)
-
-    success = graphene.Boolean()
-
-    @login_required
-    def mutate(self, info, f):
-        print(f)
-        # do something with your file
-
-        return UploadFile(success=True)
-
 class Mutation(graphene.ObjectType):
-    upload_file = UploadFile.Field()
     create_site = CreateSite.Field()
     update_site = UpdateSite.Field()
     delete_site = DeleteSite.Field()

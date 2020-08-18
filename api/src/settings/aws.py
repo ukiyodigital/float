@@ -44,8 +44,9 @@ if USE_SSM:
     }
 
 if USE_S3:
-    AWS_ACCESS_KEY_ID = os.environ["S3_ACCESS_KEY_ID"]
-    AWS_SECRET_ACCESS_KEY = os.environ["S3_SECRET_ACCESS_KEY"]
+    if USE_ACCESS_KEYS:
+        AWS_ACCESS_KEY_ID = os.environ["S3_ACCESS_KEY_ID"]
+        AWS_SECRET_ACCESS_KEY = os.environ["S3_SECRET_ACCESS_KEY"]
 
     # S3 Config
     AWS_STORAGE_BUCKET_NAME = os.environ["AWS_BUCKET_NAME"]

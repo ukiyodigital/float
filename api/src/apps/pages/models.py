@@ -24,4 +24,5 @@ class PageColumnHeader(ColumnHeader):
     data = JSONField(null=True, blank=True, encoder=DjangoJSONEncoder)
 
     class Meta:
-        unique_together = ('page', 'slug',)
+        # columns cannot have the same parent
+        unique_together = ('page', 'slug', 'parent')

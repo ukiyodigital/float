@@ -24,7 +24,7 @@ steps:
     - db/wait-for-postgres.sh
     - cd api/
     - pip install -r pip-requirements/dev.txt
-    - python src/manage.py test
+    - python src/manage.py test apps
 
 - name: Test UI
   image: node:14.0

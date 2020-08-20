@@ -44,6 +44,7 @@ def update_column(column):
 
     columns = column.get('columns', [])
 
+    existing_column.columns.exclude(id__in=[c.id for c in columns if c.id]).delete()
     for sub_column in columns:
         if sub_column.id:
             update_column(sub_column)
@@ -199,6 +200,7 @@ class UpdatePage(graphene.Mutation):
         page_obj.slug = page.slug
 
         columns = page.get("columns", [])
+        page_obj.columns.exclude(id__in=[c.id for c in columns if c.id]).delete()
 
         try:
             handle_columns(columns, page)

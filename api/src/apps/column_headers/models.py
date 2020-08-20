@@ -6,12 +6,14 @@ class ColumnHeaderField:
     MARKDOWN = "MARKDOWN"
     IMAGE = "IMAGE"
     OBJECT = "OBJECT"
+    ARRAY = "ARRAY"
 
     CHOICES = (
         (TEXT, "Text"),
         (IMAGE, "Image"),
         (MARKDOWN, "Markdown"),
         (OBJECT, "Object"),
+        (ARRAY, "Array"),
     )
 
 class ColumnHeader(models.Model):

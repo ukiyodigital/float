@@ -19,6 +19,16 @@ class PageTests(JSONWebTokenTestCase):
             page(siteSlug: $siteSlug, pageSlug: $pageSlug) {
                 name
                 slug
+                columns {
+                    name
+                    slug
+                    field
+                    columns {
+                        name
+                        slug
+                        field
+                    }
+                }
             }
         }'''
 
@@ -69,9 +79,41 @@ class PageTests(JSONWebTokenTestCase):
             'page': {
                 'name': 'Home',
                 'slug': 'home',
+                'columns': [
+                    {
+                        'name': 'Description',
+                        'slug': 'description',
+                        'field': 'MARKDOWN',
+                        'columns': [],
+                    },
+                    {
+                        'name': 'Image',
+                        'slug': 'image',
+                        'field': 'IMAGE',
+                        'columns': [],
+                    },
+                    {
+                        'name': 'Title',
+                        'slug': 'title',
+                        'field': 'OBJECT',
+                        'columns': [
+                            {
+                                'name': 'Child',
+                                'slug': 'child',
+                                'field': 'TEXT',
+                            },
+                        ],
+                    },
+                ]
             }
         }
-        self.assertDictEqual(executed.data, expected)
+
+
+        data = executed.data
+        columns = data['page'].pop('columns')
+        expectedColumns = expected['page'].pop('columns')
+        self.assertDictEqual(data, expected)
+        self.assertSequenceEqual(columns, expectedColumns)
 
     def test_create_page(self):
         variables = {
@@ -122,6 +164,46 @@ class PageTests(JSONWebTokenTestCase):
         self.assertDictEqual(executed.data['updatePage'], expected)
         self.assertTrue(Page.objects.filter(id=1, slug='new', site_id=1).exists())
 
+    def test_deletes_non_included(self):
+        variables = {
+            'page': {
+                'id': '1',
+                'name': 'Home',
+                'slug': 'home',
+                'columns': [{
+                    'name': 'Test 1',
+                    'slug': 'test_1',
+                    'field': 'TEXT',
+                    'data': json.dumps({
+                        'value': 'some value',
+                    }),
+                }],
+            },
+            'siteId': 1,
+        }
+
+        executed = self.client.execute(self.updatePage, variables)
+        expected = {
+            'page': {
+                'id': '1',
+                'name': 'Home',
+                'slug': 'home',
+                'columns': [{
+                    'name': 'Test 1',
+                    'slug': 'test_1',
+                    'field': 'TEXT',
+                    'data': {
+                        'value': 'some value',
+                    },
+                    'columns': [],
+                }],
+            }
+        }
+
+        self.assertDictEqual(executed.data['updatePage'], expected)
+        self.assertTrue(PageColumnHeader.objects.filter(slug='test_1', page_id=1).exists())
+
+
     def test_update_with_columns(self):
         variables = {
             'page': {
@@ -170,7 +252,7 @@ class PageTests(JSONWebTokenTestCase):
                 'columns': [{
                     'name': 'Test 1',
                     'slug': 'test_1',
-                    'field': 'TEXT',
+                    'field': 'OBJECT',
                     'data': json.dumps({
                         'value': 'some value',
                     }),
@@ -206,7 +288,7 @@ class PageTests(JSONWebTokenTestCase):
                 'columns': [{
                     'name': 'Test 1',
                     'slug': 'test_1',
-                    'field': 'TEXT',
+                    'field': 'OBJECT',
                     'data': {
                         'value': 'some value',
                     },

@@ -20,9 +20,12 @@ class Page(models.Model):
         unique_together = ('slug', 'site',)
 
 class PageColumnHeader(ColumnHeader):
-    page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='columns')
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='columns', null=True, blank=True)
     data = JSONField(null=True, blank=True, encoder=DjangoJSONEncoder)
 
     class Meta:
         # columns cannot have the same parent
-        unique_together = ('page', 'slug', 'parent')
+        unique_together = (
+            ('page', 'slug',),
+            ('parent', 'slug',),
+        )

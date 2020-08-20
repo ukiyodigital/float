@@ -22,9 +22,9 @@ steps:
   commands:
     - apt-get update && apt-get install -y postgresql
     - db/wait-for-postgres.sh
-    - cd api/
-    - pip install -r pip-requirements/dev.txt
-    - python src/manage.py test
+    - cd api/src
+    - pip install -r ../pip-requirements/dev.txt
+    - python manage.py test apps
 
 - name: Test UI
   image: node:14.0

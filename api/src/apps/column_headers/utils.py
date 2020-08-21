@@ -1,8 +1,9 @@
 class ColumnManager:
-    def __init__(self, model, has_data_property = True):
+    def __init__(self, model, column_fields, has_data_property = True):
         self.model = model
         self.existing_columns = dict()
         self.existing_column_ids = []
+        self.column_fields = column_fields
 
         self.has_data_property = has_data_property
 
@@ -79,7 +80,7 @@ class ColumnManager:
 
         self.model.objects.bulk_update(
             [column['current'] for column in self.existing_columns.values()],
-            ['name', 'slug', 'order', 'field', 'data']
+            self.column_fields,
         )
 
         self.model.objects.bulk_create(new_columns)

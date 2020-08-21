@@ -171,6 +171,7 @@ class PageTests(JSONWebTokenTestCase):
                 'name': 'Home',
                 'slug': 'home',
                 'columns': [{
+                    'page_id': 1,
                     'name': 'Test 1',
                     'slug': 'test_1',
                     'field': 'TEXT',
@@ -211,6 +212,7 @@ class PageTests(JSONWebTokenTestCase):
                 'name': 'Home',
                 'slug': 'home',
                 'columns': [{
+                    'page_id': 1,
                     'name': 'Test 1',
                     'slug': 'test_1',
                     'field': 'TEXT',
@@ -250,6 +252,7 @@ class PageTests(JSONWebTokenTestCase):
                 'name': 'Home',
                 'slug': 'home',
                 'columns': [{
+                    'page_id': 1,
                     'name': 'Test 1',
                     'slug': 'test_1',
                     'field': 'OBJECT',
@@ -326,9 +329,10 @@ class PageTests(JSONWebTokenTestCase):
                 'slug': 'home',
                 'columns': [
                     {
+                        'page_id': 1,
                         'name': 'Test 1',
                         'slug': 'test_1',
-                        'field': 'TEXT',
+                        'field': 'OBJECT',
                         'data': json.dumps({
                             'value': 'some value',
                         }),
@@ -373,6 +377,7 @@ class PageTests(JSONWebTokenTestCase):
                 'slug': 'home',
                 'columns': [
                     {
+                        'page_id': 1,
                         'name': 'Test 1',
                         'slug': 'test_1',
                         'field': 'TEXT',
@@ -381,6 +386,7 @@ class PageTests(JSONWebTokenTestCase):
                         }),
                     },
                     {
+                        'page_id': 1,
                         'name': 'Test 2',
                         'slug': 'test_1',
                         'field': 'TEXT',
@@ -398,4 +404,74 @@ class PageTests(JSONWebTokenTestCase):
 
             self.assertSequenceEqual(str(executed.errors[0]), 'Duplicate slugs found in same page or same column')
 
-        self.assertTrue(PageColumnHeader.objects.filter(slug='test_1').count() == 0)
+        self.assertEqual(PageColumnHeader.objects.filter(slug='test_1').count(), 0)
+
+
+    def test_add_new_child_column_update_existing(self):
+        variables = {
+            'page': {
+                'id': '1',
+                'name': 'Home',
+                'slug': 'home',
+                'columns': [{
+                    'id': 1,
+                    'page_id': 1,
+                    'name': 'Test 1',
+                    'slug': 'test_1',
+                    'field': 'OBJECT',
+                    'data': json.dumps({}),
+                    'columns': [
+                        {
+                            'id': 4,
+                            'name': 'Child',
+                            'slug': 'child_2',
+                            'field': 'TEXT',
+                            'data': json.dumps({}),
+                        },
+                        {
+                            'name': 'Hello',
+                            'slug': 'world',
+                            'field': 'IMAGE',
+                            'data': json.dumps({}),
+                        }
+                    ],
+                }],
+            },
+            'siteId': 1,
+        }
+
+        executed = self.client.execute(self.updatePage, variables)
+        expected = {
+            'page': {
+                'id': '1',
+                'name': 'Home',
+                'slug': 'home',
+                'columns': [{
+                    'name': 'Test 1',
+                    'slug': 'test_1',
+                    'field': 'OBJECT',
+                    'data': {},
+                    'columns': [
+                        {
+                            'name': 'Child',
+                            'slug': 'child_2',
+                            'field': 'TEXT',
+                            'data': {},
+                        },
+                        {
+                            'name': 'Hello',
+                            'slug': 'world',
+                            'field': 'IMAGE',
+                            'data': {},
+                        },
+                    ],
+                }],
+            }
+        }
+
+        parent_column = PageColumnHeader.objects.get(id=1)
+
+        self.assertDictEqual(executed.data['updatePage'], expected)
+        self.assertEqual(parent_column.columns.count(), 2)
+        self.assertTrue(parent_column.columns.filter(slug='child_2').exists())
+        self.assertTrue(parent_column.columns.filter(slug='world').exists())

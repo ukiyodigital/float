@@ -160,5 +160,29 @@
         "parent": null,
         "flock": 1
     }
+},
+{
+    "model": "flocks.flockcolumnheader",
+    "pk": 3,
+    "fields": {
+        "name": "About Section",
+        "field": "OBJECT",
+        "order": 1,
+        "slug": "about",
+        "parent": null,
+        "flock": 1
+    }
+},
+{
+    "model": "flocks.flockcolumnheader",
+    "pk": 4,
+    "fields": {
+        "name": "Header",
+        "field": "TEXT",
+        "order": 1,
+        "slug": "header",
+        "parent": 3,
+        "flock": null
+    }
 }
 ]

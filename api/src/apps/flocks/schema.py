@@ -19,8 +19,12 @@ class FlockColumnInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
     field = graphene.String(required=True)
-    order = graphene.Int()
+    columns = graphene.List(lambda: FlockColumnInput)
 
+    # meta
+    order = graphene.Int()
+    flock_id = graphene.Int(name='flock_id')
+    parent_id = graphene.Int(name='parent_id')
 
 class FlockInput(graphene.InputObjectType):
     id = graphene.String()
@@ -116,34 +120,13 @@ class UpdateFlock(graphene.Mutation):
             flock_obj.data = flock.get('data', flock_obj.data)
 
             columns = flock.get("columns", [])
+            flock_obj.columns.exclude(id__in=[c.id for c in columns if c.id]).delete()
 
-            existing_columns = [column for column in columns if column.id]
-            existing_column_dict = dict()
-            for column in FlockColumnHeader.objects.filter(id__in=[c.id for c in existing_columns]):
-                existing_column_dict[str(column.id)] = column
+            flock_obj.update_columns(columns)
 
-            for column in existing_columns:
-                existing_column = existing_column_dict[column.id]
-                existing_column.name = column.get('name', existing_column.name)
-                existing_column.slug = column.get('slug', existing_column.slug)
-                existing_column.order = column.get('order', existing_column.order)
-                existing_column.field = column.get('field', existing_column.field)
-
-            FlockColumnHeader.objects.bulk_update(
-                existing_column_dict.values(),
-                ['name', 'slug', 'order', 'field']
-            )
-
-            new_columns = FlockColumnHeader.objects.bulk_create([
-                FlockColumnHeader(
-                    **column,
-                    flock_id=flock.id,
-                )
-                for column in [c for c in columns if not c.id]
-            ])
             flock_obj.save()
         except IntegrityError as e:
-            raise GraphQLError(e)
+            raise GraphQLError('Duplicate slugs found in same flock or same column')
 
         return UpdateFlock(flock=flock_obj)
 

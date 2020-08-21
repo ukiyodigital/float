@@ -22,7 +22,10 @@ class Page(models.Model):
         unique_together = ('slug', 'site',)
 
     def update_columns(self, columns):
-        manager = ColumnManager(model=PageColumnHeader)
+        manager = ColumnManager(
+            model=PageColumnHeader,
+            column_fields=['name', 'slug', 'order', 'field', 'data'],
+        )
         manager.save_columns(columns, self.id)
 
 class PageColumnHeader(ColumnHeader):

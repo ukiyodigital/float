@@ -23,6 +23,10 @@ class Flock(models.Model):
     class Meta:
         unique_together = ('slug', 'site',)
 
+    def update_columns(self, columns):
+        manager = ColumnManager(model=FlockColumnHeader, has_data_property=False)
+        manager.save_columns(columns, self.id)
+
 
 class FlockColumnHeader(ColumnHeader):
     flock = models.ForeignKey(Flock, on_delete=models.CASCADE, related_name='columns')

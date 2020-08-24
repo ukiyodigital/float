@@ -6,10 +6,9 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Avatar, Box, Button, Container, Grid, Typography,
+  Box, Button, Container, Grid, Typography,
 } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import { IsUserLoggedIn } from '_/apollo/queries';
 import { Signup as CreateUser } from '_/apollo/mutations';
@@ -102,9 +101,6 @@ export default () => {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
           <Typography component="h1" variant="h5">
             Sign Up
           </Typography>

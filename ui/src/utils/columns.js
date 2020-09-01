@@ -14,6 +14,10 @@ export const addColumn = (columns, setColumns) => {
   ]);
 };
 
+export const addSubColumn = (column, columns, setColumns) => {
+
+};
+
 export const updateColumn = (column, columns, setColumns) => {
   const columnIdx = columns.findIndex((c) => c.id === column.id);
   setColumns([

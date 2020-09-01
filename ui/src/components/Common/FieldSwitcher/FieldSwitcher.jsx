@@ -61,6 +61,16 @@ const FieldSwitcher = ({
         control={control}
       />
     ),
+    OBJECT: (
+      <ColumnInput
+        fullWidth
+        variant="outlined"
+        margin="normal"
+        field={field}
+        value={value}
+        control={control}
+      />
+    ),
   }[column.field] || null;
 };
 

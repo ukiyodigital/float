@@ -12,6 +12,7 @@ import InputBase from '@material-ui/core/InputBase';
 import TitleIcon from '@material-ui/icons/Title';
 import CodeIcon from '@material-ui/icons/Code';
 import ImageIcon from '@material-ui/icons/Image';
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
 
 const useStyles = makeStyles(() => ({
   icon: {
@@ -53,6 +54,7 @@ const FieldSelect = ({ selectedField, onChange }) => {
       TEXT: TitleIcon,
       IMAGE: ImageIcon,
       MARKDOWN: CodeIcon,
+      OBJECT: AccountTreeIcon,
     }[selectedField];
     return <Icon className={classes.icon} onClick={() => setOpen(true)} />;
   };
@@ -87,6 +89,12 @@ const FieldSelect = ({ selectedField, onChange }) => {
           <div className="hide">
             <ImageIcon />
             Image
+          </div>
+        </MenuItem>
+        <MenuItem value="OBJECT">
+          <div className="hide">
+            <AccountTreeIcon />
+            Object
           </div>
         </MenuItem>
       </Select>

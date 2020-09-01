@@ -6,7 +6,7 @@ import AppPropTypes from '_/proptypes';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { Grid, Paper } from '@material-ui/core';
+import { Button, Grid, Paper } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -103,6 +103,16 @@ const ColumnRow = ({
           />
         </Grid>
       </Grid>
+      {column.field === 'OBJECT' ? (
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          className={classes.addButton}
+        >
+          Add Sub-Field
+        </Button>
+      ) : null}
     </Paper>
   );
 };

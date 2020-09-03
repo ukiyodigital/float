@@ -8,6 +8,9 @@ USE_ACCESS_KEYS = os.environ.get('USE_ACCESS_KEYS') == 'True'
 
 IS_LOCALSTACK = os.environ.get('IS_LOCALSTACK') == 'True'
 
+# AWS Config
+AWS_MEDIA_LOCATION = 'media'
+
 if USE_SSM:
     # SSM setup
     ssm = boto3.client(
@@ -50,7 +53,6 @@ if USE_S3:
 
     # S3 Config
     AWS_STORAGE_BUCKET_NAME = os.environ['AWS_BUCKET_NAME']
-    AWS_MEDIA_LOCATION = 'media'
 
     if IS_LOCALSTACK:
         AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')

@@ -5,9 +5,8 @@ import boto3
 USE_SSM = os.environ.get("USE_SSM") == "True"
 USE_S3 = os.environ.get("USE_S3") == "True"
 USE_ACCESS_KEYS = os.environ.get("USE_ACCESS_KEYS") == "True"
-AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL")
 
-AWS_MEDIA_LOCATION = 'media'
+IS_LOCALSTACK = os.environ["IS_LOCALSTACK"] == 'True'
 
 if USE_SSM:
     # SSM setup
@@ -51,7 +50,10 @@ if USE_S3:
 
     # S3 Config
     AWS_STORAGE_BUCKET_NAME = os.environ["AWS_BUCKET_NAME"]
-    if os.environ["IS_LOCALSTACK"] == 'True':
+    AWS_MEDIA_LOCATION = 'media'
+
+    if IS_LOCALSTACK:
+        AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL")
         MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_MEDIA_LOCATION}/'
     else:
         AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'

@@ -33,3 +33,6 @@ db/data
 
 # Properties
 aws.properties
+
+# localstack
+.localstack

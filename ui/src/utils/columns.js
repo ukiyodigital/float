@@ -2,20 +2,23 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const sortColumns = (a, b) => a.order - b.order;
 
-export const addColumn = (columns, setColumns) => {
+export const addColumn = (columns, setColumns, addData = false) => {
+  const newColumn = {
+    id: uuidv4(),
+    columns: [],
+    name: '',
+    slug: '',
+    field: 'TEXT',
+    unsaved: true,
+  };
+  if (addData) {
+    newColumn.data = {
+      value: '',
+    };
+  }
   setColumns([
     ...columns,
-    {
-      id: uuidv4(),
-      columns: [],
-      name: '',
-      slug: '',
-      field: 'TEXT',
-      data: {
-        value: '',
-      },
-      unsaved: true,
-    },
+    newColumn,
   ]);
 };
 
@@ -28,22 +31,26 @@ export const updateColumn = (column, columns, setColumns) => {
   ]);
 };
 
-export const addSubColumn = (column, columns, setColumns) => {
+export const addSubColumn = (column, columns, setColumns, addData = false) => {
+  const newColumn = {
+    id: uuidv4(),
+    columns: [],
+    name: '',
+    slug: '',
+    field: 'TEXT',
+    unsaved: true,
+  };
+  if (addData) {
+    newColumn.data = {
+      value: '',
+    };
+  }
+
   const updatedColumn = {
     ...column,
     columns: [
       ...column.columns,
-      {
-        id: uuidv4(),
-        columns: [],
-        name: '',
-        slug: '',
-        field: 'TEXT',
-        data: {
-          value: '',
-        },
-        unsaved: true,
-      },
+      newColumn,
     ],
   };
   updateColumn(updatedColumn, columns, setColumns);

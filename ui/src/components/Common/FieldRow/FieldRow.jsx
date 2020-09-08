@@ -6,6 +6,8 @@ import AppPropTypes from '_/proptypes';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import { sortColumns } from '_/utils/columns';
+
 import { Button, Grid, Paper } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -37,10 +39,19 @@ const useStyles = makeStyles(() => ({
   addButton: {
     marginTop: '15px',
   },
+  addSubButton: {
+    marginBottom: '15px',
+  },
+  subColumnContainer: {
+    marginLeft: '1rem',
+    marginRight: '1rem',
+  },
 }));
 
 const ColumnRow = ({
-  column, control, updateColumn, deleteColumn, errors,
+  column, control,
+  addSubColumn, deleteColumn, updateColumn,
+  deleteSubColumn, updateSubColumn, errors,
 }) => {
   const classes = useStyles();
 
@@ -103,16 +114,32 @@ const ColumnRow = ({
           />
         </Grid>
       </Grid>
-      {column.field === 'OBJECT' ? (
-        <Button
-          fullWidth
-          variant="contained"
-          color="secondary"
-          className={classes.addButton}
-        >
-          Add Sub-Field
-        </Button>
-      ) : null}
+      <div className={classes.subColumnContainer}>
+        {(column.columns || []).slice().sort(sortColumns).map((subColumn) => (
+          <ColumnRow
+            key={subColumn.id}
+            column={subColumn}
+            addSubColumn={() => null}
+            deleteColumn={(c) => deleteSubColumn(c, column)}
+            updateColumn={(c) => updateSubColumn(c, column)}
+            updateSubColumn={() => null}
+            deleteSubColumn={() => null}
+            errors={errors}
+            control={control}
+          />
+        ))}
+        {column.field === 'OBJECT' ? (
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={`${classes.addButton} ${classes.addSubButton}`}
+            onClick={() => addSubColumn(column)}
+          >
+            Add Sub-Field
+          </Button>
+        ) : null}
+      </div>
     </Paper>
   );
 };
@@ -121,8 +148,11 @@ ColumnRow.propTypes = {
   control: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   column: AppPropTypes.column.isRequired,
-  updateColumn: PropTypes.func.isRequired,
+  addSubColumn: PropTypes.func.isRequired,
   deleteColumn: PropTypes.func.isRequired,
+  updateColumn: PropTypes.func.isRequired,
+  updateSubColumn: PropTypes.func.isRequired,
+  deleteSubColumn: PropTypes.func.isRequired,
 };
 
 export default ColumnRow;

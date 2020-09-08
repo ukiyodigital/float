@@ -11,7 +11,11 @@ import { useQuery, useMutation } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-import { addColumn, updateColumn, deleteColumn } from '_/utils/columns';
+import {
+  addColumn, deleteColumn, updateColumn,
+  addSubColumn, deleteSubColumn, updateSubColumn,
+  sortColumns,
+} from '_/utils/columns';
 
 import { GetFlock } from '_/apollo/queries';
 import { UpdateFlock } from '_/apollo/mutations';
@@ -51,7 +55,7 @@ const useStyles = makeStyles(() => ({
 const EditFlock = ({ flock, updateFlock }) => {
   const classes = useStyles();
   const [columns, setColumns] = React.useState(
-    flock.columns.slice().sort((a, b) => a.order - b.order),
+    flock.columns.slice().sort(sortColumns),
   );
   const [data, setData] = React.useState(flock.data.slice() || []);
   const [showValues, setShowValues] = React.useState(true);
@@ -78,15 +82,32 @@ const EditFlock = ({ flock, updateFlock }) => {
     ]);
   };
 
+  const handleColumnData = ({
+    id, unsaved, data: columnData, columns: childColumns = [], value, __typename, ...column
+  }, order, isRoot = false) => {
+    if (unsaved) {
+      return {
+        ...column,
+        columns: childColumns.map((c, idx) => handleColumnData(c, idx)),
+        order,
+        // eslint-disable-next-line babel/camelcase
+        flock_id: isRoot ? Number(flock.id) : null,
+      };
+    }
+    return {
+      ...column,
+      columns: childColumns.map((c, idx) => handleColumnData(c, idx)),
+      order,
+      id,
+      // eslint-disable-next-line babel/camelcase
+      flock_id: isRoot ? Number(flock.id) : null,
+    };
+  };
+
   const handleSave = () => {
     updateFlock({
       ...flock,
-      columns: columns.map(({
-        id, unsaved, value, __typename, ...column
-      }, order) => {
-        if (unsaved) return { ...column, order };
-        return { ...column, order, id };
-      }),
+      columns: columns.map((c, order) => handleColumnData(c, order, true)),
       data,
     });
   };
@@ -153,6 +174,13 @@ const EditFlock = ({ flock, updateFlock }) => {
               column={column}
               updateColumn={(c) => updateColumn(c, columns, setColumns)}
               deleteColumn={(c) => deleteColumn(c, columns, setColumns)}
+              addSubColumn={(c) => addSubColumn(c, columns, setColumns)}
+              updateSubColumn={(subColumn, parent) => {
+                updateSubColumn(subColumn, parent, columns, setColumns);
+              }}
+              deleteSubColumn={(subColumn, parent) => {
+                deleteSubColumn(subColumn, parent, columns, setColumns);
+              }}
               errors={errors}
               control={control}
             />

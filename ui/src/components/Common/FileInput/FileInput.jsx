@@ -137,11 +137,11 @@ const FileInput = ({
               <Typography className={classes.typography} variant="h5">
                 {
                   isDragActive ? (
-                    <Typography variant="h6" className={classes.dragText}>
+                    <Typography variant="h6" component="p" className={classes.dragText}>
                       Drop the files here ...
                     </Typography>
                   ) : (
-                    file?.file || <Typography variant="h6" className={classes.dragText}>Drag Files or Click to Browse</Typography>
+                    file?.file || <Typography variant="h6" component="p" className={classes.dragText}>Drag Files or Click to Browse</Typography>
                   )
                 }
               </Typography>

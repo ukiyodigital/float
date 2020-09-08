@@ -13,7 +13,7 @@ import CodeIcon from '@material-ui/icons/Code';
 import ImageIcon from '@material-ui/icons/Image';
 
 const FieldSwitcher = ({
-  column, control, onChange, onChangeSubColumn, value, name, setValue,
+  column, control, onChange, onChangeSubColumn, value, name, setValue, isPage,
 }) => {
   const field = {
     name,
@@ -73,6 +73,7 @@ const FieldSwitcher = ({
         control={control}
         setValue={setValue}
         onChangeSubColumn={onChangeSubColumn}
+        isPage={isPage}
       />
     ),
   }[column.field] || null;
@@ -85,6 +86,11 @@ FieldSwitcher.propTypes = {
   onChange: PropTypes.func.isRequired,
   setValue: PropTypes.func.isRequired,
   value: PropTypes.any,
+  isPage: PropTypes.bool,
+};
+
+FieldSwitcher.defaultProps = {
+  isPage: false,
 };
 
 export default FieldSwitcher;

@@ -90,6 +90,13 @@ query GetFlock($siteSlug: String!, $flockSlug: String!) {
       slug
       field
       order
+      columns {
+        id
+        name
+        slug
+        field
+        order
+      }
     }
   }
 }

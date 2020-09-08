@@ -6,13 +6,14 @@ import AppPropTypes from '_/proptypes';
 
 import ColumnInput from '_/components/Common/ColumnInput/ColumnInput';
 import FileInput from '_/components/Common/FileInput/FileInput';
+import NestedInput from '_/components/Common/NestedInput/NestedInput';
 
 import TitleIcon from '@material-ui/icons/Title';
 import CodeIcon from '@material-ui/icons/Code';
 import ImageIcon from '@material-ui/icons/Image';
 
 const FieldSwitcher = ({
-  column, control, onChange, value, name, setValue,
+  column, control, onChange, onChangeSubColumn, value, name, setValue,
 }) => {
   const field = {
     name,
@@ -62,13 +63,16 @@ const FieldSwitcher = ({
       />
     ),
     OBJECT: (
-      <ColumnInput
+      <NestedInput
         fullWidth
         variant="outlined"
         margin="normal"
         field={field}
+        column={column}
         value={value}
         control={control}
+        setValue={setValue}
+        onChangeSubColumn={onChangeSubColumn}
       />
     ),
   }[column.field] || null;

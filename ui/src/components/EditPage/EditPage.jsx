@@ -129,6 +129,7 @@ const EditPage = ({ page, updatePage }) => {
       </div>
       {showValues ? columns.map((column) => (
         <FieldSwitcher
+          isPage
           setValue={setValue}
           key={column.id}
           column={column}
@@ -136,9 +137,16 @@ const EditPage = ({ page, updatePage }) => {
           name={column.slug}
           onChange={(data) => updateColumn({ ...column, data }, columns, setColumns)}
           onChangeSubColumn={(childColumn, parentColumn, data) => {
-            updateSubColumn({ ...childColumn, data }, parentColumn, columns, setColumns);
+            if (typeof data === 'object' && data !== null) {
+              updateSubColumn(
+                { ...childColumn, data }, parentColumn, columns, setColumns,
+              );
+            }
+            updateSubColumn(
+              { ...childColumn, data: { value: data || '' } }, parentColumn, columns, setColumns,
+            );
           }}
-          value={column.data}
+          value={column?.data}
         />
       )) : (
         <>
@@ -148,7 +156,7 @@ const EditPage = ({ page, updatePage }) => {
               column={column}
               updateColumn={(c) => updateColumn(c, columns, setColumns)}
               deleteColumn={(c) => deleteColumn(c, columns, setColumns)}
-              addSubColumn={(c) => addSubColumn(c, columns, setColumns)}
+              addSubColumn={(c) => addSubColumn(c, columns, setColumns, true)}
               updateSubColumn={(subColumn, parent) => {
                 updateSubColumn(subColumn, parent, columns, setColumns);
               }}
@@ -164,7 +172,7 @@ const EditPage = ({ page, updatePage }) => {
             variant="contained"
             color="secondary"
             className={classes.addButton}
-            onClick={() => addColumn(columns, setColumns)}
+            onClick={() => addColumn(columns, setColumns, true)}
           >
             <AddIcon />
             Add Field

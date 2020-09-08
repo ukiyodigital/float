@@ -9,7 +9,11 @@ import { useQuery, useMutation } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-import { addColumn, updateColumn, deleteColumn } from '_/utils/columns';
+import {
+  addColumn, deleteColumn, updateColumn,
+  addSubColumn, deleteSubColumn, updateSubColumn,
+  sortColumns,
+} from '_/utils/columns';
 
 import { GetPage } from '_/apollo/queries';
 import { UpdatePage } from '_/apollo/mutations';
@@ -57,20 +61,39 @@ const EditPage = ({ page, updatePage }) => {
   } = useForm();
 
   React.useEffect(() => {
-    setColumns(page.columns.slice().sort((a, b) => a.order - b.order));
+    setColumns(page.columns.slice().sort(sortColumns));
   }, [page.columns]);
+
+  const prepColumnData = ({
+    unsaved, id, value, data, columns: childColumns = [], __typename: typename, ...column
+  }, isRoot = false, order) => {
+    if (unsaved) {
+      return {
+        ...column,
+        columns: childColumns.slice().sort(sortColumns)
+          .map((c, subOrder) => prepColumnData(c, false, subOrder)),
+        data: JSON.stringify(data),
+        order,
+        // eslint-disable-next-line babel/camelcase
+        page_id: isRoot ? Number(page.id) : null,
+      };
+    }
+    return {
+      ...column,
+      // eslint-disable-next-line babel/camelcase
+      page_id: isRoot ? Number(page.id) : null,
+      columns: childColumns.slice().sort(sortColumns)
+        .map((c, subOrder) => prepColumnData(c, false, subOrder)),
+      data: JSON.stringify(data),
+      order,
+      id,
+    };
+  };
 
   const handleSave = () => {
     updatePage({
       ...page,
-      columns: columns.map(({
-        unsaved, id, value, data, __typename: typename, ...column
-      }, order) => {
-        if (unsaved) return { ...column, order };
-        return {
-          ...column, data: JSON.stringify(data || {}), order, id,
-        };
-      }),
+      columns: columns.map((c, i) => prepColumnData(c, true, i)),
     });
   };
 
@@ -112,6 +135,9 @@ const EditPage = ({ page, updatePage }) => {
           control={control}
           name={column.slug}
           onChange={(data) => updateColumn({ ...column, data }, columns, setColumns)}
+          onChangeSubColumn={(childColumn, parentColumn, data) => {
+            updateSubColumn({ ...childColumn, data }, parentColumn, columns, setColumns);
+          }}
           value={column.data}
         />
       )) : (
@@ -122,6 +148,13 @@ const EditPage = ({ page, updatePage }) => {
               column={column}
               updateColumn={(c) => updateColumn(c, columns, setColumns)}
               deleteColumn={(c) => deleteColumn(c, columns, setColumns)}
+              addSubColumn={(c) => addSubColumn(c, columns, setColumns)}
+              updateSubColumn={(subColumn, parent) => {
+                updateSubColumn(subColumn, parent, columns, setColumns);
+              }}
+              deleteSubColumn={(subColumn, parent) => {
+                deleteSubColumn(subColumn, parent, columns, setColumns);
+              }}
               errors={errors}
               control={control}
             />

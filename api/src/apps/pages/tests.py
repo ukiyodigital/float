@@ -471,6 +471,7 @@ class PageTests(JSONWebTokenTestCase):
 
         parent_column = PageColumnHeader.objects.get(id=1)
 
+        print(executed.errors)
         self.assertDictEqual(executed.data['updatePage'], expected)
         self.assertEqual(parent_column.columns.count(), 2)
         self.assertTrue(parent_column.columns.filter(slug='child_2').exists())

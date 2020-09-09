@@ -22,7 +22,7 @@ import { UpdateFlock } from '_/apollo/mutations';
 import { useGetSiteQuery } from '_/hooks';
 
 import {
-  Button, Divider, Grid, Snackbar, Switch, Typography,
+  Button, Grid, Snackbar, Switch, Typography,
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 
@@ -69,6 +69,14 @@ const EditFlock = ({ flock, updateFlock }) => {
     setData([
       ...data.slice(0, itemIdx),
       item,
+      ...data.slice(itemIdx + 1),
+    ]);
+  };
+
+  const deleteItem = (item) => {
+    const itemIdx = data.findIndex((i) => i.id === item.id);
+    setData([
+      ...data.slice(0, itemIdx),
       ...data.slice(itemIdx + 1),
     ]);
   };
@@ -144,16 +152,15 @@ const EditFlock = ({ flock, updateFlock }) => {
       {showValues ? (
         <>
           {data.map((item) => (
-            <React.Fragment key={item.id}>
-              <ValueRepeater
-                columns={columns}
-                item={item}
-                control={control}
-                onChange={updateData}
-                setValue={setValue}
-              />
-              <Divider />
-            </React.Fragment>
+            <ValueRepeater
+              key={item.id}
+              columns={columns}
+              item={item}
+              control={control}
+              onChange={updateData}
+              deleteItem={deleteItem}
+              setValue={setValue}
+            />
           ))}
           <Button
             fullWidth

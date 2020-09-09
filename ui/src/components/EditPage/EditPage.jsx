@@ -127,28 +127,32 @@ const EditPage = ({ page, updatePage }) => {
           Save
         </Button>
       </div>
-      {showValues ? columns.map((column) => (
-        <FieldSwitcher
-          isPage
-          setValue={setValue}
-          key={column.id}
-          column={column}
-          control={control}
-          name={column.slug}
-          onChange={(data) => updateColumn({ ...column, data }, columns, setColumns)}
-          onChangeSubColumn={(childColumn, parentColumn, data) => {
-            if (typeof data === 'object' && data !== null) {
+      {showValues ? columns.map((column) => {
+        const { value = null } = column?.data;
+        const v = value || value === '' ? value : column.data;
+        return (
+          <FieldSwitcher
+            isPage
+            setValue={setValue}
+            key={column.id}
+            column={column}
+            value={v}
+            control={control}
+            name={column.slug}
+            onChange={(data) => updateColumn({ ...column, data }, columns, setColumns)}
+            onChangeSubColumn={(childColumn, parentColumn, data) => {
+              if (typeof data === 'object' && data !== null) {
+                updateSubColumn(
+                  { ...childColumn, data }, parentColumn, columns, setColumns,
+                );
+              }
               updateSubColumn(
-                { ...childColumn, data }, parentColumn, columns, setColumns,
+                { ...childColumn, data: { value: data || '' } }, parentColumn, columns, setColumns,
               );
-            }
-            updateSubColumn(
-              { ...childColumn, data: { value: data || '' } }, parentColumn, columns, setColumns,
-            );
-          }}
-          value={column?.data}
-        />
-      )) : (
+            }}
+          />
+        );
+      }) : (
         <>
           {columns.map((column) => (
             <FieldRow

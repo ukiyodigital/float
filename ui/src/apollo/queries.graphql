@@ -63,6 +63,14 @@ query GetPage($siteSlug: String!, $pageSlug: String!) {
       field
       data
       order
+      columns {
+        id
+        name
+        slug
+        field
+        data
+        order
+      }
     }
   }
 }
@@ -82,6 +90,13 @@ query GetFlock($siteSlug: String!, $flockSlug: String!) {
       slug
       field
       order
+      columns {
+        id
+        name
+        slug
+        field
+        order
+      }
     }
   }
 }

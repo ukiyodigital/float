@@ -6,14 +6,13 @@ import AppPropTypes from '_/proptypes';
 
 import ColumnInput from '_/components/Common/ColumnInput/ColumnInput';
 import FileInput from '_/components/Common/FileInput/FileInput';
-import NestedInput from '_/components/Common/NestedInput/NestedInput';
 
 import TitleIcon from '@material-ui/icons/Title';
 import CodeIcon from '@material-ui/icons/Code';
 import ImageIcon from '@material-ui/icons/Image';
 
 const FieldSwitcher = ({
-  column, control, onChange, onChangeSubColumn, value, name, setValue, isPage,
+  column, control, onChange, value, name, setValue,
 }) => {
   const field = {
     name,
@@ -62,20 +61,6 @@ const FieldSwitcher = ({
         control={control}
       />
     ),
-    OBJECT: (
-      <NestedInput
-        fullWidth
-        variant="outlined"
-        margin="normal"
-        field={field}
-        column={column}
-        value={value}
-        control={control}
-        setValue={setValue}
-        onChangeSubColumn={onChangeSubColumn}
-        isPage={isPage}
-      />
-    ),
   }[column.field] || null;
 };
 
@@ -86,11 +71,6 @@ FieldSwitcher.propTypes = {
   onChange: PropTypes.func.isRequired,
   setValue: PropTypes.func.isRequired,
   value: PropTypes.any,
-  isPage: PropTypes.bool,
-};
-
-FieldSwitcher.defaultProps = {
-  isPage: false,
 };
 
 export default FieldSwitcher;

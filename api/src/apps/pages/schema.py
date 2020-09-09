@@ -16,85 +16,18 @@ from apps.pages.models import Page, PageColumnHeader
 from apps.sites.models import Site
 
 
-def create_column(column, page_id=None):
-    created_columns = []
-    columns = column.pop('columns', [])
-    if page_id:
-        column['page_id'] = page_id
-    c = PageColumnHeader(**column)
-    c.save()
-    for sub_column in columns:
-        sub_column['parent'] = c
-        created_columns += create_column(sub_column)
-    return created_columns
-
-def create_new_columns(columns, page_id):
-    new_columns = []
-    for column in columns:
-        new_columns += create_column(column, page_id)
-    return new_columns
-
-def update_column(column):
-    new_columns = []
-    existing_column.name = column.get('name', existing_column.name)
-    existing_column.slug = column.get('slug', existing_column.slug)
-    existing_column.order = column.get('order', existing_column.order)
-    existing_column.field = column.get('field', existing_column.field)
-    existing_column.data = column.get('data', {})
-
-    columns = column.get('columns', [])
-
-    for sub_column in columns:
-        if sub_column.id:
-            update_column(sub_column)
-            return
-        new_columns += create_column(column)
-
-    return column, new_columns
-
-
-def update_existing_columns(columns):
-    existing_column_ids = []
-    new_columns = []
-    for column in columns:
-        if column.id:
-            existing_column_ids.append(column.id)
-            for sub_column in column.columns:
-                if sub_column.id:
-                    existing_column_ids.append(column.id)
-
-    existing_column_dict = dict()
-    for column in PageColumnHeader.objects.filter(id__in=existing_column_ids):
-        existing_column_dict[str(column.id)] = column
-
-    for column_id, column in existing_column_dict.items():
-        c, added_columns = update_column(column)
-        new_columns += added_columns
-
-    return existing_column_dict, new_columns
-
-
-def handle_columns(columns, page):
-    existing_column_dict, new_columns = update_existing_columns(columns)
-
-    new_columns += create_new_columns([c for c in columns if not c.id], page.id)
-
-    PageColumnHeader.objects.bulk_update(
-        existing_column_dict.values(),
-        ['name', 'slug', 'order', 'field', 'data']
-    )
-
-    PageColumnHeader.objects.bulk_create(new_columns)
-
-
 class ColumnInput(graphene.InputObjectType):
     id = graphene.String()
     name = graphene.String(required=True)
     slug = graphene.String(required=True)
     field = graphene.String(required=True)
     data = graphene.JSONString()
-    order = graphene.Int()
     columns = graphene.List(lambda: ColumnInput)
+
+    # meta data columns
+    order = graphene.Int()
+    page_id = graphene.Int(name='page_id')
+    parent_id = graphene.Int(name='parent_id')
 
 class PageInput(graphene.InputObjectType):
     id = graphene.String()
@@ -199,9 +132,10 @@ class UpdatePage(graphene.Mutation):
         page_obj.slug = page.slug
 
         columns = page.get("columns", [])
+        page_obj.columns.exclude(id__in=[c.id for c in columns if c.id]).delete()
 
         try:
-            handle_columns(columns, page)
+            page_obj.update_columns(columns)
         except IntegrityError:
             raise GraphQLError('Duplicate slugs found in same page or same column')
 

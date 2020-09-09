@@ -5,6 +5,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from apps.sites.models import Site
 from apps.column_headers.models import ColumnHeader
 
+from apps.column_headers.utils import ColumnManager
+
 
 class Flock(models.Model):
     name = models.CharField(max_length=15, blank=False)
@@ -23,9 +25,20 @@ class Flock(models.Model):
     class Meta:
         unique_together = ('slug', 'site',)
 
+    def update_columns(self, columns):
+        manager = ColumnManager(
+            model=FlockColumnHeader,
+            column_fields=['name', 'slug', 'order', 'field'],
+            has_data_property=False,
+        )
+        manager.save_columns(columns, self.id)
+
 
 class FlockColumnHeader(ColumnHeader):
-    flock = models.ForeignKey(Flock, on_delete=models.CASCADE, related_name='columns')
+    flock = models.ForeignKey(Flock, on_delete=models.CASCADE, related_name='columns', null=True, blank=True)
 
     class Meta:
-        unique_together = ('flock', 'slug',)
+        unique_together = (
+            ('flock', 'slug',),
+            ('parent', 'slug',),
+        )

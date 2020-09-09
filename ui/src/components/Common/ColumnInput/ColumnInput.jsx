@@ -13,13 +13,13 @@ const ColumnInput = ({
   <Controller
     as={TextField}
     onChange={([{ target: { value: v } }]) => {
-      field.onChange({ value: v });
+      field.onChange(v);
       return v;
     }}
     name={field.name}
     label={field.label}
     type={field.type}
-    defaultValue={value?.value}
+    defaultValue={value?.value || value || ''}
     helperText={message}
     {...props}
   />
@@ -27,7 +27,7 @@ const ColumnInput = ({
 
 ColumnInput.propTypes = {
   message: PropTypes.string,
-  value: PropTypes.object,
+  value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   field: AppPropTypes.input.isRequired,
 };
 

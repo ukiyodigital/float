@@ -6,6 +6,8 @@ from apps.sites.models import Site
 from apps.column_headers.models import ColumnHeader
 from apps.users.models import User
 
+from apps.column_headers.utils import ColumnManager
+
 
 class Page(models.Model):
     # page_name
@@ -18,6 +20,13 @@ class Page(models.Model):
 
     class Meta:
         unique_together = ('slug', 'site',)
+
+    def update_columns(self, columns):
+        manager = ColumnManager(
+            model=PageColumnHeader,
+            column_fields=['name', 'slug', 'order', 'field', 'data'],
+        )
+        manager.save_columns(columns, self.id)
 
 class PageColumnHeader(ColumnHeader):
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='columns', null=True, blank=True)

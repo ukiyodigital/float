@@ -29,8 +29,8 @@ const NestedInput = ({
         {(column.columns || []).slice().sort(sortColumns).map((c) => {
           // since page data is stored in individual columns
           // we need to access the values differently
-          let v = (isPage ? c.data : value[c.slug]) || null;
-          v = v?.value || v?.value === '' ? v.value : v;
+          const { value: pageValue = null } = c?.data || {};
+          const flockValue = value && !isPage ? value[c.slug] : null;
           return (
             <SubFieldSwitcher
               key={`${field.name}-${column.id}-${c.id}`}
@@ -39,7 +39,7 @@ const NestedInput = ({
               column={c}
               control={control}
               onChange={(data) => onChangeSubColumn(c, column, data)}
-              value={v}
+              value={isPage ? pageValue : flockValue}
             />
           );
         })}

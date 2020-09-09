@@ -57,7 +57,7 @@ const EditFlock = ({ flock, updateFlock }) => {
   const [columns, setColumns] = React.useState(
     flock.columns.slice().sort(sortColumns),
   );
-  const [data, setData] = React.useState(flock.data.slice() || []);
+  const [data, setData] = React.useState(flock?.data?.slice() || []);
   const [showValues, setShowValues] = React.useState(true);
   // const [errors, dispatch, onError] = useErrorState([]);
   const {

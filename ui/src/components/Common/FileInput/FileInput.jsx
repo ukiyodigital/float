@@ -124,7 +124,7 @@ const FileInput = ({
     getRootProps, getInputProps, isDragActive,
   } = useDropzone({ onDrop });
 
-  const file = typeof value === 'string' ? JSON.parse(value.replace(/'/g, '"')) : value;
+  const file = value && typeof value === 'string' ? JSON.parse(value.replace(/'/g, '"')) : value;
 
   return (
     <div className={classes.root}>

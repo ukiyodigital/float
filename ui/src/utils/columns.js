@@ -12,9 +12,7 @@ export const addColumn = (columns, setColumns, addData = false) => {
     unsaved: true,
   };
   if (addData) {
-    newColumn.data = {
-      value: '',
-    };
+    newColumn.data = '';
   }
   setColumns([
     ...columns,

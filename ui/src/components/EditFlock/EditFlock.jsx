@@ -31,6 +31,8 @@ import AddIcon from '@material-ui/icons/Add';
 import FieldRow from '_/components/Common/FieldRow/FieldRow';
 import ValueRepeater from '_/components/EditFlock/ValueRepeater/ValueRepeater';
 
+import Preview from '_/components/Preview/Preview';
+
 const useStyles = makeStyles(() => ({
   buttonContainer: {
     display: 'flex',
@@ -63,6 +65,9 @@ const EditFlock = ({ flock, updateFlock }) => {
   const {
     control, errors, triggerValidation, handleSubmit, setValue,
   } = useForm();
+
+  const { key } = flock.site.apiKey[0];
+  const url = `${ENVS.API_URL}?query=query FlockByKey($apiKey: String!, $flockSlug: String!) { flockByKey(apiKey: $apiKey, flockSlug: $flockSlug) { id name slug data } }&operationName=FlockByKey&variables={"apiKey": "${key}", "flockSlug": "${flock.slug}"}`;
 
   const updateData = (item) => {
     const itemIdx = data.findIndex((i) => i.id === item.id);
@@ -141,6 +146,7 @@ const EditFlock = ({ flock, updateFlock }) => {
             <Grid item>Values</Grid>
           </Grid>
         </Typography>
+        <Preview url={url} />
         <Button
           variant="contained"
           color="primary"

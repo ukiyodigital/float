@@ -14,7 +14,25 @@ import json
 
 from apps.pages.models import Page, PageColumnHeader
 from apps.sites.models import Site
+from apps.uploads.models import FileUpload
 
+# this should be moved outside of the schema file at some point
+def loop_thru_data(columns):
+    data = {}
+    for column in columns:
+        if (column.field == 'IMAGE'):
+            image = FileUpload.objects.get(id=column.data.get('id'))
+            column.data['url'] = image.file.url
+            data[column.slug] = column.data
+        if (column.field == 'OBJECT'):
+            column_data = {}
+            subcolumns = column.columns.all()
+            column_data = loop_thru_data(subcolumns)
+            data[column.slug] = column_data
+        else:
+            data[column.slug] = column.data
+
+    return data
 
 class ColumnInput(graphene.InputObjectType):
     id = graphene.String()
@@ -46,9 +64,8 @@ class PageAPIType(DjangoObjectType):
     data = generic.GenericScalar()
 
     def resolve_data(self, info):
-        data = {}
         columns = self.columns.all()
-        return dict((c.slug, c.data.get('value', '') if c.data else '') for c in columns)
+        return loop_thru_data(columns)
 
 class PageColumnHeaderType(DjangoObjectType):
     data = generic.GenericScalar()

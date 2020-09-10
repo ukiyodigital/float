@@ -29,6 +29,8 @@ import AddIcon from '@material-ui/icons/Add';
 import FieldRow from '_/components/Common/FieldRow/FieldRow';
 import FieldSwitcher from '_/components/Common/FieldSwitcher/FieldSwitcher';
 
+import Preview from '_/components/Preview/Preview';
+
 const useStyles = makeStyles(() => ({
   buttonContainer: {
     display: 'flex',
@@ -63,6 +65,9 @@ const EditPage = ({ page, updatePage }) => {
   React.useEffect(() => {
     setColumns(page.columns.slice().sort(sortColumns));
   }, [page.columns]);
+
+  const { key } = page.site.apiKey[0];
+  const url = `${ENVS.API_URL}?query=query SiteByKey($apiKey: String!, $pageSlug: String!) { pageByKey(apiKey: $apiKey, pageSlug: $pageSlug) { id name slug data } }&operationName=SiteByKey&variables={"apiKey": "${key}", "pageSlug": "${page.slug}"}`;
 
   const prepColumnData = ({
     unsaved, id, value, data, columns: childColumns = [], __typename: typename, ...column
@@ -119,6 +124,7 @@ const EditPage = ({ page, updatePage }) => {
             <Grid item>Values</Grid>
           </Grid>
         </Typography>
+        <Preview url={url} />
         <Button
           variant="contained"
           color="primary"
@@ -140,16 +146,11 @@ const EditPage = ({ page, updatePage }) => {
             control={control}
             name={column.slug}
             onChange={(data) => updateColumn({ ...column, data }, columns, setColumns)}
-            onChangeSubColumn={(childColumn, parentColumn, data) => {
-              if (typeof data === 'object' && data !== null) {
-                updateSubColumn(
-                  { ...childColumn, data }, parentColumn, columns, setColumns,
-                );
-              }
+            onChangeSubColumn={(childColumn, parentColumn, data) => (
               updateSubColumn(
-                { ...childColumn, data: { value: data || '' } }, parentColumn, columns, setColumns,
-              );
-            }}
+                { ...childColumn, data }, parentColumn, columns, setColumns,
+              )
+            )}
           />
         );
       }) : (

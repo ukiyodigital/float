@@ -55,6 +55,9 @@ query GetPage($siteSlug: String!, $pageSlug: String!) {
     slug
     site {
       id
+      apiKey {
+        key
+      }
     }
     columns {
       id
@@ -82,6 +85,9 @@ query GetFlock($siteSlug: String!, $flockSlug: String!) {
     slug
     site {
       id
+      apiKey {
+        key
+      }
     }
     data
     columns {

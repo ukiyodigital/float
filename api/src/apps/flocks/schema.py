@@ -12,7 +12,27 @@ import json
 
 from apps.flocks.models import Flock, FlockColumnHeader
 from apps.sites.models import Site
+from apps.uploads.models import FileUpload
 
+# this should be moved outside of the schema file at some point
+def loop_thru_dict(data, flock_id=None, parent_id=None):
+    for key in data.keys():
+        if isinstance(data[key], dict):
+            column = FlockColumnHeader.objects.get(flock_id=flock_id, parent_id=parent_id, slug=key)
+            if (column.field == 'IMAGE'):
+                image = FileUpload.objects.get(id=data[key].get('id'))
+                data[key]['url'] = image.file.url
+            if (column.field == 'OBJECT'):
+                loop_thru_dict(data[key], None, column.id)
+    return data
+
+
+def loop_thru_items(items, flock_id=None, parent_id=None):
+    data = []
+    for item in items:
+        data.append(loop_thru_dict(item, flock_id, parent_id))
+
+    return data
 
 class FlockColumnInput(graphene.InputObjectType):
     id = graphene.String()
@@ -39,6 +59,9 @@ class FlockType(DjangoObjectType):
 
     class Meta:
         model = Flock
+
+    def resolve_data(self, info):
+        return loop_thru_items(self.data, self.id)
 
 
 class FlockColumnHeaderType(DjangoObjectType):

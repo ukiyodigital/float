@@ -17,9 +17,14 @@ import ReactJson from 'react-json-view';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    '& .MuiDialog-paper': {
+      backgroundColor: 'rgb(39, 40, 34)',
+    },
     '& .react-json-view': {
       paddingTop: '1rem',
-      height: '100%',
+      '& .pretty-json-container': {
+        overflowWrap: 'anywhere',
+      },
     },
   },
   appBar: {

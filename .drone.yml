@@ -140,7 +140,7 @@ steps:
     - touch .env
     - echo DOCKER_USERNAME=$DOCKER_USERNAME >> .env
     - echo DOCKER_TOKEN=$DOCKER_TOKEN >> .env
-    - scp -o StrictHostKeyChecking=no -r ./.env ./env.properties ./api/env/production.properties ./docker-compose.prod.yml ec2-user@$EC2_PUBLIC_IP_ADDRESS:/home/ec2-user/app
+    - scp -o StrictHostKeyChecking=no -r ./init-letsencrypt.sh ./.env ./env.properties ./api/env/production.properties ./docker-compose.prod.yml ec2-user@$EC2_PUBLIC_IP_ADDRESS:/home/ec2-user/app
     - rm .env
     - bash ./deploy.sh
 

@@ -82,7 +82,7 @@ steps:
 - name: Build UI
   image: node:14.0
   environment:
-    API_URL: http://api.floatql.com/graphql/
+    API_URL: https://api.floatql.com/graphql/
     APP_ENV: production
     TRACKING_ID: UA-83207653-3
   commands:

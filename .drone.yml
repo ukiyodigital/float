@@ -150,5 +150,6 @@ depends_on:
 trigger:
   branch:
     - develop
+    - feature/ssl-nginx
   event:
     - push

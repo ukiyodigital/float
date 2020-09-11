@@ -61,7 +61,7 @@ class FlockType(DjangoObjectType):
         model = Flock
 
     def resolve_data(self, info):
-        return loop_thru_items(self.data, self.id)
+        return loop_thru_items(self.data or [], self.id)
 
 
 class FlockColumnHeaderType(DjangoObjectType):

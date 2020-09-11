@@ -63,17 +63,6 @@ steps:
       from_secret: docker_username
     password:
       from_secret: docker_token
-- name: Build Nginx
-  image: plugins/docker
-  settings:
-    repo: floatcms/nginx
-    dockerfile: ./nginx/Dockerfile
-    context: ./nginx
-    auto_tag: true
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_token
 
 depends_on:
   - Test API / UI
@@ -140,7 +129,7 @@ steps:
     - touch .env
     - echo DOCKER_USERNAME=$DOCKER_USERNAME >> .env
     - echo DOCKER_TOKEN=$DOCKER_TOKEN >> .env
-    - scp -o StrictHostKeyChecking=no -r ./init-letsencrypt.sh ./.env ./env.properties ./api/env/production.properties ./docker-compose.prod.yml ec2-user@$EC2_PUBLIC_IP_ADDRESS:/home/ec2-user/app
+    - scp -o StrictHostKeyChecking=no -r ./conf.d ./.env ./env.properties ./api/env/production.properties ./docker-compose.prod.yml ec2-user@$EC2_PUBLIC_IP_ADDRESS:/home/ec2-user/app
     - rm .env
     - bash ./deploy.sh
 

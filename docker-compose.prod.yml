@@ -21,8 +21,8 @@ services:
     environment:
       CERTBOT_EMAIL: kevin.a.cunanan@gmail.com
     ports:
-      - 80:80/tcp
-      - 443:443/tcp
+      - 80:80
+      - 443:443
     depends_on:
       - api
 

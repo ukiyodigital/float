@@ -68,6 +68,8 @@ class FlockColumnHeaderType(DjangoObjectType):
     class Meta:
         model = FlockColumnHeader
 
+class FlockItemType(graphene.ObjectType):
+    item = generic.GenericScalar()
 
 class Query(graphene.ObjectType):
     flock = graphene.Field(
@@ -79,6 +81,12 @@ class Query(graphene.ObjectType):
         FlockType,
         api_key=graphene.String(required=True),
         flock_slug=graphene.String(required=True),
+    )
+    item_by_key_and_subset = graphene.Field(
+        FlockItemType,
+        api_key=graphene.String(required=True),
+        flock_slug=graphene.String(required=True),
+        subset=generic.GenericScalar(required=True),
     )
 
     @login_required
@@ -103,6 +111,21 @@ class Query(graphene.ObjectType):
         except Flock.DoesNotExist as e:
             raise GraphQLError(e)
         return flock
+
+    def resolve_item_by_key_and_subset(self, info, api_key, flock_slug, subset):
+        try:
+            flock = Flock.objects.get(
+                site__api_key__key=api_key,
+                slug=flock_slug,
+            )
+        except Flock.DoesNotExist as e:
+            raise GraphQLError(e)
+        for flock_item in flock.data:
+            if all(item in flock_item.items() for item in subset.items()):
+                return FlockItemType(
+                    item=flock_item,
+                )
+        raise GraphQLError('Item with subset does not exist')
 
 
 class CreateFlock(graphene.Mutation):

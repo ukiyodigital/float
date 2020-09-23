@@ -123,7 +123,7 @@ class Query(graphene.ObjectType):
         for flock_item in flock.data:
             if all(item in flock_item.items() for item in subset.items()):
                 return FlockItemType(
-                    item=flock_item,
+                    item=loop_thru_dict(flock_item, flock_id=flock.id),
                 )
         raise GraphQLError('Item with subset does not exist')
 

@@ -14,6 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 
 import ReactJson from 'react-json-view';
+import { Forward } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,9 +42,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Transition = React.forwardRef((props, ref) => (
+const ForwardedSlide = (props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
-));
+);
+
+const Transition = React.forwardRef(ForwardedSlide);
 
 const Preview = ({ url }) => {
   const classes = useStyles();

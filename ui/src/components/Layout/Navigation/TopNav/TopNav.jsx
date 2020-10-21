@@ -11,7 +11,7 @@ import {
 import Link from '_/components/Common/Link/Link';
 import LogoutButton from '_/components/Layout/Navigation/LogoutButton/LogoutButton';
 
-import { IsUserLoggedIn } from '_/apollo/queries';
+import { IsUserLoggedIn } from '_/apollo/queries.graphql';
 
 const drawerWidth = 240;
 

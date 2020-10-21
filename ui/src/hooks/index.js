@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { GetSite } from '_/apollo/queries';
+import { GetSite } from '_/apollo/queries.graphql';
 import { currentSiteVar } from '_/apollo/cache';
 
 const initialState = { errors: [] };

@@ -13,8 +13,8 @@ import {
 import CssBaseline from '@material-ui/core/CssBaseline';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
-import { GetToken } from '_/apollo/mutations';
-import { IsUserLoggedIn } from '_/apollo/queries';
+import { GetToken } from '_/apollo/mutations.graphql';
+import { IsUserLoggedIn } from '_/apollo/queries.graphql';
 import { isLoggedInVar } from '_/apollo/cache';
 
 import { useErrorState } from '_/hooks';

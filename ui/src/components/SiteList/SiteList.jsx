@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 
-import { GetSites } from '_/apollo/queries';
+import { GetSites } from '_/apollo/queries.graphql';
 
 import Loading from '_/components/Common/Loading/Loading';
 import SiteCard from '_/components/Common/SiteCard/SiteCard';

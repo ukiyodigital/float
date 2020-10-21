@@ -13,7 +13,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import Link from '_/components/Common/Link/Link';
 
-import { GetSites } from '_/apollo/queries';
+import { GetSites } from '_/apollo/queries.graphql';
 import { useQuery } from '@apollo/client';
 
 const drawerWidth = 240;
@@ -40,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AppDrawer = () => {
-  const [openMenus, setOpenMenus] = React.useState([]);
+const AppDrawer: React.FC = () => {
+  const [openMenus, setOpenMenus] = React.useState<string[]>([]);
   const classes = useStyles();
   const {
     data: {
@@ -49,7 +49,7 @@ const AppDrawer = () => {
     } = {},
   } = useQuery(GetSites);
 
-  const toggleSite = (siteId) => {
+  const toggleSite = (siteId: string) => {
     const idx = openMenus.findIndex((sId) => sId === siteId);
     if (idx === -1) {
       setOpenMenus([...openMenus, siteId]);
@@ -86,7 +86,7 @@ const AppDrawer = () => {
           </ListSubheader>
         )}
       >
-        {sites.map((site) => {
+        {sites.map((site: Site) => {
           const active = openMenus.includes(site.id);
           return (
             <React.Fragment key={site.id}>

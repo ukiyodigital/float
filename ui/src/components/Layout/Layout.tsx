@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Container } from '@material-ui/core';
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 const sidebarPaths = routes.filter((route) => route.sidebar).map((route) => route.path);
 const nonSidebarPaths = routes.filter((route) => !route.sidebar).map((route) => route.path);
 
-export default () => {
+const Layout: React.FC = () => {
   const classes = useStyles();
 
   return (
@@ -72,3 +72,5 @@ export default () => {
     </Box>
   );
 };
+
+export default Layout;

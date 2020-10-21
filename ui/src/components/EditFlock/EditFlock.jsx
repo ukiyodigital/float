@@ -17,8 +17,8 @@ import {
   sortColumns,
 } from '_/utils/columns';
 
-import { GetFlock } from '_/apollo/queries';
-import { UpdateFlock } from '_/apollo/mutations';
+import { GetFlock } from '_/apollo/queries.graphql';
+import { UpdateFlock } from '_/apollo/mutations.graphql';
 import { useGetSiteQuery } from '_/hooks';
 
 import {
@@ -32,6 +32,8 @@ import FieldRow from '_/components/Common/FieldRow/FieldRow';
 import ValueRepeater from '_/components/EditFlock/ValueRepeater/ValueRepeater';
 
 import Preview from '_/components/Preview/Preview';
+
+const { REACT_APP_API_URL: API_URL } = process.env;
 
 const useStyles = makeStyles(() => ({
   buttonContainer: {
@@ -67,7 +69,7 @@ const EditFlock = ({ flock, updateFlock }) => {
   } = useForm();
 
   const { key } = flock.site.apiKey[0];
-  const url = `${ENVS.API_URL}?query=query FlockByKey($apiKey: String!, $flockSlug: String!) { flockByKey(apiKey: $apiKey, flockSlug: $flockSlug) { id name slug data } }&operationName=FlockByKey&variables={"apiKey": "${key}", "flockSlug": "${flock.slug}"}`;
+  const url = `${API_URL}?query=query FlockByKey($apiKey: String!, $flockSlug: String!) { flockByKey(apiKey: $apiKey, flockSlug: $flockSlug) { id name slug data } }&operationName=FlockByKey&variables={"apiKey": "${key}", "flockSlug": "${flock.slug}"}`;
 
   const updateData = (item) => {
     const itemIdx = data.findIndex((i) => i.id === item.id);
@@ -103,7 +105,6 @@ const EditFlock = ({ flock, updateFlock }) => {
         ...column,
         columns: childColumns.map((c, idx) => handleColumnData(c, idx)),
         order,
-        // eslint-disable-next-line babel/camelcase
         flock_id: isRoot ? Number(flock.id) : null,
       };
     }
@@ -112,7 +113,6 @@ const EditFlock = ({ flock, updateFlock }) => {
       columns: childColumns.map((c, idx) => handleColumnData(c, idx)),
       order,
       id,
-      // eslint-disable-next-line babel/camelcase
       flock_id: isRoot ? Number(flock.id) : null,
     };
   };
@@ -222,7 +222,7 @@ EditFlock.propTypes = {
 // eslint-disable-next-line react/jsx-props-no-spreading
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
-const EditFlockQuery = () => {
+const EditFlockQuery: React.FC = () => {
   const [snackbar, setSnackbar] = React.useState(false);
   const { siteSlug, flockSlug } = useParams();
   const [, currentSite] = useGetSiteQuery(siteSlug);

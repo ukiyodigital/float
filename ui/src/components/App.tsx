@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 
 import ReactGA from 'react-ga';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import { ApolloClient, ApolloProvider } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
@@ -14,12 +15,33 @@ import Layout from '_/components/Layout/Layout';
 
 import '../assets/styles/main.less';
 
-if (ENVS.TRACKING_ID) {
-  ReactGA.initialize(ENVS.TRACKING_ID);
+const { REACT_APP_TRACKING_ID: TRACKING_ID, REACT_APP_API_URL: API_URL } = process.env;
+
+if (TRACKING_ID) {
+  ReactGA.initialize(TRACKING_ID);
   ReactGA.pageview(window.location.pathname + window.location.search);
 }
 
-const link = createUploadLink({ uri: ENVS.API_URL });
+const themeOptions = {
+  palette: {
+    background: {
+      default: '#fff',
+    },
+    primary: {
+      light: '#EDF6F9;',
+      main: '#83C5BE',
+      dark: '#006D77',
+    },
+    secondary: {
+      light: '#FFF5F2',
+      main: '#E29578',
+      dark: '#965841',
+    },
+  },
+};
+
+const theme = createMuiTheme(themeOptions);
+const link = createUploadLink({ uri: API_URL });
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
@@ -47,9 +69,11 @@ if (appContainer === null) {
 // app component
 const App = () => (
   <ApolloProvider client={client}>
-    <Router>
-      <Layout />
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Layout />
+      </Router>
+    </ThemeProvider>
   </ApolloProvider>
 );
 

@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
-import { CreateSite } from '_/apollo/mutations';
+import { CreateSite } from '_/apollo/mutations.graphql';
 
 import { useErrorState } from '_/hooks';
 

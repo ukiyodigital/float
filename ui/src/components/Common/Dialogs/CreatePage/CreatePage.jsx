@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
-import { CreatePage } from '_/apollo/mutations';
+import { CreatePage } from '_/apollo/mutations.graphql';
 
 import { useErrorState } from '_/hooks';
 

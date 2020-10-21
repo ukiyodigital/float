@@ -1,6 +1,6 @@
-FROM node:14.0-alpine AS dev
+FROM node:14.8-alpine AS dev
 
-RUN npm i -g npm@6.13
+RUN npm i -g npm@6.14
 
 # create app dir and set as workdir
 RUN mkdir -p /app

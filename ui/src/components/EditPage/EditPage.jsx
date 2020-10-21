@@ -15,8 +15,8 @@ import {
   sortColumns,
 } from '_/utils/columns';
 
-import { GetPage } from '_/apollo/queries';
-import { UpdatePage } from '_/apollo/mutations';
+import { GetPage } from '_/apollo/queries.graphql';
+import { UpdatePage } from '_/apollo/mutations.graphql';
 import { useGetSiteQuery } from '_/hooks';
 
 import {
@@ -30,6 +30,8 @@ import FieldRow from '_/components/Common/FieldRow/FieldRow';
 import FieldSwitcher from '_/components/Common/FieldSwitcher/FieldSwitcher';
 
 import Preview from '_/components/Preview/Preview';
+
+const { REACT_APP_API_URL: API_URL } = process.env;
 
 const useStyles = makeStyles(() => ({
   buttonContainer: {
@@ -67,7 +69,7 @@ const EditPage = ({ page, updatePage }) => {
   }, [page.columns]);
 
   const { key } = page.site.apiKey[0];
-  const url = `${ENVS.API_URL}?query=query SiteByKey($apiKey: String!, $pageSlug: String!) { pageByKey(apiKey: $apiKey, pageSlug: $pageSlug) { id name slug data } }&operationName=SiteByKey&variables={"apiKey": "${key}", "pageSlug": "${page.slug}"}`;
+  const url = `${API_URL}?query=query SiteByKey($apiKey: String!, $pageSlug: String!) { pageByKey(apiKey: $apiKey, pageSlug: $pageSlug) { id name slug data } }&operationName=SiteByKey&variables={"apiKey": "${key}", "pageSlug": "${page.slug}"}`;
 
   const prepColumnData = ({
     unsaved, id, value, data, columns: childColumns = [], __typename: typename, ...column
@@ -79,13 +81,11 @@ const EditPage = ({ page, updatePage }) => {
           .map((c, subOrder) => prepColumnData(c, false, subOrder)),
         data: JSON.stringify(data),
         order,
-        // eslint-disable-next-line babel/camelcase
         page_id: isRoot ? Number(page.id) : null,
       };
     }
     return {
       ...column,
-      // eslint-disable-next-line babel/camelcase
       page_id: isRoot ? Number(page.id) : null,
       columns: childColumns.slice().sort(sortColumns)
         .map((c, subOrder) => prepColumnData(c, false, subOrder)),
@@ -196,7 +196,7 @@ EditPage.propTypes = {
 // eslint-disable-next-line react/jsx-props-no-spreading
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
-const EditPageQuery = () => {
+const EditPageQuery: React.FC = () => {
   const [snackbar, setSnackbar] = React.useState(false);
   const { siteSlug, pageSlug } = useParams();
   const [, currentSite] = useGetSiteQuery(siteSlug);

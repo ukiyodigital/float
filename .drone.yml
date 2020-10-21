@@ -27,10 +27,7 @@ steps:
     - python manage.py test apps
 
 - name: Test UI
-  image: node:14.0
-  environment:
-    API_URL: http://localhost:8000/api/graphql/
-    APP_ENV: test
+  image: node:14.8
   commands:
     - cd ui/
     - npm ci
@@ -81,10 +78,6 @@ name: Deploy to AWS
 steps:
 - name: Build UI
   image: node:14.0
-  environment:
-    API_URL: https://api.floatql.com/graphql/
-    APP_ENV: production
-    TRACKING_ID: UA-83207653-3
   commands:
     - cd ui/
     - npm ci

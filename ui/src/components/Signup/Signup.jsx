@@ -10,8 +10,8 @@ import {
 } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import { IsUserLoggedIn } from '_/apollo/queries';
-import { Signup as CreateUser } from '_/apollo/mutations';
+import { IsUserLoggedIn } from '_/apollo/queries.graphql';
+import { Signup as CreateUser } from '_/apollo/mutations.graphql';
 import { isLoggedInVar } from '_/apollo/cache';
 
 import { useErrorState } from '_/hooks';

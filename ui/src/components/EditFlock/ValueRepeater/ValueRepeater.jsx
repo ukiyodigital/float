@@ -1,9 +1,3 @@
-/* eslint-disable react/forbid-prop-types */
-import React from 'react';
-
-import PropTypes from 'prop-types';
-import AppPropTypes from '_/proptypes';
-
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -84,19 +78,6 @@ const ValueRepeater = ({
       </AccordionDetails>
     </Accordion>
   );
-};
-
-ValueRepeater.propTypes = {
-  columns: PropTypes.arrayOf(AppPropTypes.column),
-  setValue: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  deleteItem: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired,
-  control: PropTypes.object.isRequired,
-};
-
-ValueRepeater.defaultProps = {
-  columns: [],
 };
 
 export default ValueRepeater;

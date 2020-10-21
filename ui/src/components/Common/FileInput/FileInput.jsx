@@ -10,7 +10,7 @@ import { useDropzone } from 'react-dropzone';
 import { currentSiteVar } from '_/apollo/cache';
 
 import { Controller } from 'react-hook-form';
-import { UploadFile } from '_/apollo/mutations';
+import { UploadFile } from '_/apollo/mutations.graphql';
 import { Typography } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';

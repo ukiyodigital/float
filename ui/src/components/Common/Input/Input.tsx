@@ -1,37 +1,39 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { Controller, Control } from 'react-hook-form';
+import { TextField, StandardTextFieldProps } from '@material-ui/core';
 
-import { Controller } from 'react-hook-form';
-import { TextField } from '@material-ui/core';
+export interface InputProps extends Omit<StandardTextFieldProps, "variant"> {
+  field: Field;
+  message?: string;
+  rules: Record<string, unknown>;
+  control: Control<Record<string, unknown>>;
+  variant?: "outlined" | "standard" | undefined;
+}
 
-import AppPropTypes from '_/proptypes';
-
-const Input = ({
-  field, message, value, ...props
+const Input: React.FC<InputProps> = ({
+  control, field, message = '', ...props
 }) => (
   <Controller
-    as={TextField}
-    onChange={([{ target: { value: v } }]) => {
-      field.onChange(v);
-      return v;
-    }}
+    render={({ name, onChange, value }) => (
+      <TextField
+        onChange={(event) => {
+          if (field.onChange) {
+            field.onChange(event?.target.value);
+          }
+          onChange(event?.target.value)
+        }}
+        name={name}
+        label={field.label}
+        type={field.type}
+        value={value}
+        helperText={message}
+        {...props}
+      />
+    )}
+    control={control}
     name={field.name}
-    label={field.label}
-    type={field.type}
-    defaultValue={value}
-    helperText={message}
-    {...props}
+    defaultValue={field?.value || ''}
   />
 );
-
-Input.propTypes = {
-  message: PropTypes.string,
-  value: PropTypes.string.isRequired,
-  field: AppPropTypes.input.isRequired,
-};
-
-Input.defaultProps = {
-  message: '',
-};
 
 export default Input;

@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { useQuery } from '@apollo/client';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 
 import {
   AppBar, Button, Toolbar, Typography,
@@ -15,7 +14,7 @@ import { IsUserLoggedIn } from '_/apollo/queries.graphql';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   hide: {
     visibility: 'hidden',
   },
@@ -27,60 +26,52 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    visibility: (props) => (props.hasSidebar ? 'hidden' : ''),
+    visibility: ({ hasSidebar }: { hasSidebar: boolean }) => (hasSidebar ? 'hidden' : 'inherit'),
     color: 'inherit',
     textDecoration: 'inherit',
   },
 }));
 
-const TopNav = ({ hasSidebar }) => {
+interface Props {
+  hasSidebar?: boolean;
+}
+
+const TopNav: React.FC<Props> = ({ hasSidebar = false }) => {
   const classes = useStyles({ hasSidebar });
   const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
 
   return (
-    <AppBar position="fixed" className={hasSidebar ? classes.appBar : null}>
+    <AppBar position="fixed" className={hasSidebar ? classes.appBar : ''}>
       <Toolbar>
-        <Typography
-          variant="h6"
-          className={classes.title}
-          component={Link}
-          to="/"
-        >
-          Float
-        </Typography>
+        <Link to="/">
+          <Typography
+            variant="h6"
+            className={classes.title}
+          >
+            Float
+          </Typography>
+        </Link>
         {
           isLoggedIn ? (
             <LogoutButton />
           ) : (
             <>
-              <Button
-                component={Link}
-                color="inherit"
-                to="/login"
-              >
-                Login
-              </Button>
-              <Button
-                component={Link}
-                color="inherit"
-                to="/signup"
-              >
-                Signup
-              </Button>
+              <Link to="/login">
+                <Button color="inherit">
+                  Login
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button color="inherit">
+                  Signup
+                </Button>
+              </Link>
             </>
           )
         }
       </Toolbar>
     </AppBar>
   );
-};
-
-TopNav.propTypes = {
-  hasSidebar: PropTypes.bool,
-};
-
-TopNav.defaultProps = {
-  hasSidebar: false,
 };
 
 export default TopNav;

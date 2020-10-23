@@ -1,3 +1,5 @@
+import React from 'react';
+import { Control } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -25,8 +27,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ValueRepeater = ({
-  columns, control, deleteItem, item, onChange, setValue,
+interface Props {
+  columns: Column[];
+  control: Control<Record<string, unknown>>;
+  item: Record<string, unknown>;
+  deleteItem(item: any): void;
+  onChange(value: any): void;
+  setValue(name: string, value: any, config: any): void;
+}
+
+const ValueRepeater: React.FC<Props> = ({
+  columns, control, item, deleteItem, onChange, setValue,
 }) => {
   const classes = useStyles();
   return (
@@ -49,22 +60,21 @@ const ValueRepeater = ({
         {columns.map((column) => (
           <FieldSwitcher
             key={`${item.id}-${column.id}`}
-            name={`${item.id}-${column.id}`}
-            column={column}
+            column={{...column, data: item[column.slug] || null}}
             control={control}
-            value={item[column.slug] || null}
             setValue={setValue}
             onChange={(value) => {
               const updatedItem = { ...item };
               updatedItem[`${column.slug}`] = value;
               onChange(updatedItem);
             }}
-            onChangeSubColumn={(childColumn, parentColumn, data) => {
-              const childValue = {};
+            onChangeSubColumn={(childColumn: Column, parentColumn: Column, data: any) => {
+              const childValue: { [key: string]: any } = {};
               childValue[childColumn.slug] = data;
-              const parentValue = {};
+              const parentItem = item[parentColumn.slug] as Record<string, ColumnValue>;
+              const parentValue: { [key: string]: any } = {};
               parentValue[parentColumn.slug] = {
-                ...item[parentColumn.slug],
+                ...parentItem,
                 ...childValue,
               };
               const updatedItem = {

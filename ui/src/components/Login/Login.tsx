@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 
 import { Link, useHistory } from 'react-router-dom';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import {
   Avatar, Box, Button, Container, Grid, Typography,
 } from '@material-ui/core';
@@ -24,7 +24,7 @@ import Copyright from '_/components/Common/Copyright/Copyright';
 import ErrorList from '_/components/Common/ErrorList/ErrorList';
 import Input from '_/components/Common/Input/Input';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+const Login: React.FC = () => {
   const history = useHistory();
   const [errors, dispatch, onError] = useErrorState([]);
   const { control, errors: formErrors, handleSubmit } = useForm();
@@ -57,7 +57,7 @@ export default () => {
     onError,
   });
 
-  const onSubmit = ({ username, password }) => {
+  const onSubmit = ({ username, password }: { username: string, password: string }) => {
     dispatch({ type: 'reset' });
     tokenAuth({ variables: { username, password } });
   };
@@ -68,13 +68,13 @@ export default () => {
   const usernameField = {
     name: 'username',
     label: 'Username',
-    onChange: (value) => setUsername(value),
+    onChange: (value: string) => setUsername(value),
   };
   const passwordField = {
     name: 'password',
     label: 'Password',
     type: 'password',
-    onChange: (value) => setPassword(value),
+    onChange: (value: string) => setPassword(value),
   };
 
   const classes = useStyles();
@@ -96,7 +96,7 @@ export default () => {
             Sign in
           </Typography>
           <form
-            onSubmit={handleSubmit((data) => onSubmit(data))}
+            onSubmit={handleSubmit((data: { username: string, password: string }) => onSubmit(data))}
             className={classes.form}
           >
             <Input
@@ -135,7 +135,7 @@ export default () => {
             </Button>
             <Grid container>
               <Grid item>
-                <Link to="/signup" variant="body2">
+                <Link to="/signup">
                   Don&apos;t have an account? Sign Up
                 </Link>
               </Grid>
@@ -149,3 +149,5 @@ export default () => {
     </>
   );
 };
+
+export default Login;

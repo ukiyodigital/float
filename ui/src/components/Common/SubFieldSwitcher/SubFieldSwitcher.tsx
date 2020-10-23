@@ -1,8 +1,5 @@
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
-
-import PropTypes from 'prop-types';
-import AppPropTypes from '_/proptypes';
+import { Control } from 'react-hook-form';
 
 import ColumnInput from '_/components/Common/ColumnInput/ColumnInput';
 import FileInput from '_/components/Common/FileInput/FileInput';
@@ -11,32 +8,39 @@ import TitleIcon from '@material-ui/icons/Title';
 import CodeIcon from '@material-ui/icons/Code';
 import ImageIcon from '@material-ui/icons/Image';
 
-const FieldSwitcher = ({
-  column, control, onChange, value, name, setValue,
+export interface FieldSwitcherProps {
+  column: Column;
+  control: Control<Record<string, unknown>>;
+  name: string,
+  onChange(v: ColumnValue): void;
+  setValue(name: string, value: ColumnValue, config?: Record<string, unknown>): void;
+}
+
+const FieldSwitcher: React.FC<FieldSwitcherProps> = ({
+  column, control, name, onChange, setValue,
 }) => {
-  const field = {
+  const iconMap: { [key: string]: React.ReactElement } = {
+    IMAGE: <ImageIcon fontSize="inherit" />,
+    MARKDOWN: <CodeIcon fontSize="inherit" />,
+    TEXT: <TitleIcon fontSize="inherit" />,
+  };
+  const field: Field = {
     name,
     label: (
       <>
         {column.name}
-        {
-          {
-            IMAGE: <ImageIcon fontSize="inherit" />,
-            MARKDOWN: <CodeIcon fontSize="inherit" />,
-            TEXT: <TitleIcon fontSize="inherit" />,
-          }[column.field] || null
-        }
+        {iconMap[column.field]}
       </>
     ),
+    value: column?.data || '',
     onChange,
     setValue,
   };
 
-  return {
+  const map: { [key: string]: React.ReactElement } = {
     IMAGE: (
       <FileInput
         field={field}
-        value={value}
         control={control}
       />
     ),
@@ -47,7 +51,6 @@ const FieldSwitcher = ({
         variant="outlined"
         margin="normal"
         field={field}
-        value={value}
         control={control}
       />
     ),
@@ -57,20 +60,12 @@ const FieldSwitcher = ({
         variant="outlined"
         margin="normal"
         field={field}
-        value={value}
         control={control}
       />
     ),
-  }[column.field] || null;
-};
+  };
 
-FieldSwitcher.propTypes = {
-  column: AppPropTypes.column.isRequired,
-  control: PropTypes.object.isRequired,
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  setValue: PropTypes.func.isRequired,
-  value: PropTypes.any,
+  return map[column.field] || null;
 };
 
 export default FieldSwitcher;

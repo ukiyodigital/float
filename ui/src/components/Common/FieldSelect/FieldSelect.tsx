@@ -1,6 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
+import React, { useState } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import {
@@ -46,16 +44,24 @@ const IconOnlyInput = withStyles((theme) => ({
   },
 }))(InputBase);
 
-const FieldSelect = ({ selectedField, onChange }) => {
-  const [open, setOpen] = React.useState(false);
+type IconType = typeof TitleIcon | typeof CodeIcon | typeof ImageIcon | typeof AccountTreeIcon;
+
+interface Props {
+  selectedField: string;
+  onChange(value: string): void;
+}
+
+const FieldSelect: React.FC<Props> = ({ selectedField, onChange }) => {
+  const [open, setOpen] = useState(false);
   const classes = useStyles();
   const getIcon = () => {
-    const Icon = {
+    const icons: Record<string, IconType> = {
       TEXT: TitleIcon,
       IMAGE: ImageIcon,
       MARKDOWN: CodeIcon,
       OBJECT: AccountTreeIcon,
-    }[selectedField];
+    };
+    const Icon: IconType = icons[selectedField];
     return <Icon className={classes.icon} onClick={() => setOpen(true)} />;
   };
 
@@ -68,7 +74,7 @@ const FieldSelect = ({ selectedField, onChange }) => {
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
         onChange={(event) => {
-          if (onChange) onChange(event.target.value);
+          if (onChange) onChange(event.target.value as string);
         }}
         value={selectedField}
         input={<IconOnlyInput />}
@@ -100,15 +106,6 @@ const FieldSelect = ({ selectedField, onChange }) => {
       </Select>
     </>
   );
-};
-
-FieldSelect.propTypes = {
-  selectedField: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-};
-
-FieldSelect.defaultProps = {
-  onChange: null,
 };
 
 export default FieldSelect;

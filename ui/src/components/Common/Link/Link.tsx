@@ -2,11 +2,19 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 
-const ForwardedLink = (linkProps, ref) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  <Link ref={ref} {...linkProps} />
-);
+interface Props {
+  to: string;
+  children?: JSX.Element;
+}
 
-const AppLink = React.forwardRef(ForwardedLink);
+// eslint-disable-next-line react/display-name
+const AppLink = React.forwardRef<
+  HTMLAnchorElement,
+  Props
+>(({children, ...props}, ref) => (
+  <Link ref={ref} {...props}>
+    {children}
+  </Link>
+));
 
 export default AppLink;

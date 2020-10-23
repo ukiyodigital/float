@@ -1,21 +1,15 @@
-/* eslint-disable react/forbid-prop-types */
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import PropTypes from 'prop-types';
-
+import React, { useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useMutation } from '@apollo/client';
 import { useDropzone } from 'react-dropzone';
 
 import { currentSiteVar } from '_/apollo/cache';
 
-import { Controller } from 'react-hook-form';
+import { Controller, Control } from 'react-hook-form';
 import { UploadFile } from '_/apollo/mutations.graphql';
 import { Typography } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
-
-import AppPropTypes from '_/proptypes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -100,40 +94,66 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FileInput = ({
-  field, message, value, ...props
+export interface FileInputProps {
+  field: Field;
+  message?: string;
+  control: Control<Record<string, unknown>>;
+}
+
+const FileInput: React.FC<FileInputProps> = ({
+  field, control
 }) => {
   const classes = useStyles();
   const [uploadFile] = useMutation(UploadFile, {
     onCompleted({ uploadFile: { file } }) {
       const data = { id: file.id, file: file.file };
-      field.onChange({ ...data });
-      field.setValue(field.name, { ...data }, true);
+      if (field.onChange) {
+        field.onChange({ ...data });
+      }
+      if (field.setValue) {
+        field.setValue(field.name, { ...data }, { shouldValidate: true });
+      }
     },
   });
 
   const clearFile = () => {
-    field.onChange(null);
-    field.setValue(field.name, null, true);
+    if (field.onChange) {
+      field.onChange(null);
+    }
+    if (field.setValue) {
+      field.setValue(field.name, null, { shouldValidate: true });
+    }
   };
 
-  const onDrop = React.useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles) => {
     uploadFile({ variables: { fileUpload: acceptedFiles[0], siteId: currentSiteVar()?.id } });
   }, [uploadFile]);
   const {
     getRootProps, getInputProps, isDragActive,
   } = useDropzone({ onDrop });
 
+  const value = field?.value || {};
   const file = value && typeof value === 'string' ? JSON.parse(value.replace(/'/g, '"')) : value;
 
   return (
     <div className={classes.root}>
       <label className={classes.label} htmlFor={field.name}>{field.label}</label>
       <Controller
-        as={(
+        name={field.name}
+        defaultValue={value}
+        control={control}
+        render={({ name }) => (
           <div className={classes.flex}>
             <div {...getRootProps({ className: classes.dropzoneContainer })}>
-              <input name={field.name} {...getInputProps()} />
+              <input
+                name={name}
+                onChange={({ target: { files = [] }}) => {
+                  if (files && files.length > 0) {
+                    uploadFile({ variables: { fileUpload: files[0], siteId: currentSiteVar().id } });
+                  }
+                }}
+                {...getInputProps()}
+              />
               <Typography className={classes.typography} variant="h5">
                 {
                   isDragActive ? (
@@ -156,26 +176,20 @@ const FileInput = ({
             {file?.file ? <DeleteIcon className={classes.deleteIcon} onClick={clearFile} /> : <DeleteIcon className={classes.disabledIcon} color="disabled" />}
           </div>
         )}
-        onChange={([{ target: { files } }]) => {
-          uploadFile({ variables: { fileUpload: files[0], siteId: currentSiteVar().id } });
-        }}
-        name={field.name}
-        defaultValue={value}
-        {...props}
       />
     </div>
   );
 };
 
-FileInput.propTypes = {
-  message: PropTypes.string,
-  value: PropTypes.any,
-  field: AppPropTypes.input.isRequired,
-};
+// FileInput.propTypes = {
+//   message: PropTypes.string,
+//   value: PropTypes.any,
+//   field: AppPropTypes.input.isRequired,
+// };
 
-FileInput.defaultProps = {
-  message: '',
-  value: null,
-};
+// FileInput.defaultProps = {
+//   message: '',
+//   value: null,
+// };
 
 export default FileInput;

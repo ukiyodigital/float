@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 
 import {
   Collapse, Divider, Drawer,
@@ -18,7 +18,7 @@ import { useQuery } from '@apollo/client';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
     backgroundColor: theme.palette.primary.main,
     color: 'white',
@@ -68,14 +68,14 @@ const AppDrawer: React.FC = () => {
       open
     >
       <Toolbar className={classes.toolbar}>
-        <Typography
-          variant="h6"
-          className={classes.title}
-          component={Link}
-          to="/"
-        >
-          Float
-        </Typography>
+        <Link to="/">
+          <Typography
+            variant="h6"
+            className={classes.title}
+          >
+            Float
+          </Typography>
+        </Link>
       </Toolbar>
       <List
         component="nav"
@@ -90,28 +90,26 @@ const AppDrawer: React.FC = () => {
           const active = openMenus.includes(site.id);
           return (
             <React.Fragment key={site.id}>
-              <ListItem
-                button
-                component={Link}
-                to={`/site/${site.slug}`}
-              >
-                <ListItemText primary={site.name} />
-                {!active ? (
-                  <ExpandLess
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleSite(site.id);
-                    }}
-                  />
-                ) : (
-                  <ExpandMore
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleSite(site.id);
-                    }}
-                  />
-                )}
-              </ListItem>
+              <Link to={`/site/${site.slug}`}>
+                <ListItem button>
+                  <ListItemText primary={site.name} />
+                  {!active ? (
+                    <ExpandLess
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleSite(site.id);
+                      }}
+                    />
+                  ) : (
+                    <ExpandMore
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleSite(site.id);
+                      }}
+                    />
+                  )}
+                </ListItem>
+              </Link>
               <Collapse in={active} timeout="auto" unmountOnExit>
                 <List
                   component="div"
@@ -126,16 +124,18 @@ const AppDrawer: React.FC = () => {
                     </ListSubheader>
                   )}
                 >
-                  {site.pages.map((page) => (
-                    <ListItem
+                  {(site?.pages || []).map((page) => (
+                    <Link
                       key={page.id}
-                      button
-                      className={classes.nested}
-                      component={Link}
                       to={`/site/${site.slug}/page/${page.slug}/edit`}
                     >
-                      <ListItemText primary={page.name} />
-                    </ListItem>
+                      <ListItem
+                        button
+                        className={classes.nested}
+                      >
+                        <ListItemText primary={page.name} />
+                      </ListItem>
+                    </Link>
                   ))}
                   <Divider />
                 </List>
@@ -152,16 +152,18 @@ const AppDrawer: React.FC = () => {
                     </ListSubheader>
                   )}
                 >
-                  {site.flocks.map((flock) => (
-                    <ListItem
+                  {(site?.flocks || []).map((flock) => (
+                    <Link
                       key={flock.id}
-                      button
-                      className={classes.nested}
-                      component={Link}
                       to={`/site/${site.slug}/flock/${flock.slug}/edit`}
                     >
-                      <ListItemText primary={flock.name} />
-                    </ListItem>
+                      <ListItem
+                        button
+                        className={classes.nested}
+                      >
+                        <ListItemText primary={flock.name} />
+                      </ListItem>
+                    </Link>
                   ))}
                   <Divider />
                 </List>

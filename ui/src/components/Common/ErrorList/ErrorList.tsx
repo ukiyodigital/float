@@ -1,11 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import { FormHelperText } from '@material-ui/core';
 
-import AppPropTypes from '_/proptypes';
+interface Props {
+  errors: FloatError[];
+}
 
-const ErrorList = ({ errors }) => (
+const ErrorList: React.FC<Props> = ({ errors = [] }) => (
   errors ? (
     <>
       {errors.map(({ key, message }) => (
@@ -16,9 +16,5 @@ const ErrorList = ({ errors }) => (
     </>
   ) : null
 );
-
-ErrorList.propTypes = {
-  errors: PropTypes.arrayOf(AppPropTypes.error).isRequired,
-};
 
 export default ErrorList;

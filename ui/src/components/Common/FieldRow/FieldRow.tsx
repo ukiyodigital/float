@@ -1,10 +1,6 @@
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
-
-import PropTypes from 'prop-types';
-import AppPropTypes from '_/proptypes';
-
 import { makeStyles } from '@material-ui/core/styles';
+import { Control } from 'react-hook-form';
 
 import { sortColumns } from '_/utils/columns';
 
@@ -48,7 +44,18 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const ColumnRow = ({
+interface Props {
+  column: Column;
+  control: Control<Record<string, unknown>>;
+  addSubColumn(c: Column): void;
+  deleteColumn(c: Column): void;
+  updateColumn(c: Column): void;
+  deleteSubColumn(c: Column, parent: Column): void;
+  updateSubColumn(c: Column, parent: Column): void;
+  errors: Record<string, FieldError>;
+}
+
+const ColumnRow: React.FC<Props> = ({
   column, control,
   addSubColumn, deleteColumn, updateColumn,
   deleteSubColumn, updateSubColumn, errors,
@@ -68,7 +75,7 @@ const ColumnRow = ({
         <Grid className={classes.item} item xs={2}>
           <FieldSelect
             selectedField={column.field}
-            onChange={(value) => updateColumn({ ...column, field: value })}
+            onChange={(value: string) => updateColumn({ ...column, field: value })}
           />
         </Grid>
         <Grid className={`${classes.item} ${classes.input}`} item xs={4}>
@@ -80,12 +87,12 @@ const ColumnRow = ({
             field={{
               name: `${column.id}-name`,
               label: 'Column Name',
-              onChange: (value) => updateColumn({ ...column, name: value }),
+              value: column.name,
+              onChange: (value: string) => updateColumn({ ...column, name: value }),
             }}
             error={!!errors[`${column.id}-name`]}
             message={errors[`${column.id}-name`]?.message}
             rules={{ required: 'Name is required' }}
-            value={column.name}
             control={control}
           />
         </Grid>
@@ -98,12 +105,12 @@ const ColumnRow = ({
             field={{
               name: `${column.id}-slug`,
               label: `${column.name} Slug`,
-              onChange: (value) => updateColumn({ ...column, slug: value }),
+              value: column.slug,
+              onChange: (value: string) => updateColumn({ ...column, slug: value }),
             }}
             error={!!errors[`${column.id}-slug`]}
             message={errors[`${column.id}-slug`]?.message}
             rules={{ required: 'Slug is required' }}
-            value={column.slug}
             control={control}
           />
         </Grid>
@@ -142,17 +149,6 @@ const ColumnRow = ({
       </div>
     </Paper>
   );
-};
-
-ColumnRow.propTypes = {
-  control: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired,
-  column: AppPropTypes.column.isRequired,
-  addSubColumn: PropTypes.func.isRequired,
-  deleteColumn: PropTypes.func.isRequired,
-  updateColumn: PropTypes.func.isRequired,
-  updateSubColumn: PropTypes.func.isRequired,
-  deleteSubColumn: PropTypes.func.isRequired,
 };
 
 export default ColumnRow;

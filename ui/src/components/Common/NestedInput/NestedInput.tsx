@@ -1,8 +1,5 @@
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
-
-import PropTypes from 'prop-types';
-import AppPropTypes from '_/proptypes';
+import { Control } from 'react-hook-form';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { sortColumns } from '_/utils/columns';
@@ -17,8 +14,15 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NestedInput = ({
-  field, value, column, onChangeSubColumn, setValue, control, isPage,
+interface NestedInputProps {
+  column: Column;
+  control: Control<Record<string, unknown>>;
+  onChangeSubColumn(column: Column, parent: Column, data: ColumnValue): void;
+  setValue(name: string, value: unknown, config?: Record<string, unknown>): void;
+}
+
+const NestedInput: React.FC<NestedInputProps> = ({
+  column, control, onChangeSubColumn, setValue
 }) => {
   const classes = useStyles();
   return (
@@ -29,37 +33,21 @@ const NestedInput = ({
         {(column.columns || []).slice().sort(sortColumns).map((c) => {
           // since page data is stored in individual columns
           // we need to access the values differently
-          const flockValue = value && !isPage ? value[c.slug] : null;
+          // const flockValue = c?.data && !isPage ? c.data[c.slug] : '';
           return (
             <SubFieldSwitcher
-              key={`${field.name}-${column.id}-${c.id}`}
-              name={`${field.name}-${column.id}-${c.id}`}
-              setValue={setValue}
+              key={`${column.slug}-${column.id}-${c.id}`}
+              name={`${column.slug}-${column.id}-${c.id}`}
               column={c}
               control={control}
+              setValue={setValue}
               onChange={(data) => onChangeSubColumn(c, column, data)}
-              value={isPage ? c.data : flockValue}
             />
           );
         })}
       </div>
     </>
   );
-};
-
-NestedInput.propTypes = {
-  onChangeSubColumn: PropTypes.func.isRequired,
-  control: PropTypes.object.isRequired,
-  value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  setValue: PropTypes.func.isRequired,
-  column: AppPropTypes.column.isRequired,
-  field: AppPropTypes.input.isRequired,
-  isPage: PropTypes.bool,
-};
-
-NestedInput.defaultProps = {
-  value: null,
-  isPage: false,
 };
 
 export default NestedInput;

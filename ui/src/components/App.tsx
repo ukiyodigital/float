@@ -78,7 +78,7 @@ const App = () => (
 );
 
 // renderer
-const renderApp = () => {
+const renderApp = (): void => {
   render(<App />, appContainer);
 };
 

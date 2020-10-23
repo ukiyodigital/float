@@ -12,9 +12,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
+import { TransitionProps } from '@material-ui/core/transitions';
 
 import ReactJson from 'react-json-view';
-import { Forward } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,13 +42,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForwardedSlide = (props, ref) => (
-  <Slide direction="up" ref={ref} {...props} />
-);
 
-const Transition = React.forwardRef(ForwardedSlide);
+// eslint-disable-next-line react/display-name
+const Transition = React.forwardRef((
+  props: TransitionProps & { children?: JSX.Element},
+  ref: React.Ref<unknown>
+) => <Slide direction="up" ref={ref} {...props} />);
 
-const Preview = ({ url }) => {
+const Preview: React.FC<{ url: string }> = ({ url }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState({});

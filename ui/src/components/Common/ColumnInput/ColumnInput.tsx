@@ -1,41 +1,39 @@
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
+import { Controller, Control } from 'react-hook-form';
+import TextField, { StandardTextFieldProps } from '@material-ui/core/TextField';
 
-import { Controller } from 'react-hook-form';
-import { TextField } from '@material-ui/core';
 
-import AppPropTypes from '_/proptypes';
+export interface ColumnInputProps extends Omit<StandardTextFieldProps, "variant"> {
+  field: Field;
+  message?: string;
+  variant: "outlined" | "standard" | undefined;
+  control: Control<Record<string, unknown>>;
+}
 
-const ColumnInput = ({
-  field, message, value, ...props
+const ColumnInput: React.FC<ColumnInputProps> = ({
+  control, field, message = '', ...props
 }) => (
   <Controller
-    as={TextField}
-    onChange={([{ target: { value: v } }]) => {
-      field.onChange(v);
-      return v;
-    }}
+    control={control}
+    render={({ name, value }) => (
+      <TextField
+        name={name}
+        onChange={(e) => {
+          if (field.onChange) {
+            field.onChange(e.target.value)
+          }
+          return e.target.value;
+        }}
+        type={field.type}
+        label={field.label}
+        helperText={message}
+        defaultValue={value}
+        {...props}
+      />
+    )}
     name={field.name}
-    label={field.label}
-    type={field.type}
-    defaultValue={value?.value || value || ''}
-    helperText={message}
-    {...props}
+    defaultValue={field.value}
   />
 );
-
-ColumnInput.propTypes = {
-  message: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  field: AppPropTypes.input.isRequired,
-};
-
-ColumnInput.defaultProps = {
-  message: '',
-  value: {
-    value: '',
-  },
-};
 
 export default ColumnInput;

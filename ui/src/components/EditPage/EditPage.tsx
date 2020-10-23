@@ -1,8 +1,4 @@
-import React from 'react';
-
-import PropTypes from 'prop-types';
-import AppPropTypes from '_/proptypes';
-
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useQuery, useMutation } from '@apollo/client';
@@ -54,26 +50,29 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const EditPage = ({ page, updatePage }) => {
+interface Props {
+  page: Page;
+  updatePage(page: Page): void;
+}
+
+const EditPage: React.FC<Props> = ({ page, updatePage }) => {
   const classes = useStyles();
-  const [columns, setColumns] = React.useState([]);
-  const [showValues, setShowValues] = React.useState(true);
+  const [columns, setColumns] = useState(
+    (page?.columns || []).slice().sort(sortColumns),
+  );
+  const [showValues, setShowValues] = useState(true);
 
   // const [errors, dispatch, onError] = useErrorState([]);
   const {
-    control, errors, triggerValidation, handleSubmit, setValue,
+    control, errors, trigger, handleSubmit, setValue,
   } = useForm();
 
-  React.useEffect(() => {
-    setColumns(page.columns.slice().sort(sortColumns));
-  }, [page.columns]);
-
-  const { key } = page.site.apiKey[0];
+  const [{ key }] = page?.site?.apiKey || [];
   const url = `${API_URL}?query=query SiteByKey($apiKey: String!, $pageSlug: String!) { pageByKey(apiKey: $apiKey, pageSlug: $pageSlug) { id name slug data } }&operationName=SiteByKey&variables={"apiKey": "${key}", "pageSlug": "${page.slug}"}`;
 
   const prepColumnData = ({
     unsaved, id, value, data, columns: childColumns = [], __typename: typename, ...column
-  }, isRoot = false, order) => {
+  }: Column, isRoot = false, order: number): Column => {
     if (unsaved) {
       return {
         ...column,
@@ -114,7 +113,7 @@ const EditPage = ({ page, updatePage }) => {
                 color="primary"
                 checked={showValues}
                 onChange={async () => {
-                  const result = await triggerValidation();
+                  const result = await trigger();
                   if (result) setShowValues(!showValues);
                 }}
                 name="page-switch"
@@ -133,27 +132,21 @@ const EditPage = ({ page, updatePage }) => {
           Save
         </Button>
       </div>
-      {showValues ? columns.map((column) => {
-        const { value = null } = column?.data;
-        const v = value || value === '' ? value : column.data;
-        return (
-          <FieldSwitcher
-            isPage
-            setValue={setValue}
-            key={column.id}
-            column={column}
-            value={v}
-            control={control}
-            name={column.slug}
-            onChange={(data) => updateColumn({ ...column, data }, columns, setColumns)}
-            onChangeSubColumn={(childColumn, parentColumn, data) => (
-              updateSubColumn(
-                { ...childColumn, data }, parentColumn, columns, setColumns,
-              )
-            )}
-          />
-        );
-      }) : (
+      {showValues ? columns.map((column) => (
+        <FieldSwitcher
+          setValue={setValue}
+          key={column.id}
+          column={column}
+          control={control}
+          onChange={(data) => updateColumn({ ...column, data }, columns, setColumns)}
+          onChangeSubColumn={(childColumn, parentColumn, data) => {
+            console.log(data);
+            updateSubColumn(
+              { ...childColumn, data }, parentColumn, columns, setColumns,
+            )
+          }}
+        />
+      )) : (
         <>
           {columns.map((column) => (
             <FieldRow
@@ -188,17 +181,17 @@ const EditPage = ({ page, updatePage }) => {
   );
 };
 
-EditPage.propTypes = {
-  page: AppPropTypes.page.isRequired,
-  updatePage: PropTypes.func.isRequired,
-};
+interface AlertProps {
+  onClose(): void;
+  severity?: 'success' | 'info' | 'warning' | 'error';
+}
 
 // eslint-disable-next-line react/jsx-props-no-spreading
-const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
+const Alert: React.FC<AlertProps> = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
-const EditPageQuery: React.FC = () => {
-  const [snackbar, setSnackbar] = React.useState(false);
-  const { siteSlug, pageSlug } = useParams();
+const EditPageQuery = (): React.ReactElement | 'loading' => {
+  const [snackbar, setSnackbar] = useState(false);
+  const { siteSlug, pageSlug }: { siteSlug: string, pageSlug: string } = useParams();
   const [, currentSite] = useGetSiteQuery(siteSlug);
   const {
     loading,
@@ -217,7 +210,7 @@ const EditPageQuery: React.FC = () => {
 
   const handleUpdatePage = ({
     __typename, site, ...p
-  }) => {
+  }: Page) => {
     updatePage({
       variables: { page: p, siteId: currentSite.id },
       refetchQueries: [{

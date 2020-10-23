@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useEffect, useReducer } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { Link, useHistory } from 'react-router-dom';
@@ -49,7 +49,24 @@ const initialState = {
   confirmPassword: '',
 };
 
-const reducer = (state, { type, payload }) => {
+type ActionType = 'firstName' | 'lastName' | 'email' | 'username' | 'password' | 'confirmPassword';
+
+interface State {
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface Action {
+  type: ActionType;
+  payload: string;
+}
+
+const reducer = (state: State, action: Action) => {
+  const { type, payload } = action;
   switch (type) {
     case 'firstName':
       return { ...state, firstName: payload };
@@ -68,14 +85,14 @@ const reducer = (state, { type, payload }) => {
   }
 };
 
-export default () => {
+const Signup: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const {
     control, errors: formErrors, handleSubmit, watch,
   } = useForm();
   const [errors, handleError, onError] = useErrorState([]);
-  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
   const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
 
   const [createUser, { loading }] = useMutation(CreateUser, {
@@ -86,12 +103,12 @@ export default () => {
     onError,
   });
 
-  const onSubmit = ({ confirmPassword, ...data }) => {
+  const onSubmit = ({ confirmPassword, ...data }: State) => {
     handleError({ type: 'reset' });
     createUser({ variables: { ...data } });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isLoggedIn) history.push('/site');
   }, [history, isLoggedIn]);
 
@@ -189,14 +206,14 @@ export default () => {
                 name: 'confirmPassword',
                 label: 'Confirm Password',
                 type: 'password',
-                onChange: (value) => dispatch({ type: 'confirmPassword', payload: value }),
+                onChange: (value: string) => dispatch({ type: 'confirmPassword', payload: value }),
               }}
               message={formErrors.confirmPassword?.message}
               value={state.confirmPassword}
               control={control}
               rules={{
                 required: 'You must confirm password',
-                validate: (value) => value === watch('password') || 'Passwords do not match',
+                validate: (value: string) => value === watch('password') || 'Passwords do not match' as string,
               }}
               autoComplete="current-password"
               variant="outlined"
@@ -215,7 +232,7 @@ export default () => {
             </Button>
             <Grid container>
               <Grid item>
-                <Link to="/login" variant="body2">
+                <Link to="/login">
                   Have an account? Sign In
                 </Link>
               </Grid>
@@ -229,3 +246,5 @@ export default () => {
     </>
   );
 };
+
+export default Signup;

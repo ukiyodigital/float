@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 
 import { isLoggedInVar } from '_/apollo/cache';
 
-const LogoutButton = () => {
+const LogoutButton: React.FC = () => {
   const history = useHistory();
 
   const handleLogout = () => {

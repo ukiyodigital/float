@@ -1,8 +1,4 @@
-import React from 'react';
-
-import PropTypes from 'prop-types';
-import AppPropTypes from '_/proptypes';
-
+import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -56,23 +52,28 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const EditFlock = ({ flock, updateFlock }) => {
+interface Props {
+  flock: Flock;
+  updateFlock(data: any): void;
+}
+
+const EditFlock: React.FC<Props> = ({ flock = {}, updateFlock }) => {
   const classes = useStyles();
-  const [columns, setColumns] = React.useState(
-    flock.columns.slice().sort(sortColumns),
+  const [columns, setColumns] = useState(
+    (flock?.columns || []).slice().sort(sortColumns),
   );
-  const [data, setData] = React.useState(flock?.data?.slice() || []);
-  const [showValues, setShowValues] = React.useState(true);
+  const [data, setData] = useState(flock?.data?.slice() || []);
+  const [showValues, setShowValues] = useState(true);
   // const [errors, dispatch, onError] = useErrorState([]);
   const {
-    control, errors, triggerValidation, handleSubmit, setValue,
+    control, errors, trigger, handleSubmit, setValue,
   } = useForm();
 
-  const { key } = flock.site.apiKey[0];
+  const [{ key }] = flock?.site?.apiKey || [];
   const url = `${API_URL}?query=query FlockByKey($apiKey: String!, $flockSlug: String!) { flockByKey(apiKey: $apiKey, flockSlug: $flockSlug) { id name slug data } }&operationName=FlockByKey&variables={"apiKey": "${key}", "flockSlug": "${flock.slug}"}`;
 
-  const updateData = (item) => {
-    const itemIdx = data.findIndex((i) => i.id === item.id);
+  const updateData = (item: any) => {
+    const itemIdx = data.findIndex((i: any) => i.id === item.id);
     setData([
       ...data.slice(0, itemIdx),
       item,
@@ -80,8 +81,8 @@ const EditFlock = ({ flock, updateFlock }) => {
     ]);
   };
 
-  const deleteItem = (item) => {
-    const itemIdx = data.findIndex((i) => i.id === item.id);
+  const deleteItem = (item: any) => {
+    const itemIdx = data.findIndex((i: any) => i.id === item.id);
     setData([
       ...data.slice(0, itemIdx),
       ...data.slice(itemIdx + 1),
@@ -97,9 +98,9 @@ const EditFlock = ({ flock, updateFlock }) => {
     ]);
   };
 
-  const handleColumnData = ({
+  const handleColumnData: any = ({
     id, unsaved, data: columnData, columns: childColumns = [], value, __typename, ...column
-  }, order, isRoot = false) => {
+  }: Column, order: number, isRoot = false) => {
     if (unsaved) {
       return {
         ...column,
@@ -136,7 +137,7 @@ const EditFlock = ({ flock, updateFlock }) => {
                 color="primary"
                 checked={showValues}
                 onChange={async () => {
-                  const result = await triggerValidation();
+                  const result = await trigger();
                   if (result) setShowValues(!showValues);
                 }}
                 name="flock-switch"
@@ -157,7 +158,7 @@ const EditFlock = ({ flock, updateFlock }) => {
       </div>
       {showValues ? (
         <>
-          {data.map((item) => (
+          {data.map((item: any) => (
             <ValueRepeater
               key={item.id}
               columns={columns}
@@ -214,17 +215,16 @@ const EditFlock = ({ flock, updateFlock }) => {
   );
 };
 
-EditFlock.propTypes = {
-  flock: AppPropTypes.flock.isRequired,
-  updateFlock: PropTypes.func.isRequired,
-};
-
+interface AlertProps {
+  onClose(): void;
+  severity: string;
+}
 // eslint-disable-next-line react/jsx-props-no-spreading
-const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
+const Alert: React.FC<AlertProps> = (props: any) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
-const EditFlockQuery: React.FC = () => {
-  const [snackbar, setSnackbar] = React.useState(false);
-  const { siteSlug, flockSlug } = useParams();
+const EditFlockQuery = () => {
+  const [snackbar, setSnackbar] = useState(false);
+  const { siteSlug, flockSlug }: { siteSlug: string, flockSlug: string } = useParams();
   const [, currentSite] = useGetSiteQuery(siteSlug);
   const {
     loading,
@@ -243,14 +243,17 @@ const EditFlockQuery: React.FC = () => {
 
   const handleUpdateFlock = ({
     __typename, site, ...f
-  }) => {
+  }: Flock) => {
     updateFlock({ variables: { flock: f, siteId: currentSite.id } });
   };
 
   return loading ? 'loading' : (
     <>
       <Snackbar open={snackbar} autoHideDuration={6000} onClose={() => setSnackbar(false)}>
-        <Alert onClose={() => setSnackbar(false)} severity="success">
+        <Alert
+          onClose={() => setSnackbar(false)}
+          severity="success"
+        >
           Flock successfully updated.
         </Alert>
       </Snackbar>

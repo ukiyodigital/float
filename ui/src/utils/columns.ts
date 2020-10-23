@@ -1,15 +1,18 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export const sortColumns = (a, b) => a.order - b.order;
+type SetColumnsType = (columns: Column[]) => void;
 
-export const addColumn = (columns, setColumns, addData = false) => {
-  const newColumn = {
+export const sortColumns = (a: Column, b: Column): number => a.order - b.order;
+
+export const addColumn = (columns: Column[], setColumns: SetColumnsType, addData = false): void => {
+  const newColumn: Column = {
     id: uuidv4(),
     columns: [],
     name: '',
     slug: '',
     field: 'TEXT',
     unsaved: true,
+    order: -1, // TODO max of all columns + 1
   };
   if (addData) {
     newColumn.data = '';
@@ -20,7 +23,7 @@ export const addColumn = (columns, setColumns, addData = false) => {
   ]);
 };
 
-export const updateColumn = (column, columns, setColumns) => {
+export const updateColumn = (column: Column, columns: Column[], setColumns: SetColumnsType): void => {
   const columnIdx = columns.findIndex((c) => c.id === column.id);
   setColumns([
     ...columns.slice(0, columnIdx),
@@ -29,19 +32,18 @@ export const updateColumn = (column, columns, setColumns) => {
   ]);
 };
 
-export const addSubColumn = (column, columns, setColumns, addData = false) => {
-  const newColumn = {
+export const addSubColumn = (column: Column, columns: Column[], setColumns: SetColumnsType, addData = false): void => {
+  const newColumn: Column = {
     id: uuidv4(),
     columns: [],
     name: '',
     slug: '',
     field: 'TEXT',
     unsaved: true,
+    order: -1 // similar TODO as above
   };
   if (addData) {
-    newColumn.data = {
-      value: '',
-    };
+    newColumn.data = '';
   }
 
   const updatedColumn = {
@@ -54,7 +56,7 @@ export const addSubColumn = (column, columns, setColumns, addData = false) => {
   updateColumn(updatedColumn, columns, setColumns);
 };
 
-export const deleteColumn = (column, columns, setColumns) => {
+export const deleteColumn = (column: Column, columns: Column[], setColumns: SetColumnsType): void => {
   const columnIdx = columns.findIndex((c) => c.id === column.id);
   setColumns([
     ...columns.slice(0, columnIdx),
@@ -62,7 +64,8 @@ export const deleteColumn = (column, columns, setColumns) => {
   ]);
 };
 
-export const updateSubColumn = (subColumn, parentColumn, columns, setColumns) => {
+export const updateSubColumn = (subColumn: Column, parentColumn: Column, columns: Column[], setColumns: SetColumnsType): void => {
+  console.log(subColumn);
   const columnIdx = parentColumn.columns.findIndex((c) => c.id === subColumn.id);
   const updatedColumn = {
     ...parentColumn,
@@ -76,7 +79,7 @@ export const updateSubColumn = (subColumn, parentColumn, columns, setColumns) =>
   updateColumn(updatedColumn, columns, setColumns);
 };
 
-export const deleteSubColumn = (subColumn, parentColumn, columns, setColumns) => {
+export const deleteSubColumn = (subColumn: Column, parentColumn: Column, columns: Column[], setColumns: SetColumnsType): void => {
   const columnIdx = parentColumn.columns.findIndex((c) => c.id === subColumn.id);
   const updatedColumn = {
     ...parentColumn,

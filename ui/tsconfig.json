@@ -29,7 +29,8 @@
       "_/assets/*": ["./src/assets/*"],
       "_/routing/*": ["./src/routing/*"],
       "_/hooks/*": ["./src/hooks/*"],
-      "_/utils/*": ["./src/utils/*"]
+      "_/utils/*": ["./src/utils/*"],
+      "_/*": ["./src/*"]
     }
   },
   "include": [

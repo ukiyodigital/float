@@ -1,18 +1,21 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { useErrorState } from '_/hooks';
 
 import {
   Fab, Grid, Typography,
 } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
+import { useHistory } from 'react-router-dom';
 
 import { GetSites } from '_/apollo/queries.graphql';
+import { CreateSite } from '_/apollo/mutations.graphql';
+
 
 import Loading from '_/components/Common/Loading/Loading';
 import SiteCard from '_/components/Common/SiteCard/SiteCard';
-import CreateSiteDialog from '_/components/Common/Dialogs/CreateSite/CreateSite';
+import FormDialog from '_/components/Common/FormDialog/FormDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,9 +28,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SiteList = () => {
-  const [open, setOpen] = React.useState(false);
+const SiteList: React.FC = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const [open, setOpen] = useState(false);
+  const onError = useErrorState([])[2];
+  const [createSite] = useMutation(CreateSite, {
+    onCompleted({ createSite }) {
+      history.push(`/site/${createSite.site.slug}`);
+      setOpen(false);
+    },
+    onError,
+  });
 
   const {
     refetch,
@@ -37,7 +49,7 @@ const SiteList = () => {
     } = {},
   } = useQuery(GetSites);
 
-  React.useEffect(() => {
+  useEffect(() => {
     refetch();
   }, [refetch]);
 
@@ -45,9 +57,29 @@ const SiteList = () => {
     <Loading loading />
   ) : (
     <>
-      <CreateSiteDialog
+      <FormDialog
         open={open}
         handleClose={() => setOpen(false)}
+        title="Create New Site"
+        content="Choose a site name and a unique slug for the site."
+        submitData={(data: Record<string, string>) => {
+          createSite({ variables: { site: data } });
+        }}
+        fields={[
+          {
+            name: 'name',
+            label: 'Site Name',
+            rules: { required: 'Site name is required '},
+          },
+          {
+            name: 'slug',
+            label: 'Site Slug',
+            rules: { required: 'Site slug is required '},
+            inputProps: {
+              maxLength: 15,
+            },
+          },
+        ]}
       />
       <Grid container spacing={2} className={classes.root}>
         <Typography variant="h2">
@@ -55,7 +87,7 @@ const SiteList = () => {
         </Typography>
         <Grid item xs={12}>
           <Grid container spacing={2}>
-            {sites.map((site) => (
+            {sites.map((site: Site) => (
               <Grid key={site.id} item>
                 <SiteCard site={site} />
               </Grid>

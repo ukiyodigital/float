@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-
 import { useQuery } from '@apollo/client';
 
 import { Switch, Route, Redirect } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { routes } from '_/routing/routes';
 
 import { IsUserLoggedIn } from '_/apollo/queries.graphql';
 
-const RouteNode = () => {
+const RouteNode: React.FC = () => {
   const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
 
   return (
@@ -17,12 +17,11 @@ const RouteNode = () => {
         (route) => (
           route.loginRequired ? (
             <Route
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              {...route}
-              component={null}
               key={route.name}
+              path={route.path}
+              exact={route.exact}
               render={({ location }) => {
-                const Component = route.component;
+                const Component: any = route.component;
                 return isLoggedIn ? (
                   <Component />
                 ) : (
@@ -40,7 +39,10 @@ const RouteNode = () => {
               key={route.name}
               path={route.path}
               exact={route.exact}
-              component={route.component}
+              render={() => {
+                const Component: any = route.component;
+                return <Component />
+              }}
               name={route.name}
             />
           )

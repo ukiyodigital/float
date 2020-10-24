@@ -4,7 +4,7 @@ import { Control } from 'react-hook-form';
 import ColumnInput from '_/components/Common/ColumnInput/ColumnInput';
 import FileInput from '_/components/Common/FileInput/FileInput';
 
-import { IconMap } from '_/utils/field';
+import { IconMap } from '_/utils/icons';
 
 export interface FieldSwitcherProps {
   column: Column;

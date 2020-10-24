@@ -5,7 +5,7 @@ import ColumnInput from '_/components/Common/ColumnInput/ColumnInput';
 import FileInput from '_/components/Common/FileInput/FileInput';
 import NestedInput from '_/components/Common/NestedInput/NestedInput';
 
-import { IconMap } from '_/utils/field';
+import { IconMap } from '_/utils/icons';
 
 export interface FieldSwitcherProps {
   column: Column;

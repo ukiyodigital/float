@@ -5,26 +5,19 @@ import ColumnInput from '_/components/Common/ColumnInput/ColumnInput';
 import FileInput from '_/components/Common/FileInput/FileInput';
 import NestedInput from '_/components/Common/NestedInput/NestedInput';
 
-import TitleIcon from '@material-ui/icons/Title';
-import CodeIcon from '@material-ui/icons/Code';
-import ImageIcon from '@material-ui/icons/Image';
+import { IconMap } from '_/utils/field';
 
 export interface FieldSwitcherProps {
   column: Column;
   control: Control<Record<string, unknown>>;
   onChange(value: ColumnValue): void;
-  onChangeSubColumn(c: Column, parent: Column, data: Record<string, unknown>): void;
+  onChangeSubColumn(c: Column, parent: Column, data: ColumnValue): void;
   setValue(name: string, value: ColumnValue, config?: Record<string, unknown>): void;
 }
 
 const FieldSwitcher: React.FC<FieldSwitcherProps> = ({
   column, control, onChange, onChangeSubColumn, setValue,
 }) => {
-  const IconMap: Record<string, React.ReactElement> = {
-    IMAGE: <ImageIcon fontSize="inherit" />,
-    MARKDOWN: <CodeIcon fontSize="inherit" />,
-    TEXT: <TitleIcon fontSize="inherit" />,
-  };
   const icon: React.ReactElement = IconMap[column.field];
   const field = {
     name: column.slug,

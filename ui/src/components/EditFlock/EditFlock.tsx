@@ -54,10 +54,10 @@ const useStyles = makeStyles(() => ({
 
 interface Props {
   flock: Flock;
-  updateFlock(data: any): void;
+  updateFlock(flock: Flock): void;
 }
 
-const EditFlock: React.FC<Props> = ({ flock = {}, updateFlock }) => {
+const EditFlock: React.FC<Props> = ({ flock, updateFlock }) => {
   const classes = useStyles();
   const [columns, setColumns] = useState(
     (flock?.columns || []).slice().sort(sortColumns),
@@ -72,8 +72,8 @@ const EditFlock: React.FC<Props> = ({ flock = {}, updateFlock }) => {
   const [{ key }] = flock?.site?.apiKey || [];
   const url = `${API_URL}?query=query FlockByKey($apiKey: String!, $flockSlug: String!) { flockByKey(apiKey: $apiKey, flockSlug: $flockSlug) { id name slug data } }&operationName=FlockByKey&variables={"apiKey": "${key}", "flockSlug": "${flock.slug}"}`;
 
-  const updateData = (item: any) => {
-    const itemIdx = data.findIndex((i: any) => i.id === item.id);
+  const updateData = (item: Item) => {
+    const itemIdx = data.findIndex((i: Item) => i.id === item.id);
     setData([
       ...data.slice(0, itemIdx),
       item,
@@ -81,8 +81,8 @@ const EditFlock: React.FC<Props> = ({ flock = {}, updateFlock }) => {
     ]);
   };
 
-  const deleteItem = (item: any) => {
-    const itemIdx = data.findIndex((i: any) => i.id === item.id);
+  const deleteItem = (item: Item) => {
+    const itemIdx = data.findIndex((i: Item) => i.id === item.id);
     setData([
       ...data.slice(0, itemIdx),
       ...data.slice(itemIdx + 1),
@@ -98,9 +98,9 @@ const EditFlock: React.FC<Props> = ({ flock = {}, updateFlock }) => {
     ]);
   };
 
-  const handleColumnData: any = ({
+  const handleColumnData = ({
     id, unsaved, data: columnData, columns: childColumns = [], value, __typename, ...column
-  }: Column, order: number, isRoot = false) => {
+  }: Column, order: number, isRoot = false): Column => {
     if (unsaved) {
       return {
         ...column,
@@ -158,14 +158,14 @@ const EditFlock: React.FC<Props> = ({ flock = {}, updateFlock }) => {
       </div>
       {showValues ? (
         <>
-          {data.map((item: any) => (
+          {data.map((item: Item) => (
             <ValueRepeater
               key={item.id}
               columns={columns}
-              item={item}
               control={control}
-              onChange={updateData}
+              item={item}
               deleteItem={deleteItem}
+              onChange={updateData}
               setValue={setValue}
             />
           ))}
@@ -217,12 +217,12 @@ const EditFlock: React.FC<Props> = ({ flock = {}, updateFlock }) => {
 
 interface AlertProps {
   onClose(): void;
-  severity: string;
+  severity?: 'success' | 'info' | 'warning' | 'error';
 }
 // eslint-disable-next-line react/jsx-props-no-spreading
-const Alert: React.FC<AlertProps> = (props: any) => <MuiAlert elevation={6} variant="filled" {...props} />;
+const Alert: React.FC<AlertProps> = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
-const EditFlockQuery = () => {
+const EditFlockQuery = (): React.ReactElement | 'loading' => {
   const [snackbar, setSnackbar] = useState(false);
   const { siteSlug, flockSlug }: { siteSlug: string, flockSlug: string } = useParams();
   const [, currentSite] = useGetSiteQuery(siteSlug);

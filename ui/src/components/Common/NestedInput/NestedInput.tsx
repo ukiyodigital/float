@@ -30,21 +30,16 @@ const NestedInput: React.FC<NestedInputProps> = ({
       <Typography variant="subtitle1" component="h4">{column.name}</Typography>
       <Divider />
       <div className={classes.subfieldContainer}>
-        {(column.columns || []).slice().sort(sortColumns).map((c) => {
-          // since page data is stored in individual columns
-          // we need to access the values differently
-          // const flockValue = c?.data && !isPage ? c.data[c.slug] : '';
-          return (
-            <SubFieldSwitcher
-              key={`${column.slug}-${column.id}-${c.id}`}
-              name={`${column.slug}-${column.id}-${c.id}`}
-              column={c}
-              control={control}
-              setValue={setValue}
-              onChange={(data) => onChangeSubColumn(c, column, data)}
-            />
-          );
-        })}
+        {(column.columns || []).slice().sort(sortColumns).map((c) => (
+          <SubFieldSwitcher
+            key={`${column.slug}-${column.id}-${c.id}`}
+            name={`${column.slug}-${column.id}-${c.id}`}
+            column={c}
+            control={control}
+            setValue={setValue}
+            onChange={(data) => onChangeSubColumn(c, column, data)}
+          />
+        ))}
       </div>
     </>
   );

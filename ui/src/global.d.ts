@@ -1,4 +1,4 @@
-type ColumnValue = string | Record<string, unknown> | { [key: string]: unknown } | unknown;
+type ColumnValue = string | { [key: string]: string | ColumnValue | unknown } | unknown;
 
 interface Column {
     id?: string;
@@ -11,6 +11,7 @@ interface Column {
     unsaved?: boolean;
     order: number;
     page_id?: number | null;
+    flock_id?: number | null;
     __typename?: string;
 }
 
@@ -28,9 +29,14 @@ interface Flock {
     name: string;
     slug: string;
     columns?: Column[];
-    data?: any;
+    data?: Item[];
     site: Site;
     __typename: string;
+}
+
+interface Item {
+    id: string | number;
+    [key: string]: Item | ColumnValue | unknown;
 }
 
 interface APIKey {
@@ -55,8 +61,8 @@ interface Field {
     label: string | Node | JSX.Element;
     type?: string;
     value?: ColumnValue;
-    onChange?(value: any): void;
-    setValue?(name: string, value: any, config?: Record<string, unkown>): void;
+    onChange?(value: string | unknown): void;
+    setValue?(name: string, value: unknown, config?: Record<string, unkown>): void;
 }
 
 interface FieldError {

@@ -127,7 +127,7 @@ const Signup: React.FC = () => {
               field={{
                 name: 'firstName',
                 label: 'First Name',
-                onChange: (value) => dispatch({ type: 'firstName', payload: value }),
+                onChange: (value: string) => dispatch({ type: 'firstName', payload: value }),
               }}
               message={formErrors.firstName?.message}
               value={state.firstName}
@@ -143,7 +143,7 @@ const Signup: React.FC = () => {
               field={{
                 name: 'lastName',
                 label: 'Last Name',
-                onChange: (value) => dispatch({ type: 'lastName', payload: value }),
+                onChange: (value: string) => dispatch({ type: 'lastName', payload: value }),
               }}
               message={formErrors.lastName?.message}
               value={state.lastName}
@@ -158,7 +158,7 @@ const Signup: React.FC = () => {
               field={{
                 name: 'username',
                 label: 'Username',
-                onChange: (value) => dispatch({ type: 'username', payload: value }),
+                onChange: (value: string) => dispatch({ type: 'username', payload: value }),
               }}
               message={formErrors.username?.message}
               value={state.username}
@@ -173,7 +173,7 @@ const Signup: React.FC = () => {
               field={{
                 name: 'email',
                 label: 'Email',
-                onChange: (value) => dispatch({ type: 'email', payload: value }),
+                onChange: (value: string) => dispatch({ type: 'email', payload: value }),
               }}
               message={formErrors.email?.message}
               value={state.email}
@@ -189,7 +189,7 @@ const Signup: React.FC = () => {
                 name: 'password',
                 label: 'Password',
                 type: 'password',
-                onChange: (value) => dispatch({ type: 'password', payload: value }),
+                onChange: (value: string) => dispatch({ type: 'password', payload: value }),
               }}
               message={formErrors.password?.message}
               value={state.password}

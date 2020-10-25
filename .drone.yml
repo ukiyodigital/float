@@ -91,7 +91,7 @@ steps:
       from_secret: s3_user_access_key_id
     secret_key:
       from_secret: s3_user_secret_access_key
-    source: ui/build/*
+    source: ui/build/**/*
     target: /
     strip_prefix: ui/build/
   depends_on:

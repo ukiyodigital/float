@@ -27,11 +27,11 @@ steps:
     - python manage.py test apps
 
 - name: Test UI
-  image: node:14.8
+  image: cypress/included:5.4.0
   commands:
     - cd ui/
     - npm ci
-    - npm run test
+    - npm run test:e2e:ci
 
 services:
   - name: db

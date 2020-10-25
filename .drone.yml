@@ -31,7 +31,7 @@ steps:
   commands:
     - cd ui/
     - npm ci
-    - npm run test
+    - npm run test:e2e:ci
 
 services:
   - name: db

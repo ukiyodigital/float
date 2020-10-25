@@ -91,13 +91,9 @@ steps:
       from_secret: s3_user_access_key_id
     secret_key:
       from_secret: s3_user_secret_access_key
-    # commands:
-    #   - cd ui/
-    #   - npm ci
-    #   - npm run test
-    source: ui/dist/*
+    source: ui/build/*
     target: /
-    strip_prefix: ui/dist/
+    strip_prefix: ui/build/
   depends_on:
     - Build UI
 - name: Deploy API to EC2

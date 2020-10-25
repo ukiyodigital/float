@@ -27,7 +27,7 @@ steps:
     - python manage.py test apps
 
 - name: Test UI
-  image: node:14.8
+  image: cypress/base:12.18.4
   commands:
     - cd ui/
     - npm ci

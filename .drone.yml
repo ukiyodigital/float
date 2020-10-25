@@ -27,14 +27,11 @@ steps:
     - python manage.py test apps
 
 - name: Test UI
-  image: node:14.0
-  environment:
-    API_URL: http://localhost:8000/api/graphql/
-    APP_ENV: test
+  image: cypress/included:5.4.0
   commands:
     - cd ui/
     - npm ci
-    - npm run test
+    - npm run test:e2e:ci
 
 services:
   - name: db
@@ -81,10 +78,6 @@ name: Deploy to AWS
 steps:
 - name: Build UI
   image: node:14.0
-  environment:
-    API_URL: https://api.floatql.com/graphql/
-    APP_ENV: production
-    TRACKING_ID: UA-83207653-3
   commands:
     - cd ui/
     - npm ci
@@ -98,10 +91,10 @@ steps:
       from_secret: s3_user_access_key_id
     secret_key:
       from_secret: s3_user_secret_access_key
-    commands:
-      - cd ui/
-      - npm ci
-      - npm run test
+    # commands:
+    #   - cd ui/
+    #   - npm ci
+    #   - npm run test
     source: ui/dist/*
     target: /
     strip_prefix: ui/dist/

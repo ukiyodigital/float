@@ -4,10 +4,12 @@ import { useQuery } from '@apollo/client';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 
 import {
-  AppBar, Button, Toolbar, Typography,
+  AppBar, Button, Toolbar,
 } from '@material-ui/core';
 
-import Link from '_/components/Common/Link/Link';
+import icon from "_/assets/images/float-logo-blue-transparent.png";
+
+import { Link } from 'react-router-dom';
 import LogoutButton from '_/components/Layout/Navigation/LogoutButton/LogoutButton';
 
 import { IsUserLoggedIn } from '_/apollo/queries.graphql';
@@ -15,15 +17,27 @@ import { IsUserLoggedIn } from '_/apollo/queries.graphql';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) => ({
+  toolbar: {
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.primary.dark,
+    borderBottom: `1px solid ${theme.palette.border.main}`,
+    '& img': {
+      marginLeft: '75px',
+    }
+  },
+  logo: {
+    flex: 1,
+  },
   hide: {
     visibility: 'hidden',
   },
-  appBar: {
+  appBar: ({ hasSidebar }) => ({
+    boxShadow: 'none',
     [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
+      width: hasSidebar ? `calc(100% - ${drawerWidth}px)` : undefined,
+      marginLeft: hasSidebar ? drawerWidth : undefined,
     },
-  },
+  }),
   title: {
     flexGrow: 1,
     visibility: ({ hasSidebar }: { hasSidebar: boolean }) => (hasSidebar ? 'hidden' : 'inherit'),
@@ -41,31 +55,33 @@ const TopNav: React.FC<Props> = ({ hasSidebar = false }) => {
   const { data: { isLoggedIn } } = useQuery(IsUserLoggedIn);
 
   return (
-    <AppBar position="fixed" className={hasSidebar ? classes.appBar : ''}>
-      <Toolbar>
-        <Link to="/">
-          <Typography
-            variant="h6"
-            className={classes.title}
-          >
-            Float
-          </Typography>
-        </Link>
+    <AppBar position="fixed" className={classes.appBar}>
+      <Toolbar className={classes.toolbar}>
+        {!hasSidebar && (
+          <Link className={classes.logo} to="/">
+            <img height="50" src={icon} />
+          </Link>
+        )}
+
         {
           isLoggedIn ? (
             <LogoutButton />
           ) : (
             <>
-              <Link to="/login">
-                <Button color="inherit">
-                  Login
-                </Button>
-              </Link>
-              <Link to="/signup">
-                <Button color="inherit">
-                  Signup
-                </Button>
-              </Link>
+              <Button
+                component={Link}
+                to="/login"
+                color="inherit"
+              >
+                Login
+              </Button>
+              <Button
+                component={Link}
+                to="/signup"
+                color="inherit"
+              >
+                Signup
+              </Button>
             </>
           )
         }

@@ -20,9 +20,12 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
-    backgroundColor: theme.palette.primary.main,
-    color: 'white',
-    boxShadow: theme.shadows[4],
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.primary.dark,
+    borderBottom: `1px solid ${theme.palette.border.main}`,
+    '& img': {
+      marginLeft: '75px',
+    }
   },
   drawer: {
     width: drawerWidth,

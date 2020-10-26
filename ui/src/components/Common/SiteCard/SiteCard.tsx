@@ -4,7 +4,7 @@ import {
   Card, CardActions, CardHeader, Typography,
 } from '@material-ui/core';
 
-import Link from '_/components/Common/Link/Link';
+import { Link, LinkProps } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -44,35 +44,42 @@ const SiteCard: React.FC<Props> = ({ site }) => {
   const [hover, setHover] = useState(false);
   const classes = useStyles({ hover });
 
-  return (
-    <Link
-      to={`/site/${site.slug}`}
-    >
-      <Card
-        className={classes.root}
-        onMouseOver={() => setHover(true)}
-        onFocus={() => setHover(true)}
-        onMouseOut={() => setHover(false)}
-        onBlur={() => setHover(false)}
-      >
-        <CardHeader
-          title={site.name}
-          titleTypographyProps={{
-            className: classes.title,
-          }}
-          subheaderTypographyProps={{
-            className: classes.subheader,
-          }}
-          subheader={site.slug}
-        />
+  const to = `/site/${site.slug}`;
 
-        <CardActions className={classes.owner}>
-          <Typography variant="button" display="block">
-            {site.owner?.username}
-          </Typography>
-        </CardActions>
-      </Card>
-    </Link>
+  const renderLink = React.useMemo(
+    () =>
+      React.forwardRef<HTMLAnchorElement, Omit<LinkProps, 'to'>>((itemProps, ref) => (
+        <Link to={to} ref={ref} {...itemProps} />
+      )),
+    [to],
+  );
+
+  return (
+    <Card
+      component={renderLink}
+      className={classes.root}
+      onMouseOver={() => setHover(true)}
+      onFocus={() => setHover(true)}
+      onMouseOut={() => setHover(false)}
+      onBlur={() => setHover(false)}
+    >
+      <CardHeader
+        title={site.name}
+        titleTypographyProps={{
+          className: classes.title,
+        }}
+        subheaderTypographyProps={{
+          className: classes.subheader,
+        }}
+        subheader={site.slug}
+      />
+
+      <CardActions className={classes.owner}>
+        <Typography variant="button" display="block">
+          {site.owner?.username}
+        </Typography>
+      </CardActions>
+    </Card>
   );
 };
 

@@ -15,6 +15,17 @@ import Layout from '_/components/Layout/Layout';
 
 import '../assets/styles/main.less';
 
+declare module "@material-ui/core/styles/createPalette" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface Palette {
+    border: Palette['primary'];
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface PaletteOptions {
+    border: PaletteOptions['primary'];
+  }
+}
+
 const { REACT_APP_TRACKING_ID: TRACKING_ID, REACT_APP_API_URL: API_URL } = process.env;
 
 if (TRACKING_ID) {
@@ -36,6 +47,9 @@ const themeOptions = {
       light: '#FFF5F2',
       main: '#E29578',
       dark: '#965841',
+    },
+    border: {
+      main: '#EDF6F9',
     },
   },
 };

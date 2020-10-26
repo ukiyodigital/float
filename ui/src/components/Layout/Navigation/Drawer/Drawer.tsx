@@ -2,27 +2,32 @@ import React from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
 
+import { Link, LinkProps } from 'react-router-dom';
 import {
   Collapse, Divider, Drawer,
   List, ListItem, ListSubheader, ListItemText,
-  Toolbar, Typography,
+  Toolbar,
 } from '@material-ui/core';
 
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-import Link from '_/components/Common/Link/Link';
 
 import { GetSites } from '_/apollo/queries.graphql';
 import { useQuery } from '@apollo/client';
+
+import icon from "_/assets/images/float-logo-blue-transparent.png";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
-    backgroundColor: theme.palette.primary.main,
-    color: 'white',
-    boxShadow: theme.shadows[4],
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.primary.dark,
+    borderBottom: `1px solid ${theme.palette.border.main}`,
+    '& img': {
+      marginLeft: '75px',
+    }
   },
   drawer: {
     width: drawerWidth,
@@ -39,6 +44,33 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingLeft: theme.spacing(4),
   },
 }));
+
+interface ListItemLinkProps {
+  to: string;
+  className?: string;
+  children?: JSX.Element;
+}
+
+const ListItemLink = (props: ListItemLinkProps) => {
+  const { to, className, children } = props;
+  const renderLink = React.useMemo(
+    () =>
+      React.forwardRef<HTMLAnchorElement, Omit<LinkProps, 'to'>>((itemProps, ref) => (
+        <Link to={to} ref={ref} {...itemProps} />
+      )),
+    [to],
+  );
+
+  return (
+    <ListItem
+      button
+      component={renderLink}
+      className={className}
+    >
+      {children}
+    </ListItem>
+  )
+}
 
 const AppDrawer: React.FC = () => {
   const [openMenus, setOpenMenus] = React.useState<string[]>([]);
@@ -69,12 +101,7 @@ const AppDrawer: React.FC = () => {
     >
       <Toolbar className={classes.toolbar}>
         <Link to="/">
-          <Typography
-            variant="h6"
-            className={classes.title}
-          >
-            Float
-          </Typography>
+          <img height="50" src={icon} />
         </Link>
       </Toolbar>
       <List
@@ -90,8 +117,8 @@ const AppDrawer: React.FC = () => {
           const active = openMenus.includes(site.id);
           return (
             <React.Fragment key={site.id}>
-              <Link to={`/site/${site.slug}`}>
-                <ListItem button>
+              <ListItemLink to={`/site/${site.slug}`}>
+                <>
                   <ListItemText primary={site.name} />
                   {!active ? (
                     <ExpandLess
@@ -108,8 +135,9 @@ const AppDrawer: React.FC = () => {
                       }}
                     />
                   )}
-                </ListItem>
-              </Link>
+                </>
+              </ListItemLink>
+
               <Collapse in={active} timeout="auto" unmountOnExit>
                 <List
                   component="div"
@@ -125,17 +153,13 @@ const AppDrawer: React.FC = () => {
                   )}
                 >
                   {(site?.pages || []).map((page) => (
-                    <Link
+                    <ListItemLink
                       key={page.id}
                       to={`/site/${site.slug}/page/${page.slug}/edit`}
+                      className={classes.nested}
                     >
-                      <ListItem
-                        button
-                        className={classes.nested}
-                      >
-                        <ListItemText primary={page.name} />
-                      </ListItem>
-                    </Link>
+                      <ListItemText primary={page.name} />
+                    </ListItemLink>
                   ))}
                   <Divider />
                 </List>
@@ -153,17 +177,13 @@ const AppDrawer: React.FC = () => {
                   )}
                 >
                   {(site?.flocks || []).map((flock) => (
-                    <Link
+                    <ListItemLink
                       key={flock.id}
                       to={`/site/${site.slug}/flock/${flock.slug}/edit`}
+                      className={classes.nested}
                     >
-                      <ListItem
-                        button
-                        className={classes.nested}
-                      >
-                        <ListItemText primary={flock.name} />
-                      </ListItem>
-                    </Link>
+                      <ListItemText primary={flock.name} />
+                    </ListItemLink>
                   ))}
                   <Divider />
                 </List>

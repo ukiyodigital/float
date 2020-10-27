@@ -25,9 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.background.default,
     color: theme.palette.primary.dark,
     borderBottom: `1px solid ${theme.palette.border.main}`,
-    '& img': {
-      marginLeft: '75px',
-    }
+    justifyContent: 'center',
   },
   drawer: {
     width: drawerWidth,

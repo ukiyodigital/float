@@ -4,13 +4,12 @@ import { useQuery } from '@apollo/client';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { useGetSiteQuery } from '_/hooks';
 
-import {
-  AppBar, Button, Toolbar,
-} from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { AppBar, Toolbar } from '@material-ui/core';
 
-import { NavLink, Link, LinkProps } from 'react-router-dom';
 
 import LogoutButton from '_/components/Layout/Navigation/LogoutButton/LogoutButton';
+import FloatNavLink from '_/components/Layout/Navigation/FloatNavLink/FloatNavLink';
 
 import { IsUserLoggedIn } from '_/apollo/queries.graphql';
 
@@ -41,15 +40,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       height: '100%',
       position: 'relative',
     },
-    '& a:hover:after, .active:after': {
-      content: '""',
-      display: 'block',
-      border: '8px solid transparent',
-      borderBottomColor: `${theme.palette.primary.dark}`,
-      position: 'absolute',
-      bottom: 0,
-      margin: 'auto',
-    }
   },
   appBar: ({ hasSidebar }) => ({
     boxShadow: 'none',
@@ -71,34 +61,6 @@ interface Props {
   params: {
     [key: string]: string;
   }
-}
-
-interface NavLinkProps {
-  to: string;
-  exact?: boolean
-  className?: string;
-  children?: JSX.Element | string;
-}
-
-const FloatNavLink = (props: NavLinkProps) => {
-  const { to, exact = false, className, children } = props;
-  const renderLink = React.useMemo(
-    () =>
-      React.forwardRef<HTMLAnchorElement, Omit<LinkProps, 'to'>>((itemProps, ref) => (
-        <NavLink exact={exact} to={to} ref={ref} {...itemProps} />
-      )),
-    [to],
-  );
-
-  return (
-    <Button
-      color="inherit"
-      component={renderLink}
-      className={className}
-    >
-      {children}
-    </Button>
-  )
 }
 
 const TopNav: React.FC<Props> = ({ params, hasSidebar = false }) => {
@@ -159,20 +121,19 @@ const TopNav: React.FC<Props> = ({ params, hasSidebar = false }) => {
             </>
           ) : (
             <>
-              <Button
-                component={Link}
+              <div className={classes.breadcrumb} />
+              <FloatNavLink
+                exact
                 to="/login"
-                color="inherit"
               >
                 Login
-              </Button>
-              <Button
-                component={Link}
+              </FloatNavLink>
+              <FloatNavLink
+                exact
                 to="/signup"
-                color="inherit"
               >
                 Signup
-              </Button>
+              </FloatNavLink>
             </>
           )
         }

@@ -70,6 +70,9 @@ const SiteList: React.FC = () => {
             name: 'name',
             label: 'Site Name',
             rules: { required: 'Site name is required '},
+            inputProps: {
+              maxLength: 15,
+            },
           },
           {
             name: 'slug',

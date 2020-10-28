@@ -13,7 +13,7 @@ import { cache } from '_/apollo/cache';
 
 import Layout from '_/components/Layout/Layout';
 
-import '../assets/styles/main.less';
+import '_/assets/styles/main.less';
 
 declare module "@material-ui/core/styles/createPalette" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,6 +51,9 @@ const themeOptions = {
     border: {
       main: '#EDF6F9',
     },
+  },
+  typography: {
+    fontFamily: 'noto-sans, sans-serif',
   },
 };
 

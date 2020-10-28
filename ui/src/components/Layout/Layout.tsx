@@ -29,9 +29,6 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
 }));
 
-const sidebarPaths = routes.filter((route) => route.sidebar).map((route) => route.path);
-const nonSidebarPaths = routes.filter((route) => !route.sidebar).map((route) => route.path);
-
 const Layout: React.FC = () => {
   const classes = useStyles();
 
@@ -39,28 +36,23 @@ const Layout: React.FC = () => {
     <Box component="div" className={classes.root}>
       <div className={classes.flex}>
         <Switch>
-          <Route path={sidebarPaths}>
-            <>
-              <TopNav hasSidebar />
-              <AppDrawer />
-              <Container className={classes.sidebarContainer}>
-                <div className={classes.toolbar} />
-                <RouteNode />
-              </Container>
-            </>
-          </Route>
-          <Route
-            path={nonSidebarPaths}
-          >
-            <>
-              <TopNav />
-              <Container className={classes.container}>
-                <div className={classes.toolbar} />
-                <RouteNode />
-              </Container>
-            </>
-          </Route>
-          {/* Catch All for redirecting bad routes */}
+          {routes.map((route) => (
+            <Route
+              key={route.name}
+              path={route.path}
+              exact={route.exact}
+              render={({ match }) => (
+                <>
+                  {route.sidebar && <AppDrawer />}
+                  <TopNav params={match.params} hasSidebar={route.sidebar} />
+                  <Container className={classes.sidebarContainer}>
+                    <div className={classes.toolbar} />
+                    <RouteNode />
+                  </Container>
+                </>
+              )}
+            />
+          ))}
           <Route
             exact
             path="/"

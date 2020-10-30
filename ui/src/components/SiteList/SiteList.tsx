@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { useErrorState } from '_/hooks';
 
 import {
-  Fab, Grid, Typography,
+  Fab, Grid,
 } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
@@ -85,9 +85,6 @@ const SiteList: React.FC = () => {
         ]}
       />
       <Grid container spacing={2} className={classes.root}>
-        <Typography variant="h2">
-          Your Sites
-        </Typography>
         <Grid item xs={12}>
           <Grid container spacing={2}>
             {sites.map((site: Site) => (

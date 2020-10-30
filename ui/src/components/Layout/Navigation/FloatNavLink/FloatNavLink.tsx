@@ -15,6 +15,8 @@ interface NavLinkProps {
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     textTransform: 'none',
+    fontSize: '16px',
+    fontWeight: 300,
     '&:hover, &.active:hover': {
       fontWeight: 700,
     },

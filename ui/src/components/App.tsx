@@ -17,10 +17,12 @@ declare module "@material-ui/core/styles/createPalette" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Palette {
     border: Palette['primary'];
+    breadcrumb: Palette['primary'];
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface PaletteOptions {
     border: PaletteOptions['primary'];
+    breadcrumb: PaletteOptions['primary'];
   }
 }
 
@@ -48,6 +50,10 @@ const themeOptions = {
     },
     border: {
       main: '#EDF6F9',
+    },
+    breadcrumb: {
+      main: '#989898',
+      dark: '#333333',
     },
   },
   typography: {

@@ -7,6 +7,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import AppDrawer from '_/components/Layout/Navigation/Drawer/Drawer';
 import TopNav from '_/components/Layout/Navigation/TopNav/TopNav';
 import RouteNode from '_/components/RouteNode/RouteNode';
+import Breadcrumbs from '_/components/Layout/Navigation/Breadcrumbs/Breadcrumbs'
 
 import { routes, defaultPath } from '_/routing/routes';
 
@@ -47,6 +48,7 @@ const Layout: React.FC = () => {
                   <TopNav params={match.params} hasSidebar={route.sidebar} />
                   <Container className={classes.sidebarContainer}>
                     <div className={classes.toolbar} />
+                    {route.breadcrumbs && <Breadcrumbs params={match.params} />}
                     <RouteNode />
                   </Container>
                 </>
@@ -54,7 +56,6 @@ const Layout: React.FC = () => {
             />
           ))}
           <Route
-            exact
             path="/"
           >
             <Redirect to={defaultPath} />

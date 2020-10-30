@@ -11,16 +11,16 @@ export const defaultPath = '/site';
 
 export const routes = [
   {
-    name: 'sites', path: '/site', exact: true, component: SiteList, loginRequired: true,
+    name: 'sites', path: '/site', exact: true, component: SiteList, loginRequired: true, breadcrumbs: true,
   },
   {
-    name: 'site-detail', path: '/site/:siteSlug', exact: true, component: SiteDetail, loginRequired: true,
+    name: 'site-detail', path: '/site/:siteSlug', exact: true, component: SiteDetail, loginRequired: true, breadcrumbs: true,
   },
   {
-    name: 'edit-flock', path: '/site/:siteSlug/flock/:flockSlug/edit', exact: true, component: EditFlock, sidebar: true, loginRequired: true,
+    name: 'edit-flock', path: '/site/:siteSlug/flock/:flockSlug/edit', exact: true, component: EditFlock, sidebar: true, loginRequired: true, breadcrumbs: true,
   },
   {
-    name: 'edit-page', path: '/site/:siteSlug/page/:pageSlug/edit', exact: true, component: EditPage, sidebar: true, loginRequired: true,
+    name: 'edit-page', path: '/site/:siteSlug/page/:pageSlug/edit', exact: true, component: EditPage, sidebar: true, loginRequired: true, breadcrumbs: true,
   },
   {
     name: 'login', path: '/login', exact: true, component: Login,

@@ -14,6 +14,15 @@ interface NavLinkProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
+    textTransform: 'none',
+    fontSize: '16px',
+    fontWeight: 300,
+    '&:hover, &.active:hover': {
+      fontWeight: 700,
+    },
+    '&.active': {
+      fontWeight: 600,
+    },
     '&:hover:after, &.active:after': {
       content: '""',
       display: 'block',
@@ -27,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const FloatNavLink: React.FC<NavLinkProps> = (props) => {
-  const { to, exact = false, className, children } = props;
+  const { to, exact = false, className = "", children } = props;
   const classes = useStyles();
   const renderLink = React.useMemo(
     () =>

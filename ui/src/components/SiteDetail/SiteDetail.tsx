@@ -114,9 +114,6 @@ const SiteDetail: React.FC = () => {
         ]}
       />
       <Grid>
-        <Typography variant="h2">
-          {site.name}
-        </Typography>
         <Grid item xs={12} className={classes.root}>
           <Grid container spacing={3} justify="space-between">
             <Grid item xs={3}>

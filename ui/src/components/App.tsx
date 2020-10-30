@@ -13,8 +13,6 @@ import { cache } from '_/apollo/cache';
 
 import Layout from '_/components/Layout/Layout';
 
-import '_/assets/styles/main.less';
-
 declare module "@material-ui/core/styles/createPalette" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Palette {

@@ -1,7 +1,7 @@
 import Login from '_/components/Login/Login';
 import Signup from '_/components/Signup/Signup';
 
-import SiteList from '_/components/SiteList/SiteList';
+import { SiteList, SiteBreadcrumbAction } from '_/components/SiteList';
 import SiteDetail from '_/components/SiteDetail/SiteDetail';
 
 import EditPage from '_/components/EditPage/EditPage';
@@ -11,7 +11,7 @@ export const defaultPath = '/site';
 
 export const routes = [
   {
-    name: 'sites', path: '/site', exact: true, component: SiteList, loginRequired: true, breadcrumbs: true,
+    name: 'sites', path: '/site', exact: true, component: SiteList, loginRequired: true, breadcrumbs: true, breadcrumbComponent: SiteBreadcrumbAction,
   },
   {
     name: 'site-detail', path: '/site/:siteSlug', exact: true, component: SiteDetail, loginRequired: true, breadcrumbs: true,

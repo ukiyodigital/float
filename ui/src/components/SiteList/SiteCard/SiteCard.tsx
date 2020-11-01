@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import {
-  Box, Typography,
-} from '@material-ui/core';
+import { Box } from '@material-ui/core';
 
 import { Link, LinkProps } from 'react-router-dom';
 
@@ -11,7 +9,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     textDecoration: 'none',
     cursor: 'pointer',
     padding: '0 20px',
-    width: 200,
     height: 100,
     display: 'block',
     borderTop: `4px solid ${theme.palette.primary.main}`,

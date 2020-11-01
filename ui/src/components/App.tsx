@@ -52,6 +52,7 @@ const themeOptions = {
       main: '#EDF6F9',
     },
     breadcrumb: {
+      light: '#999999',
       main: '#989898',
       dark: '#333333',
     },

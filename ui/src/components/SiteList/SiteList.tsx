@@ -12,9 +12,8 @@ import { useHistory } from 'react-router-dom';
 import { GetSites } from '_/apollo/queries.graphql';
 import { CreateSite } from '_/apollo/mutations.graphql';
 
-
 import Loading from '_/components/Common/Loading/Loading';
-import SiteCard from '_/components/Common/SiteCard/SiteCard';
+import SiteCard from '_/components/SiteList/SiteCard/SiteCard';
 import FormDialog from '_/components/Common/FormDialog/FormDialog';
 
 const useStyles = makeStyles((theme) => ({

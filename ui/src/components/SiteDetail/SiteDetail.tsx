@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import { useParams, useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 
 import { useGetSiteQuery, useErrorState } from '_/hooks';
@@ -8,36 +8,32 @@ import { useGetSiteQuery, useErrorState } from '_/hooks';
 import { CreatePage, CreateFlock } from '_/apollo/mutations.graphql';
 
 import {
-  Button, Container, Divider, Grid, IconButton, Typography, Paper,
+  Button, Container, Divider, Grid,
 } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
 
 import Loading from '_/components/Common/Loading/Loading';
 import FormDialog from '_/components/Common/FormDialog/FormDialog';
+import NumberCard from '_/components/SiteDetail/NumberCard/NumberCard';
+import Row from '_/components/SiteDetail/Row/Row';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     flexGrow: 1,
-  },
-  title: {
-    marginTop: -20,
   },
   paper: {
     padding: theme.spacing(2),
   },
-  numberCard: {
-    width: '100%',
-    height: 200,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    textAlign: 'center',
-  },
   divider: {
     margin: '25px auto',
   },
+  row: {
+    borderBottom: '1px solid #EDF6F9',
+  },
+  button: {
+    color: theme.palette.primary.dark,
+  }
 }));
 
 const SiteDetail: React.FC = () => {
@@ -117,41 +113,31 @@ const SiteDetail: React.FC = () => {
         <Grid item xs={12} className={classes.root}>
           <Grid container spacing={3} justify="space-between">
             <Grid item xs={3}>
-              <Paper className={classes.numberCard}>
-                <Typography variant="h2" className={classes.title}>
-                  {site?.pages?.length}
-                </Typography>
-                <Typography variant="h5">
-                  Pages
-                </Typography>
-              </Paper>
+              <NumberCard
+                name="Pages"
+                number={site.pages.length}
+              />
             </Grid>
             <Grid item xs={8}>
               <Grid container spacing={2}>
                 {site?.pages?.map((page: Page) => (
-                  <Grid key={page.id} item xs={12}>
-                    <Paper className={classes.paper}>
-                      <Grid container spacing={1}>
-                        <Grid item xs={11}>
-                          <Typography>{page.name}</Typography>
-                        </Grid>
-                        <Grid item xs={1}>
-                          <IconButton
-                            color="inherit"
-                            component={Link}
-                            to={`/site/${site.slug}/page/${page.slug}/edit`}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Grid>
-                      </Grid>
-                    </Paper>
+                  <Grid
+                    item xs={12}
+                    key={page.id}
+                    className={classes.row}
+                  >
+                    <Row
+                      type="page"
+                      name={page.name}
+                      slug={page.slug}
+                      siteSlug={site.slug}
+                    />
                   </Grid>
                 ))}
                 <Grid item xs={12}>
                   <Button
                     fullWidth
-                    variant="contained"
+                    className={classes.button}
                     color="primary"
                     onClick={() => setOpen(true)}
                   >
@@ -169,42 +155,33 @@ const SiteDetail: React.FC = () => {
         <Grid item xs={12}>
           <Grid container spacing={3} justify="space-between">
             <Grid item xs={3}>
-              <Paper className={classes.numberCard}>
-                <Typography variant="h2" className={classes.title}>
-                  {site?.flocks?.length}
-                </Typography>
-                <Typography variant="h5">
-                  Flocks
-                </Typography>
-              </Paper>
+              <NumberCard
+                name="Flocks"
+                number={site?.flocks?.length}
+              />
             </Grid>
             <Grid item xs={8}>
               <Grid container spacing={2}>
                 {site?.flocks?.map((flock: Flock) => (
-                  <Grid key={flock.id} item xs={12}>
-                    <Paper className={classes.paper}>
-                      <Grid container spacing={1}>
-                        <Grid item xs={11}>
-                          <Typography>{flock.name}</Typography>
-                        </Grid>
-                        <Grid item xs={1}>
-                          <IconButton
-                            color="inherit"
-                            component={Link}
-                            to={`/site/${site.slug}/flock/${flock.slug}/edit`}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Grid>
-                      </Grid>
-                    </Paper>
+                  <Grid
+                    key={flock.id}
+                    item
+                    xs={12}
+                    className={classes.row}
+                  >
+                    <Row
+                      type="flock"
+                      name={flock.name}
+                      slug={flock.slug}
+                      siteSlug={site.slug}
+                    />
                   </Grid>
                 ))}
                 <Grid item xs={12}>
                   <Button
+                    className={classes.button}
                     color="primary"
                     fullWidth
-                    variant="contained"
                     onClick={() => setFlockDialog(true)}
                   >
                     <AddIcon />

@@ -48,7 +48,7 @@ const Layout: React.FC = () => {
                   <TopNav params={match.params} hasSidebar={route.sidebar} />
                   <Container className={classes.sidebarContainer}>
                     <div className={classes.toolbar} />
-                    {route.breadcrumbs && <Breadcrumbs params={match.params} />}
+                    {route.breadcrumbs && <Breadcrumbs params={match.params} component={route.breadcrumbComponent} />}
                     <RouteNode />
                   </Container>
                 </>

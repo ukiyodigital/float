@@ -4,21 +4,20 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 
 import { Link, LinkProps } from 'react-router-dom';
 import {
-  Collapse, Divider, Drawer,
+  Collapse, Drawer,
   List, ListItem, ListSubheader, ListItemText,
   Toolbar,
+  ListItemIcon,
 } from '@material-ui/core';
 
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-
-import { GetSites } from '_/apollo/queries.graphql';
-import { useQuery } from '@apollo/client';
+import { useGetSiteQuery } from '_/hooks';
 
 import icon from "_/assets/images/float-logo-blue-transparent.png";
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
@@ -33,13 +32,55 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    backgroundColor: theme.palette.drawer.light,
   },
-  title: {
-    color: 'inherit',
-    textDecoration: 'inherit',
+  subheader: {
+    marginTop: '2rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.3em',
+    fontSize: '14px',
+    fontWeight: 300,
+    lineHeight: '19px',
+    color: theme.palette.drawer.main,
+  },
+  list: {
+    marginLeft: '2.5rem',
+  },
+  listItem: {
+    cursor: 'pointer',
+    fontWeight: 300,
+    fontSize: '14px',
+    color: theme.palette.drawer.main,
+  },
+  listIcon: {
+    minWidth: '32px',
+    color: theme.palette.drawer.main,
   },
   nested: {
-    paddingLeft: theme.spacing(4),
+    width: 'auto',
+    color: theme.palette.drawer.main,
+    marginLeft: theme.spacing(6),
+    paddingLeft: theme.spacing(3),
+    position: 'relative',
+    '&:not(:last-of-type):not(:first-of-type)': {
+      borderLeft: `2px solid ${theme.palette.drawer.main}`,
+    },
+    '&:first-of-type:after': {
+      content: '""',
+      position: 'absolute',
+      top: '35%',
+      bottom: 0,
+      left: 0,
+      borderLeft: `2px solid ${theme.palette.drawer.main}`,
+    },
+    '&:last-of-type:after': {
+      content: '""',
+      position: 'absolute',
+      bottom: '35%',
+      top: 0,
+      left: 0,
+      borderLeft: `2px solid ${theme.palette.drawer.main}`,
+    }
   },
 }));
 
@@ -70,19 +111,22 @@ const ListItemLink = (props: ListItemLinkProps) => {
   )
 }
 
-const AppDrawer: React.FC = () => {
+interface Props {
+  params: {
+    [key: string]: string;
+  }
+}
+
+const AppDrawer: React.FC<Props> = ({ params }) => {
   const [openMenus, setOpenMenus] = React.useState<string[]>([]);
   const classes = useStyles();
-  const {
-    data: {
-      sites = [],
-    } = {},
-  } = useQuery(GetSites);
+  const { siteSlug = "" } = params;
+  const [, currentSite] = useGetSiteQuery(siteSlug);
 
-  const toggleSite = (siteId: string) => {
-    const idx = openMenus.findIndex((sId) => sId === siteId);
+  const toggleSite = (type: string) => {
+    const idx = openMenus.findIndex((menuType) => menuType === type);
     if (idx === -1) {
-      setOpenMenus([...openMenus, siteId]);
+      setOpenMenus([...openMenus, type]);
       return;
     }
     setOpenMenus([...openMenus.slice(0, idx), ...openMenus.slice(idx + 1)]);
@@ -103,92 +147,88 @@ const AppDrawer: React.FC = () => {
         </Link>
       </Toolbar>
       <List
+        className={classes.list}
         component="nav"
         aria-labelledby="nested-list-subheader"
         subheader={(
-          <ListSubheader component="div" id="nested-list-subheader">
-            Sites
+          <ListSubheader
+            className={classes.subheader}
+            component="div"
+            id="nested-list-subheader"
+          >
+            {currentSite && currentSite.name}
           </ListSubheader>
         )}
       >
-        {sites.map((site: Site) => {
-          const active = openMenus.includes(site.id);
-          return (
-            <React.Fragment key={site.id}>
-              <ListItemLink to={`/site/${site.slug}`}>
-                <>
-                  <ListItemText primary={site.name} />
-                  {!active ? (
-                    <ExpandLess
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleSite(site.id);
-                      }}
-                    />
-                  ) : (
-                    <ExpandMore
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleSite(site.id);
-                      }}
-                    />
-                  )}
-                </>
-              </ListItemLink>
+        {/* Pages */}
+        <ListItem
+          className={classes.listItem}
+          onClick={(e) => {
+            e.preventDefault();
+            toggleSite("pages");
+          }}
+        >
+          <ListItemIcon className={classes.listIcon}>
+            {!openMenus.includes('pages') ? (
+              <ArrowRightIcon />
+            ) : (
+              <ArrowDropDownIcon />
+            )}
+          </ListItemIcon>
+          <ListItemText primary="Pages" />
+        </ListItem>
 
-              <Collapse in={active} timeout="auto" unmountOnExit>
-                <List
-                  component="div"
-                  disablePadding
-                  subheader={(
-                    <ListSubheader
-                      component="div"
-                      id="nested-list-subheader"
-                      className={classes.nested}
-                    >
-                      Pages
-                    </ListSubheader>
-                  )}
-                >
-                  {(site?.pages || []).map((page) => (
-                    <ListItemLink
-                      key={page.id}
-                      to={`/site/${site.slug}/page/${page.slug}/edit`}
-                      className={classes.nested}
-                    >
-                      <ListItemText primary={page.name} />
-                    </ListItemLink>
-                  ))}
-                  <Divider />
-                </List>
-                <List
-                  component="div"
-                  disablePadding
-                  subheader={(
-                    <ListSubheader
-                      component="div"
-                      id="nested-list-subheader"
-                      className={classes.nested}
-                    >
-                      Flocks
-                    </ListSubheader>
-                  )}
-                >
-                  {(site?.flocks || []).map((flock) => (
-                    <ListItemLink
-                      key={flock.id}
-                      to={`/site/${site.slug}/flock/${flock.slug}/edit`}
-                      className={classes.nested}
-                    >
-                      <ListItemText primary={flock.name} />
-                    </ListItemLink>
-                  ))}
-                  <Divider />
-                </List>
-              </Collapse>
-            </React.Fragment>
-          );
-        })}
+        <Collapse in={openMenus.includes('pages')} timeout="auto" unmountOnExit>
+          <List
+            component="div"
+            disablePadding
+          >
+            {(currentSite?.pages || []).map((page) => (
+              <ListItemLink
+                key={page.id}
+                to={`/site/${currentSite?.slug}/page/${page.slug}/edit`}
+                className={classes.nested}
+              >
+                <ListItemText primary={page.name} />
+              </ListItemLink>
+            ))}
+          </List>
+        </Collapse>
+
+        {/* Flocks */}
+        <ListItem
+          className={classes.listItem}
+          onClick={(e) => {
+            e.preventDefault();
+            toggleSite("flocks");
+          }}
+        >
+          <ListItemIcon className={classes.listIcon}>
+            {!openMenus.includes('flocks') ? (
+              <ArrowRightIcon />
+            ) : (
+              <ArrowDropDownIcon />
+            )}
+          </ListItemIcon>
+          <ListItemText primary="Flocks" />
+        </ListItem>
+
+        <Collapse in={openMenus.includes('flocks')} timeout="auto" unmountOnExit>
+          <List
+            component="div"
+            disablePadding
+          >
+            {(currentSite?.flocks || []).map((flock) => (
+              <ListItemLink
+                key={flock.id}
+                to={`/site/${currentSite?.slug}/flock/${flock.slug}/edit`}
+                className={classes.nested}
+              >
+                <ListItemText primary={flock.name} />
+              </ListItemLink>
+            ))}
+          </List>
+        </Collapse>
       </List>
     </Drawer>
   );

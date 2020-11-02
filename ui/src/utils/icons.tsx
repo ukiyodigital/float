@@ -5,11 +5,13 @@ import TitleIcon from '@material-ui/icons/Title';
 import CodeIcon from '@material-ui/icons/Code';
 import ImageIcon from '@material-ui/icons/Image';
 
+export type IconTypes = 'IMAGE' | 'MARKDOWN' | 'TEXT' | 'OBJECT';
+
 export const IconMap: Record<string, React.ReactElement> = ({
-  IMAGE: <ImageIcon fontSize="inherit" />,
-  MARKDOWN: <CodeIcon fontSize="inherit" />,
-  TEXT: <TitleIcon fontSize="inherit" />,
-  OBJECT: <AccountTreeIcon fontSize="inherit" />,
+  IMAGE: <ImageIcon />,
+  MARKDOWN: <CodeIcon />,
+  TEXT: <TitleIcon />,
+  OBJECT: <AccountTreeIcon />,
 });
 
 export default {

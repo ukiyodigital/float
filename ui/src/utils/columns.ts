@@ -1,18 +1,20 @@
 import { v4 as uuidv4 } from 'uuid';
 
+const calculateColumnOrderMax = (columns: Column[]) => Math.max(...columns.map(c => c.order));
+
 type SetColumnsType = (columns: Column[]) => void;
 
 export const sortColumns = (a: Column, b: Column): number => a.order - b.order;
 
-export const addColumn = (columns: Column[], setColumns: SetColumnsType, addData = false): void => {
+export const addColumn = (columns: Column[], setColumns: SetColumnsType, field = "TEXT", addData = false): void => {
   const newColumn: Column = {
     id: uuidv4(),
     columns: [],
     name: '',
     slug: '',
-    field: 'TEXT',
+    field,
     unsaved: true,
-    order: -1, // TODO max of all columns + 1
+    order: calculateColumnOrderMax(columns) + 1, // TODO max of all columns + 1
   };
   if (addData) {
     newColumn.data = '';
@@ -40,7 +42,7 @@ export const addSubColumn = (column: Column, columns: Column[], setColumns: SetC
     slug: '',
     field: 'TEXT',
     unsaved: true,
-    order: -1 // similar TODO as above
+    order: calculateColumnOrderMax(column.columns) + 1
   };
   if (addData) {
     newColumn.data = '';

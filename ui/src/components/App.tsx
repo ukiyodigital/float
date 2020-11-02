@@ -52,6 +52,7 @@ const themeOptions = {
     },
     border: {
       main: '#EDF6F9',
+      dark: '#BDBDBD',
     },
     breadcrumb: {
       light: '#999999',

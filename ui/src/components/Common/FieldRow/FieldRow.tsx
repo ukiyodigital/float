@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Control } from 'react-hook-form';
 
 import { sortColumns } from '_/utils/columns';
@@ -11,9 +11,16 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Input from '_/components/Common/Input/Input';
 import FieldSelect from '_/components/Common/FieldSelect/FieldSelect';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     margin: '20px 0',
+    boxShadow: 'none',
+  },
+  grid: {
+    border: `1px solid ${theme.palette.border.dark}`,
+    '& .MuiGrid-item': {
+      marginTop: '14px',
+    },
   },
   item: {
     display: 'flex',
@@ -22,11 +29,6 @@ const useStyles = makeStyles(() => ({
   },
   icon: {
     cursor: 'pointer',
-  },
-  grid: {
-    '& .MuiGrid-item': {
-      marginTop: '14px',
-    },
   },
   input: {
     marginTop: '0 !important',
@@ -40,7 +42,6 @@ const useStyles = makeStyles(() => ({
   },
   subColumnContainer: {
     marginLeft: '1rem',
-    marginRight: '1rem',
   },
 }));
 
@@ -114,7 +115,7 @@ const ColumnRow: React.FC<Props> = ({
             control={control}
           />
         </Grid>
-        <Grid className={`${classes.item} ${classes.grid}`} item xs={2}>
+        <Grid className={classes.item} item xs={2}>
           <DeleteIcon
             onClick={() => deleteColumn(column)}
             className={classes.icon}

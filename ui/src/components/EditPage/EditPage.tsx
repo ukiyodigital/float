@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 
 import { useQuery, useMutation } from '@apollo/client';
 import { useParams } from 'react-router-dom';
@@ -20,16 +20,15 @@ import {
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import AddIcon from '@material-ui/icons/Add';
-
 import FieldRow from '_/components/Common/FieldRow/FieldRow';
 import FieldSwitcher from '_/components/Common/FieldSwitcher/FieldSwitcher';
 
 import Preview from '_/components/Preview/Preview';
+import BoxIcon from '_/components/Common/BoxIcon/BoxIcon';
 
 const { REACT_APP_API_URL: API_URL } = process.env;
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   buttonContainer: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -48,6 +47,19 @@ const useStyles = makeStyles(() => ({
   addButton: {
     marginTop: '15px',
   },
+  elementsHeading: {
+    fontSize: '20px',
+    fontWeight: 300,
+    letterSpacing: '0.3em',
+    textTransform: 'uppercase',
+    lineHeight: '25px',
+    color: theme.palette.primary.dark,
+    borderLeft: `4px solid ${theme.palette.primary.light}`,
+    padding: `16px 0 16px 24px`,
+  },
+  iconContainer: {
+    marginTop: theme.spacing(4),
+  }
 }));
 
 interface Props {
@@ -147,35 +159,57 @@ const EditPage: React.FC<Props> = ({ page, updatePage }) => {
           }}
         />
       )) : (
-        <>
-          {columns.map((column) => (
-            <FieldRow
-              key={column.id}
-              column={column}
-              updateColumn={(c) => updateColumn(c, columns, setColumns)}
-              deleteColumn={(c) => deleteColumn(c, columns, setColumns)}
-              addSubColumn={(c) => addSubColumn(c, columns, setColumns, true)}
-              updateSubColumn={(subColumn, parent) => {
-                updateSubColumn(subColumn, parent, columns, setColumns);
-              }}
-              deleteSubColumn={(subColumn, parent) => {
-                deleteSubColumn(subColumn, parent, columns, setColumns);
-              }}
-              errors={errors}
-              control={control}
-            />
-          ))}
-          <Button
-            fullWidth
-            variant="contained"
-            color="secondary"
-            className={classes.addButton}
-            onClick={() => addColumn(columns, setColumns, true)}
-          >
-            <AddIcon />
-            Add Field
-          </Button>
-        </>
+        <Grid container spacing={1}>
+          <Grid item md={3}>
+            <Typography
+              variant="h2"
+              className={classes.elementsHeading}
+            >
+              Elements
+            </Typography>
+            <div className={classes.iconContainer}>
+              <BoxIcon
+                icon="TEXT"
+                name="text"
+                onClick={() => addColumn(columns, setColumns, "TEXT", true)}
+              />
+              <BoxIcon
+                icon="MARKDOWN"
+                name="long"
+                onClick={() => addColumn(columns, setColumns, "MARKDOWN", true)}
+              />
+              <BoxIcon
+                icon="IMAGE"
+                name="img"
+                onClick={() => addColumn(columns, setColumns, "IMAGE", true)}
+              />
+              <BoxIcon
+                icon="OBJECT"
+                name="object"
+                onClick={() => addColumn(columns, setColumns, "OBJECT", true)}
+              />
+            </div>
+          </Grid>
+          <Grid item md={9}>
+            {columns.map((column) => (
+              <FieldRow
+                key={column.id}
+                column={column}
+                updateColumn={(c) => updateColumn(c, columns, setColumns)}
+                deleteColumn={(c) => deleteColumn(c, columns, setColumns)}
+                addSubColumn={(c) => addSubColumn(c, columns, setColumns, true)}
+                updateSubColumn={(subColumn, parent) => {
+                  updateSubColumn(subColumn, parent, columns, setColumns);
+                }}
+                deleteSubColumn={(subColumn, parent) => {
+                  deleteSubColumn(subColumn, parent, columns, setColumns);
+                }}
+                errors={errors}
+                control={control}
+              />
+            ))}
+          </Grid>
+        </Grid>
       )}
     </form>
   );
@@ -200,6 +234,7 @@ const EditPageQuery = (): React.ReactElement | 'loading' => {
     } = {},
   } = useQuery(GetPage, {
     variables: { siteSlug, pageSlug },
+    fetchPolicy: 'no-cache',
   });
 
   const [updatePage] = useMutation(UpdatePage, {

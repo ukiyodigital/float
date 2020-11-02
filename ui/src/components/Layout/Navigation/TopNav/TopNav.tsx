@@ -15,7 +15,7 @@ import { IsUserLoggedIn } from '_/apollo/queries.graphql';
 
 import icon from "_/assets/images/float-logo-blue-transparent.png";
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   logo: {
     flex: 0,
-    flexBasis: '240px',
+    flexBasis: '260px',
     textAlign: 'center',
     marginLeft: '-24px',
     marginRight: '24px',

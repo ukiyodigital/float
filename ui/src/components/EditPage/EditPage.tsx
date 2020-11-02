@@ -234,6 +234,7 @@ const EditPageQuery = (): React.ReactElement | 'loading' => {
     } = {},
   } = useQuery(GetPage, {
     variables: { siteSlug, pageSlug },
+    fetchPolicy: 'no-cache',
   });
 
   const [updatePage] = useMutation(UpdatePage, {

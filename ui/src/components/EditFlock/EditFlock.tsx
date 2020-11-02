@@ -64,7 +64,6 @@ const EditFlock: React.FC<Props> = ({ flock, updateFlock }) => {
   );
   const [data, setData] = useState(flock?.data?.slice() || []);
   const [showValues, setShowValues] = useState(true);
-  // const [errors, dispatch, onError] = useErrorState([]);
   const {
     control, errors, trigger, handleSubmit, setValue,
   } = useForm();
@@ -233,6 +232,7 @@ const EditFlockQuery = (): React.ReactElement | 'loading' => {
     } = {},
   } = useQuery(GetFlock, {
     variables: { siteSlug, flockSlug },
+    fetchPolicy: 'no-cache',
   });
 
   const [updateFlock] = useMutation(UpdateFlock, {

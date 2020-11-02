@@ -44,7 +44,7 @@ const Layout: React.FC = () => {
               exact={route.exact}
               render={({ match }) => (
                 <>
-                  {route.sidebar && <AppDrawer />}
+                  {route.sidebar && <AppDrawer params={match.params} />}
                   <TopNav params={match.params} hasSidebar={route.sidebar} />
                   <Container className={classes.sidebarContainer}>
                     <div className={classes.toolbar} />

@@ -11,7 +11,7 @@ export interface InputProps extends Omit<StandardTextFieldProps, "variant"> {
 }
 
 const Input: React.FC<InputProps> = ({
-  control, field, message = '', ...props
+  control, field, rules, message = '', ...props
 }) => (
   <Controller
     render={({ name, onChange, value }) => (
@@ -30,6 +30,7 @@ const Input: React.FC<InputProps> = ({
         {...props}
       />
     )}
+    rules={rules}
     control={control}
     name={field.name}
     defaultValue={field?.value || ''}

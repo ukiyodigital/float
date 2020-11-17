@@ -73,13 +73,13 @@ const reducer = (state: State, action: Action) => {
     case 'lastName':
       return { ...state, lastName: payload };
     case 'email':
-      return { ...state, lastName: payload };
+      return { ...state, email: payload };
     case 'username':
-      return { ...state, lastName: payload };
+      return { ...state, username: payload };
     case 'password':
-      return { ...state, lastName: payload };
+      return { ...state, password: payload };
     case 'confirmPassword':
-      return { ...state, lastName: payload };
+      return { ...state, confirmPassword: payload };
     default:
       throw new Error();
   }

@@ -7,11 +7,10 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import {
-  Avatar, Box, Button, Container, Grid, Typography,
+  Box, Button, Container, Grid, Typography,
 } from '@material-ui/core';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import { GetToken } from '_/apollo/mutations.graphql';
 import { IsUserLoggedIn } from '_/apollo/queries.graphql';
@@ -23,6 +22,8 @@ import Loading from '_/components/Common/Loading/Loading';
 import Copyright from '_/components/Common/Copyright/Copyright';
 import ErrorList from '_/components/Common/ErrorList/ErrorList';
 import Input from '_/components/Common/Input/Input';
+
+import floatLogo from '_/assets/images/float-logo.png';
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
@@ -89,9 +90,7 @@ const Login: React.FC = () => {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <img src={floatLogo} />
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>

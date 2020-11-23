@@ -6,8 +6,20 @@ mutation GetToken($username: String!, $password: String!) {
   }
 }
 
-mutation Signup($email: String!, $firstName: String!, $lastName: String!, $username: String!, $password: String!) {
-  createUser(email: $email, firstName: $firstName, lastName: $lastName, username: $username, password: $password) {
+mutation Signup(
+  $email: String!
+  $firstName: String!
+  $lastName: String!
+  $username: String!
+  $password: String!
+) {
+  createUser(
+    email: $email
+    firstName: $firstName
+    lastName: $lastName
+    username: $username
+    password: $password
+  ) {
     token
   }
 }
@@ -110,5 +122,17 @@ mutation UploadFile($fileUpload: Upload!, $siteId: Int!) {
       uploadedAt
     }
     url
+  }
+}
+
+mutation DeletePage($siteId: Int!, $slug: String!) {
+  deletePage(siteId: $siteId, slug: $slug) {
+    ok
+  }
+}
+
+mutation DeleteFlock($siteId: Int!, $slug: String!) {
+  deleteFlock(siteId: $siteId, slug: $slug) {
+    ok
   }
 }

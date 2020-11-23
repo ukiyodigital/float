@@ -162,23 +162,23 @@ class UpdatePage(graphene.Mutation):
 
 
 class DeletePage(graphene.Mutation):
-    page = graphene.Field(PageType)
+    ok = graphene.Boolean()
 
     class Arguments:
         site_id = graphene.Int(required=True)
-        page_id = graphene.Int(required=True)
+        slug = graphene.String(required=True, description="Slug of page to be deleted")
 
     @login_required
-    def mutate(self, info, site_id, page_id):
+    def mutate(self, info, site_id, slug):
         try:
             page = Page.objects.filter(
-                id=page_id,
+                slug=slug,
                 site__id=site_id,
                 site__owner=info.context.user,
             ).delete()
         except Exception as e:
             raise GraphQLError(e)
-        return DeletePage(page=page)
+        return DeletePage(ok=True)
 
 
 class Mutation(graphene.ObjectType):

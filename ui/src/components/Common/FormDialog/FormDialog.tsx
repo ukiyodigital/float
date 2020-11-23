@@ -1,16 +1,20 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React from "react";
+import { useForm } from "react-hook-form";
 
 import {
-  Button, Dialog, DialogActions, DialogContent,
-  DialogContentText, DialogTitle,
-} from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@material-ui/core";
+import { ButtonProps } from "@material-ui/core/Button";
 
-import { useErrorState } from '_/hooks';
+import { useErrorState } from "_/hooks";
 
-import Input from '_/components/Common/Input/Input';
-import ErrorList from '_/components/Common/ErrorList/ErrorList';
+import Input from "_/components/Common/Input/Input";
+import ErrorList from "_/components/Common/ErrorList/ErrorList";
 
 interface Field {
   name: string;
@@ -23,36 +27,47 @@ interface Props {
   open: boolean;
   title?: string;
   content?: string;
-  fields: Field[];
+  fields?: Field[];
   handleClose(): void;
   submitData(data: Record<string, string>): void;
+  submitText?: string;
+  submitButtonProps?: ButtonProps;
 }
 
-const FormDialog: React.FC<Props> = ({ open, title, content, fields, handleClose, submitData }) => {
+const FormDialog: React.FC<Props> = ({
+  open,
+  title,
+  content,
+  fields = [],
+  handleClose,
+  submitData,
+  submitText = "Save",
+  submitButtonProps = {},
+}) => {
   const [errors, handleError] = useErrorState([]);
-  const {
-    control, errors: formErrors, reset, handleSubmit,
-  } = useForm();
+  const { control, errors: formErrors, reset, handleSubmit } = useForm();
 
   const handleReset = () => {
     handleClose();
-    handleError({ type: 'reset' });
+    handleError({ type: "reset" });
     reset();
   };
 
   const onSubmit = (data: Record<string, string>) => {
-    handleError({ type: 'reset' });
+    handleError({ type: "reset" });
     submitData(data);
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+    >
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle id="form-dialog-title">{title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {content}
-          </DialogContentText>
+          <DialogContentText>{content}</DialogContentText>
           {fields.map((field) => (
             <Input
               key={field.name}
@@ -73,17 +88,9 @@ const FormDialog: React.FC<Props> = ({ open, title, content, fields, handleClose
           <ErrorList errors={errors} />
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleReset}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            color="primary"
-            startIcon={<SaveIcon />}
-          >
-            Save
+          <Button onClick={handleReset}>Cancel</Button>
+          <Button type="submit" {...submitButtonProps}>
+            {submitText}
           </Button>
         </DialogActions>
       </form>

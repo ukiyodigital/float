@@ -1,5 +1,9 @@
 type ColumnValue = string | { [key: string]: string | ColumnValue | unknown } | unknown;
 
+type TFlock = 'FLOCK';
+type TPage = 'PAGE';
+type TDataType = TFlock | TPage;
+
 interface Column {
     id?: string;
     name: string;

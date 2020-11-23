@@ -177,6 +177,27 @@ class UpdateFlock(graphene.Mutation):
         return UpdateFlock(flock=flock_obj)
 
 
+class DeleteFlock(graphene.Mutation):
+    ok = graphene.Boolean()
+
+    class Arguments:
+        site_id = graphene.Int(required=True)
+        slug = graphene.String(required=True, description="Slug of flock to be deleted")
+
+    @login_required
+    def mutate(self, info, site_id, slug):
+        try:
+            flock = Flock.objects.filter(
+                slug=slug,
+                site__id=site_id,
+                site__owner=info.context.user,
+            ).delete()
+        except Exception as e:
+            raise GraphQLError(e)
+        return DeleteFlock(ok=True)
+
+
 class Mutation(graphene.ObjectType):
     create_flock = CreateFlock.Field()
     update_flock = UpdateFlock.Field()
+    delete_flock = DeleteFlock.Field()

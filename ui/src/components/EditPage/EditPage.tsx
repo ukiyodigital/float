@@ -1,65 +1,67 @@
-import React, { useState } from 'react';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import React, { useState } from "react";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 
-import { useQuery, useMutation } from '@apollo/client';
-import { useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useQuery, useMutation } from "@apollo/client";
+import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 import {
-  addColumn, deleteColumn, updateColumn,
-  addSubColumn, deleteSubColumn, updateSubColumn,
+  addColumn,
+  deleteColumn,
+  updateColumn,
+  addSubColumn,
+  deleteSubColumn,
+  updateSubColumn,
   sortColumns,
-} from '_/utils/columns';
+} from "_/utils/columns";
 
-import { GetPage } from '_/apollo/queries.graphql';
-import { UpdatePage } from '_/apollo/mutations.graphql';
-import { useGetSiteQuery } from '_/hooks';
+import { GetPage } from "_/apollo/queries.graphql";
+import { UpdatePage } from "_/apollo/mutations.graphql";
+import { useGetSiteQuery } from "_/hooks";
 
-import {
-  Button, Grid, Snackbar, Switch, Typography,
-} from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
+import { Button, Grid, Snackbar, Switch, Typography } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
 
-import FieldRow from '_/components/Common/FieldRow/FieldRow';
-import FieldSwitcher from '_/components/Common/FieldSwitcher/FieldSwitcher';
+import FieldRow from "_/components/Common/FieldRow/FieldRow";
+import FieldSwitcher from "_/components/Common/FieldSwitcher/FieldSwitcher";
 
-import Preview from '_/components/Preview/Preview';
-import BoxIcon from '_/components/Common/BoxIcon/BoxIcon';
+import Preview from "_/components/Preview/Preview";
+import BoxIcon from "_/components/Common/BoxIcon/BoxIcon";
 
 const { REACT_APP_API_URL: API_URL } = process.env;
 
 const useStyles = makeStyles((theme: Theme) => ({
   buttonContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: "flex",
+    justifyContent: "space-between",
   },
   item: {
-    display: 'flex',
-    justifyContent: 'center',
-    textAlign: 'center',
+    display: "flex",
+    justifyContent: "center",
+    textAlign: "center",
   },
   icon: {
-    marginTop: '12px',
+    marginTop: "12px",
   },
   input: {
-    marginBottom: '5px',
+    marginBottom: "5px",
   },
   addButton: {
-    marginTop: '15px',
+    marginTop: "15px",
   },
   elementsHeading: {
-    fontSize: '20px',
+    fontSize: "20px",
     fontWeight: 300,
-    letterSpacing: '0.3em',
-    textTransform: 'uppercase',
-    lineHeight: '25px',
+    letterSpacing: "0.3em",
+    textTransform: "uppercase",
+    lineHeight: "25px",
     color: theme.palette.primary.dark,
     borderLeft: `4px solid ${theme.palette.primary.light}`,
     padding: `16px 0 16px 24px`,
   },
   iconContainer: {
     marginTop: theme.spacing(4),
-  }
+  },
 }));
 
 interface Props {
@@ -70,25 +72,35 @@ interface Props {
 const EditPage: React.FC<Props> = ({ page, updatePage }) => {
   const classes = useStyles();
   const [columns, setColumns] = useState(
-    (page?.columns || []).slice().sort(sortColumns),
+    (page?.columns || []).slice().sort(sortColumns)
   );
   const [showValues, setShowValues] = useState(true);
 
   // const [errors, dispatch, onError] = useErrorState([]);
-  const {
-    control, errors, trigger, handleSubmit, setValue,
-  } = useForm();
+  const { control, errors, trigger, handleSubmit, setValue } = useForm();
 
   const [{ key }] = page?.site?.apiKey || [];
   const url = `${API_URL}?query=query SiteByKey($apiKey: String!, $pageSlug: String!) { pageByKey(apiKey: $apiKey, pageSlug: $pageSlug) { id name slug data } }&operationName=SiteByKey&variables={"apiKey": "${key}", "pageSlug": "${page.slug}"}`;
 
-  const prepColumnData = ({
-    unsaved, id, value, data, columns: childColumns = [], __typename: typename, ...column
-  }: Column, isRoot = false, order: number): Column => {
+  const prepColumnData = (
+    {
+      unsaved,
+      id,
+      value,
+      data,
+      columns: childColumns = [],
+      __typename: typename,
+      ...column
+    }: Column,
+    isRoot = false,
+    order: number
+  ): Column => {
     if (unsaved) {
       return {
         ...column,
-        columns: childColumns.slice().sort(sortColumns)
+        columns: childColumns
+          .slice()
+          .sort(sortColumns)
           .map((c, subOrder) => prepColumnData(c, false, subOrder)),
         data: JSON.stringify(data),
         order,
@@ -98,7 +110,9 @@ const EditPage: React.FC<Props> = ({ page, updatePage }) => {
     return {
       ...column,
       page_id: isRoot ? Number(page.id) : null,
-      columns: childColumns.slice().sort(sortColumns)
+      columns: childColumns
+        .slice()
+        .sort(sortColumns)
         .map((c, subOrder) => prepColumnData(c, false, subOrder)),
       data: JSON.stringify(data),
       order,
@@ -129,42 +143,42 @@ const EditPage: React.FC<Props> = ({ page, updatePage }) => {
                   if (result) setShowValues(!showValues);
                 }}
                 name="page-switch"
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                inputProps={{ "aria-label": "secondary checkbox" }}
               />
             </Grid>
             <Grid item>Values</Grid>
           </Grid>
         </Typography>
         <Preview url={url} />
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-        >
+        <Button variant="contained" color="primary" type="submit">
           Save
         </Button>
       </div>
-      {showValues ? columns.map((column) => (
-        <FieldSwitcher
-          setValue={setValue}
-          key={column.id}
-          column={column}
-          control={control}
-          onChange={(data) => updateColumn({ ...column, data }, columns, setColumns)}
-          onChangeSubColumn={(childColumn, parentColumn, data) => {
-            console.log(data);
-            updateSubColumn(
-              { ...childColumn, data }, parentColumn, columns, setColumns,
-            )
-          }}
-        />
-      )) : (
+      {showValues ? (
+        columns.map((column) => (
+          <FieldSwitcher
+            setValue={setValue}
+            key={column.id}
+            column={column}
+            control={control}
+            onChange={(data) =>
+              updateColumn({ ...column, data }, columns, setColumns)
+            }
+            onChangeSubColumn={(childColumn, parentColumn, data) => {
+              console.log(data);
+              updateSubColumn(
+                { ...childColumn, data },
+                parentColumn,
+                columns,
+                setColumns
+              );
+            }}
+          />
+        ))
+      ) : (
         <Grid container spacing={1}>
           <Grid item md={3}>
-            <Typography
-              variant="h2"
-              className={classes.elementsHeading}
-            >
+            <Typography variant="h2" className={classes.elementsHeading}>
               Elements
             </Typography>
             <div className={classes.iconContainer}>
@@ -217,24 +231,24 @@ const EditPage: React.FC<Props> = ({ page, updatePage }) => {
 
 interface AlertProps {
   onClose(): void;
-  severity?: 'success' | 'info' | 'warning' | 'error';
+  severity?: "success" | "info" | "warning" | "error";
 }
 
 // eslint-disable-next-line react/jsx-props-no-spreading
-const Alert: React.FC<AlertProps> = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
+const Alert: React.FC<AlertProps> = (props) => (
+  <MuiAlert elevation={6} variant="filled" {...props} />
+);
 
-const EditPageQuery = (): React.ReactElement | 'loading' => {
+const EditPageQuery = (): React.ReactElement | "loading" => {
   const [snackbar, setSnackbar] = useState(false);
-  const { siteSlug, pageSlug }: { siteSlug: string, pageSlug: string } = useParams();
-  const [, currentSite] = useGetSiteQuery(siteSlug);
   const {
-    loading,
-    data: {
-      page,
-    } = {},
-  } = useQuery(GetPage, {
+    siteSlug,
+    pageSlug,
+  }: { siteSlug: string; pageSlug: string } = useParams();
+  const [, currentSite] = useGetSiteQuery(siteSlug);
+  const { loading, data: { page } = {} } = useQuery(GetPage, {
     variables: { siteSlug, pageSlug },
-    fetchPolicy: 'no-cache',
+    fetchPolicy: "no-cache",
   });
 
   const [updatePage] = useMutation(UpdatePage, {
@@ -243,21 +257,27 @@ const EditPageQuery = (): React.ReactElement | 'loading' => {
     },
   });
 
-  const handleUpdatePage = ({
-    __typename, site, ...p
-  }: Page) => {
+  const handleUpdatePage = ({ __typename, site, ...p }: Page) => {
     updatePage({
       variables: { page: p, siteId: currentSite.id },
-      refetchQueries: [{
-        query: GetPage,
-        variables: { siteSlug, pageSlug },
-      }],
+      refetchQueries: [
+        {
+          query: GetPage,
+          variables: { siteSlug, pageSlug },
+        },
+      ],
     });
   };
 
-  return loading ? 'loading' : (
+  return loading ? (
+    "loading"
+  ) : (
     <>
-      <Snackbar open={snackbar} autoHideDuration={6000} onClose={() => setSnackbar(false)}>
+      <Snackbar
+        open={snackbar}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar(false)}
+      >
         <Alert onClose={() => setSnackbar(false)} severity="success">
           Page successfully updated.
         </Alert>

@@ -6,4 +6,3 @@ class MediaStorage(S3Boto3Storage):
     location = settings.AWS_MEDIA_LOCATION
     default_acl = 'private'
     file_overwrite = False
-    custom_domain = False

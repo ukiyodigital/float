@@ -4,5 +4,5 @@ from settings import settings
 
 class MediaStorage(S3Boto3Storage):
     location = settings.AWS_MEDIA_LOCATION
-    default_acl = 'private'
+    default_acl = 'public-read'
     file_overwrite = False
